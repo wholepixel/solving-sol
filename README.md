@@ -16,7 +16,11 @@ The file should be executable in a modern web browser. Where possible, please lo
 We'll also consider pull requests containing links from [JSFiddle.net](http://jsfiddle.net) and [CodePen](http://codepen.io/).
 
 ```
-"In an interview, LeWitt was once asked, "How would you feel if someone executed a wall drawing of yours without permission but with care to follow the instructions and in an appropriate site?" To which he replied, "OK... It would be authentic [and] it would be a compliment."
+"In an interview, LeWitt was once asked, "How would you feel
+if someone executed a wall drawing of yours without permission
+but with care to follow the instructions and in an appropriate site?"
+To which he replied, "OK... It would be authentic [and] it would
+be a compliment."
 ```
 
 ### Example Instructions:
