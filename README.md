@@ -1,13 +1,15 @@
 Solving Sol
 ===========
 
+![Sol LeWitt Reference Image](http://wholepixel.com/images/sol-lewitt-reference.jpg)
+
 An open project to implement Sol LeWitt's instructions in JavaScript.
 
 [Sol LeWitt](http://en.wikipedia.org/wiki/Sol_LeWitt) was an American artist who is regarded as the founder of Conceptual and Minimal art.
 
-A portion of his work were wall drawings for which he only provided the instructions.
+A portion of his work were wall drawings for which he only provided instructions.
 
-The instructions are simple and open to subtle interpretation.  They're also good candidates to be executed programatically.
+The instructions are simple and subtly open to interpretation. They're also good candidates to be executed programatically.
 
 To execute an instruction, please fork this repository and create a folder with your github user name within the folder of the instruction you're solving. (i.e. /118/github_user).
 
