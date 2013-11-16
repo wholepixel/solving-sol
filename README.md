@@ -40,6 +40,7 @@ On a wall surface, any continuous stretch of wall, using a hard pencil, place fi
 - [Paper.js](http://paperjs.org)
 - [Easel.js](http://www.createjs.com/Docs/EaselJS/modules/EaselJS.html)
 - [Processing.js](http://processingjs.org/)
+- Forkable JSFiddle template with Paper.js: [http://jsfiddle.net/B79vY/](http://jsfiddle.net/B79vY/)
 
 ### Learn more about Sol Lewitt:
 - [Radical Art](http://radicalart.info/concept/LeWitt/)
