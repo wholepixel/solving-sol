@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>295 - nitriques</title>
 
 	<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700,800" rel="stylesheet" type="text/css" />
@@ -39,6 +39,7 @@ h1 {
 }
 
 svg {
+	background-color: black; // as stated, again
 	width: 100%;
 	height: 100%;	
 }
@@ -64,12 +65,18 @@ svg polygon {
 	
 	'use strict';
 	
+	/* CONST */
+	
 	var win = $(window);
 	
 	var size = {
 		width: 0,
 		height: 0,
-		ratio: 1
+		ratio: 1,
+		shape: {
+			width: 0,
+			height: 0	
+		}
 	};
 	
 	var ctn = $('#container');
@@ -79,6 +86,10 @@ svg polygon {
 	var NB_SHAPES = 6; // as stated
 	var NB_PTS_MIN = 3;
 	var NB_PTS_MAX = 8;
+	var DEVIATION = 0.05; // in percent
+	var PAD = 4; // could be negative to allow overlaps
+	
+	/* UTILS */
 	
 	var rnd = function (max, min) {
 		// random "int"
@@ -91,19 +102,59 @@ svg polygon {
 		return i;
 	};
 	
-	var generatePolyPoints = function (sides) {
-		var p = [];
-		
-		return p;
+	var getter = function (value) {
+		return function () { return value; };
 	};
 	
-	var createShape = function () {
-		var sides = rnd(NB_PTS_MAX, NB_PTS_MIN);
-		var points = generatePolyPoints(sides);
+	/* DATA */
+	
+	var generatePolyPoints = function (sides, index) {
+		var pts = [];
+		var n = 0;
+		var p;
+		var w = size.shape.width;
+		var h = size.shape.height;
 		
-		var getter = function (value) {
-			return function () { return value; };
-		};
+		var angleSum = (sides - 1) * Math.PI;
+		var angleMean = angleSum / sides;
+		var angleDiff = angleMean * DEVIATION;
+		var angle = 0;
+		
+		for (n; n < sides - 1; n++) {
+			p = {
+				x: 0,
+				y: 0	
+			};
+			if (n === 0) {
+				p.x = rnd((w * (index+1)) - PAD, (w * index) + PAD);
+				p.y = rnd(h) + 100;
+			} else {
+				
+				angle = rnd(angleMean + angleDiff, angleMean - angleDiff);
+				p.x = pts[n-1].x + Math.cos(-angle) * 50;
+				p.y = pts[n-1].y + Math.sin(-angle) * 50;
+				
+				// overflow x
+				if (p.x < 0) {
+					p.x = 0;
+				} else if (p.x > size.width) {
+					p.x = size.width;
+				}
+				// oveflow y
+				if (p.y < 0) {
+					p.y = 0;	
+				} else if (p.y > size.height) {
+					p.y = size.height;
+				}
+			}
+			pts.push(p);	
+		}
+		return pts;
+	};
+	
+	var createShape = function (index) {
+		var sides = rnd(NB_PTS_MAX, NB_PTS_MIN);
+		var points = generatePolyPoints(sides, index);
 		
 		return {
 			sides: getter(sides),
@@ -115,27 +166,41 @@ svg polygon {
 		var n = 0;
 		var shape;
 		for (n; n < NB_SHAPES; n++) {
-			shape = createShape();
+			shape = createShape(n);
 			console.log('Creating a shape with %d sides', shape.sides());
+			console.log('Points', shape.points());
 			shapes.push(shape);
 		}
 	};
 	
+	/* RENDER */
+	
 	var draw = function () {
 		
 	};
+	
+	/* BOOTSTRAP */
 	
 	var updateSize = function () {
 		size.width = win.width();
 		size.height = win.height();
 		size.ratio = !size.width || !size.height ? 1 : size.width / size.height;
 		size.mean = (size.width + size.height) / 2;
+		size.shape.width = size.width / NB_SHAPES;
+		size.shape.height = size.height / 2;
 		console.log('--> Size is %d x %d', size.width, size.height);
 		console.log('--> Ratio %d', size.ratio);
 		console.log('--> Mean %d', size.mean);
+		console.log('--> Shape size is %d x %d', size.shape.width, size.shape.height);
+	};
+	
+	var resize = function () {
+		updateSize();
+		// ...
 	};
 	
 	var init = function () {
+		win.resize(resize);
 		updateSize();
 		createShapes();
 		draw();
@@ -145,6 +210,5 @@ svg polygon {
 		
 })(window.jQuery, window.d3);
 	</script>
-
 </body>
 </html>
