@@ -176,7 +176,23 @@ svg polygon {
 	/* RENDER */
 	
 	var draw = function () {
-		
+		var svg = d3.select(ctn[0])
+			.append("svg")
+				.attr("width", size.width)
+				.attr("height", size.height);
+		var vis = svg
+			.append('g')
+			.attr("transform", ''); // center it
+		var polys = vis
+			.selectAll('polygon');
+			
+		polys.data(shapes).enter()
+			.append('polygon')
+			.attr("points",function(d) { 
+        return d.points().map(function(d) {
+            return [d.x,d.y].join(",");
+        }).join(" ");
+    })
 	};
 	
 	/* BOOTSTRAP */
