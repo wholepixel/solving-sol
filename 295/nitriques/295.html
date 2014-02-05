@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>295 - nitriques</title>
+
+	<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700,800" rel="stylesheet" type="text/css" />
+	<style>
+html, body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	font-family: 'Montserrat';
+	color: #eee;
+}
+body.wall {
+    background-color: black; // as stated
+    font-size: 62.5%;
+}
+
+h1 {
+	position: absolute;
+	z-index: 10;
+	margin: 0;
+	top: 5px;
+	left: 5px;
+	font-size: 1.6rem;
+}
+
+#container {
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+svg {
+	width: 100%;
+	height: 100%;	
+}
+
+svg polygon {
+	stroke-width: 2px;
+	stroke: white; // as stated	
+}
+
+svg polygon {
+	
+}
+	</style>
+</head>
+<body class="wall">
+	<h1>Sol LeWitt's #295 - nitriques</h1>
+    <div id="container"></div>
+	
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.1/d3.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>
+(function _295($, d3) {
+	
+	'use strict';
+	
+	var win = $(window);
+	
+	var size = {
+		width: 0,
+		height: 0,
+		ratio: 1
+	};
+	
+	var ctn = $('#container');
+	
+	var shapes = [];
+	
+	var NB_SHAPES = 6; // as stated
+	var NB_PTS_MIN = 3;
+	var NB_PTS_MAX = 8;
+	
+	var rnd = function (max, min) {
+		// random "int"
+		var i = ~~(Math.random() * 100000);
+		if (!!max && !!min) {
+			return (i % (max - min)) + min;
+		} else if (!!max) {
+			return i % max;	
+		}
+		return i;
+	};
+	
+	var generatePolyPoints = function (sides) {
+		var p = [];
+		
+		return p;
+	};
+	
+	var createShape = function () {
+		var sides = rnd(NB_PTS_MAX, NB_PTS_MIN);
+		var points = generatePolyPoints(sides);
+		
+		var getter = function (value) {
+			return function () { return value; };
+		};
+		
+		return {
+			sides: getter(sides),
+			points: getter(points)
+		};
+	};
+	
+	var createShapes = function () {
+		var n = 0;
+		var shape;
+		for (n; n < NB_SHAPES; n++) {
+			shape = createShape();
+			console.log('Creating a shape with %d sides', shape.sides());
+			shapes.push(shape);
+		}
+	};
+	
+	var draw = function () {
+		
+	};
+	
+	var updateSize = function () {
+		size.width = win.width();
+		size.height = win.height();
+		size.ratio = !size.width || !size.height ? 1 : size.width / size.height;
+		size.mean = (size.width + size.height) / 2;
+		console.log('--> Size is %d x %d', size.width, size.height);
+		console.log('--> Ratio %d', size.ratio);
+		console.log('--> Mean %d', size.mean);
+	};
+	
+	var init = function () {
+		updateSize();
+		createShapes();
+		draw();
+	};
+	
+	$(init);
+		
+})(window.jQuery, window.d3);
+	</script>
+
+</body>
+</html>
