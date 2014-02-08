@@ -16,7 +16,7 @@ html, body {
 	color: #eee;
 }
 body.wall {
-    background-color: black; // as stated
+    background-color: black; /* as stated */
     font-size: 62.5%;
 }
 
@@ -39,18 +39,19 @@ h1 {
 }
 
 svg {
-	background-color: black; // as stated, again
+	background-color: black; /* as stated, again */
 	width: 100%;
 	height: 100%;	
 }
 
 svg polygon {
 	stroke-width: 2px;
-	stroke: white; // as stated	
+	stroke: white; /* as stated */
+	fill: transparent;
 }
 
-svg polygon {
-	
+svg polygon:hover {
+	fill: white;
 }
 	</style>
 </head>
@@ -85,7 +86,7 @@ svg polygon {
 	
 	var NB_SHAPES = 6; // as stated
 	var NB_PTS_MIN = 3;
-	var NB_PTS_MAX = 8;
+	var NB_PTS_MAX = 4;
 	var DEVIATION = 0.05; // in percent
 	var PAD = 4; // could be negative to allow overlaps
 	
@@ -120,40 +121,56 @@ svg polygon {
 		var angleDiff = angleMean * DEVIATION;
 		var angle = 0;
 		
-		for (n; n < sides - 1; n++) {
+		var p1, p2;
+		var pAngle;
+		
+		for (n; n < sides; n++) {
 			p = {
 				x: 0,
 				y: 0	
 			};
-			if (n === 0) {
+			if (n < 2) {
 				p.x = rnd((w * (index+1)) - PAD, (w * index) + PAD);
-				p.y = rnd(h) + 100;
+				p.y = rnd(h) + (100 * (n+1));
 			} else {
 				
-				angle = rnd(angleMean + angleDiff, angleMean - angleDiff);
-				p.x = pts[n-1].x + Math.cos(-angle) * 50;
-				p.y = pts[n-1].y + Math.sin(-angle) * 50;
+				p1 = pts[n-1];
+				p2 = pts[n-2];
+				pAngle = Math.atan2(p1.y - p2.y, p1.x - p2.x);
 				
-				// overflow x
-				if (p.x < 0) {
-					p.x = 0;
-				} else if (p.x > size.width) {
-					p.x = size.width;
-				}
-				// oveflow y
-				if (p.y < 0) {
-					p.y = 0;	
-				} else if (p.y > size.height) {
-					p.y = size.height;
-				}
+				console.log('Current angle %d', pAngle * 180/Math.PI);
+				
+				//do {
+					angle = rnd(angleMean + angleDiff, angleMean - angleDiff)
+				//} while (angle > Math.PI * 0.95);
+				
+				console.log('New angle %d', angle * 180/Math.PI);
+				
+				p.x = p2.x + (Math.cos(Math.PI-angle - pAngle) * 50);
+				p.y = p2.y + (Math.sin(Math.PI-angle - pAngle) * 50);
+				
 			}
+			
+			// overflow x
+			if (p.x < 0) {
+				p.x = 0;
+			} else if (p.x > size.width) {
+				p.x = size.width;
+			}
+			// oveflow y
+			if (p.y < 0) {
+				p.y = 0;	
+			} else if (p.y > size.height) {
+				p.y = size.height;
+			}
+			
 			pts.push(p);	
 		}
 		return pts;
 	};
 	
 	var createShape = function (index) {
-		var sides = rnd(NB_PTS_MAX, NB_PTS_MIN);
+		var sides = rnd(NB_PTS_MAX + 1, NB_PTS_MIN);
 		var points = generatePolyPoints(sides, index);
 		
 		return {
@@ -175,6 +192,13 @@ svg polygon {
 	
 	/* RENDER */
 	
+	
+	var renderPoints = function(d) { 
+        return d.points().map(function (d) {
+            return [d.x,d.y].join(",");
+        }).join(" ");
+    };
+	
 	var draw = function () {
 		var svg = d3.select(ctn[0])
 			.append("svg")
@@ -188,11 +212,7 @@ svg polygon {
 			
 		polys.data(shapes).enter()
 			.append('polygon')
-			.attr("points",function(d) { 
-        return d.points().map(function(d) {
-            return [d.x,d.y].join(",");
-        }).join(" ");
-    })
+			.attr("points", renderPoints);
 	};
 	
 	/* BOOTSTRAP */
