@@ -52,6 +52,12 @@ svg line {
 	stroke: #666;
 	stroke-width: 1px;
 }
+
+svg path {
+	stroke: #333;
+	stroke-width: 3px;
+	fill: none;	
+}
 	</style>
 </head>
 <body class="wall">
@@ -146,15 +152,15 @@ svg line {
 	};
 	
 	var generateArcs = function () {
-		var initArc = function (x, y) {
+		var initArc = function (x1, y1, x2, y2) {
 			arcs.push({
 				p1: {
-					x: x,
-					y: y	
+					x: x1,
+					y: y1	
 				},
 				p2: {
-					x: 0,
-					y: 0	
+					x: x2,
+					y: y2	
 				},
 				control: {
 					x: size.width / 2,
@@ -163,10 +169,10 @@ svg line {
 			});
 		};
 		
-		initArc(0, 0);
-		initArc(size.width, 0);
-		initArc(size.width, size.height);
-		initArc(0, size.height);
+		initArc(0, 0, size.width - size.height, size.height);
+		initArc(size.width, 0, size.height, size.height);
+		initArc(size.width, size.height, size.height, 0);
+		initArc(0, size.height, size.width - size.height, 0);
 		
 	};
 	
@@ -174,9 +180,13 @@ svg line {
 	/* RENDER */
 	
 	var renderPoints = function(d) { 
-        return d.points().map(function (d) {
-            return [d.x,d.y].join(',');
-        }).join(' ');
+		var renderPoint = function (p) {
+			return [p.x, p.y].join(',');	
+		};
+        var p1 = 'M' + renderPoint(d.p1);
+        var p2 = ' ' + renderPoint(d.p2);
+        var c = 'Q' + renderPoint(d.control);
+        return [p1,c,p2].join(' ');
     };
 	
 	var draw = function () {
@@ -198,6 +208,10 @@ svg line {
 			.attr('y1', function (d) { return d.p1.y; })
 			.attr('x2', function (d) { return d.p2.x; })
 			.attr('y2', function (d) { return d.p2.y; });
+			
+		arcvis.data(arcs).enter()
+			.append('path')
+			.attr('d', renderPoints);
 	};
 	
 	/* BOOTSTRAP */
