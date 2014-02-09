@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>130 - nitriques</title>
+
+	<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700,800" rel="stylesheet" type="text/css" />
+	<style>
+html, body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	font-family: 'Montserrat';
+	color: #eee;
+}
+body.wall {
+    background-color: black; /* as stated */
+    font-size: 62.5%;
+}
+
+h1 {
+	position: absolute;
+	z-index: 10;
+	margin: 0;
+	top: 5px;
+	left: 5px;
+}
+h1, h1 a {
+	font-size: 1.6rem;
+	text-decoration: none;
+	color: #eee;
+}
+
+#container {
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+svg {
+	background-color: black; /* as stated, again */
+	width: 100%;
+	height: 100%;	
+}
+
+svg line {
+	stroke: white;
+	stroke-width: 1px;
+}
+	</style>
+</head>
+<body class="wall">
+	<h1>Sol LeWitt's #130 - <a href="https://twitter.com/nitriques">nitriques</a></h1>
+    <div id="container"></div>
+	
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.1/d3.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>
+(function _295($, d3) {
+	
+	'use strict';
+	
+	/* CONST */
+	
+	var win = $(window);
+	
+	var DEBUG = !!~document.location.toString().indexOf('?debug');
+	
+	var size = {
+		width: 0,
+		height: 0,
+		ratio: 1
+	};
+	
+	var ctn = $('#container');
+	
+	var shapes = [];
+	
+	
+	/* UTILS */
+	
+	var rnd = function (max, min) {
+		// random "int"
+		var i = ~~(Math.random() * 100000);
+		if (!!max && !!min) {
+			return (i % (max - min)) + min;
+		} else if (!!max) {
+			return i % max;	
+		}
+		return i;
+	};
+	
+	var getter = function (value) {
+		return function _get(i) {
+			if (i !== undefined) {
+				return value[i];	
+			}
+			return value;
+		};
+	};
+	
+	
+	/* DATA */
+	
+	
+	
+	/* RENDER */
+	
+	var renderPoints = function(d) { 
+        return d.points().map(function (d) {
+            return [d.x,d.y].join(',');
+        }).join(' ');
+    };
+	
+	var draw = function () {
+		var svg = d3.select(ctn[0])
+			.append("svg")
+				.attr("width", size.width)
+				.attr("height", size.height);
+		var vis = svg
+			.append('g')
+			.attr("transform", ''); // center it
+		var grid = vis
+			.selectAll('line.vert');
+		
+	};
+	
+	/* BOOTSTRAP */
+	
+	var updateSize = function () {
+		size.width = win.width();
+		size.height = win.height();
+		size.ratio = !size.width || !size.height ? 1 : size.width / size.height;
+		size.mean = (size.width + size.height) / 2;
+		
+		console.log('--> Size is %d x %d', size.width, size.height);
+		console.log('--> Ratio %d', size.ratio);
+		console.log('--> Mean %d', size.mean);
+	};
+	
+	var resize = function () {
+		updateSize();
+		// ...
+	};
+	
+	var init = function () {
+		win.resize(resize);
+		updateSize();
+		
+		draw();
+	};
+	
+	$(init);
+		
+})(window.jQuery, window.d3);
+	</script>
+</body>
+</html>
