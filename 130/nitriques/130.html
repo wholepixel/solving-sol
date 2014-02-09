@@ -13,10 +13,10 @@ html, body {
 	height: 100%;
 	overflow: hidden;
 	font-family: 'Montserrat';
-	color: #eee;
+	color: #111;
 }
 body.wall {
-    background-color: black; /* as stated */
+    background-color: white;
     font-size: 62.5%;
 }
 
@@ -30,7 +30,7 @@ h1 {
 h1, h1 a {
 	font-size: 1.6rem;
 	text-decoration: none;
-	color: #eee;
+	color: #111;
 }
 
 #container {
@@ -43,13 +43,13 @@ h1, h1 a {
 }
 
 svg {
-	background-color: black; /* as stated, again */
+	background-color: transparent;
 	width: 100%;
 	height: 100%;	
 }
 
 svg line {
-	stroke: white;
+	stroke: #666;
 	stroke-width: 1px;
 }
 	</style>
@@ -71,6 +71,8 @@ svg line {
 	
 	var DEBUG = !!~document.location.toString().indexOf('?debug');
 	
+	var GRID_STEP = 20;
+	
 	var size = {
 		width: 0,
 		height: 0,
@@ -79,7 +81,9 @@ svg line {
 	
 	var ctn = $('#container');
 	
-	var shapes = [];
+	var grid = [];
+	
+	var arcs = [];
 	
 	
 	/* UTILS */
@@ -107,6 +111,39 @@ svg line {
 	
 	/* DATA */
 	
+	var generateGrid = function () {
+		var n = 0;
+		var x, y;
+		var xMax = ~~(size.width / GRID_STEP);
+		var yMax = ~~(size.height / GRID_STEP);
+		
+		for (n; n <= xMax; n++) {
+			x = n * GRID_STEP;
+			grid.push({
+				p1: {
+					x: x,
+					y: 0
+				},
+				p2: {
+					x: x,
+					y: size.height	
+				}
+			});
+		}
+		for (n = 0; n <= yMax; n++) {
+			y = n * GRID_STEP;
+			grid.push({
+				p1: {
+					x: 0,
+					y: y
+				},
+				p2: {
+					x: size.width,
+					y: y	
+				}
+			});
+		}
+	};
 	
 	
 	/* RENDER */
@@ -125,9 +162,15 @@ svg line {
 		var vis = svg
 			.append('g')
 			.attr("transform", ''); // center it
-		var grid = vis
-			.selectAll('line.vert');
+		var gridvis = vis
+			.selectAll('line');
 		
+		gridvis.data(grid).enter()
+			.append('line')
+			.attr('x1', function (d) { return d.p1.x; })
+			.attr('y1', function (d) { return d.p1.y; })
+			.attr('x2', function (d) { return d.p2.x; })
+			.attr('y2', function (d) { return d.p2.y; });
 	};
 	
 	/* BOOTSTRAP */
@@ -151,7 +194,7 @@ svg line {
 	var init = function () {
 		win.resize(resize);
 		updateSize();
-		
+		generateGrid();
 		draw();
 	};
 	
