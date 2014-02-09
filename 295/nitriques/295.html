@@ -26,7 +26,11 @@ h1 {
 	margin: 0;
 	top: 5px;
 	left: 5px;
+}
+h1, h1 a {
 	font-size: 1.6rem;
+	text-decoration: none;
+	color: #eee;
 }
 
 #container {
@@ -64,7 +68,7 @@ svg line {
 	</style>
 </head>
 <body class="wall">
-	<h1>Sol LeWitt's #295 - nitriques</h1>
+	<h1>Sol LeWitt's #295 - <a href="https://twitter.com/nitriques">nitriques</a></h1>
     <div id="container"></div>
 	
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.1/d3.min.js"></script>
@@ -96,8 +100,8 @@ svg line {
 	
 	var NB_SHAPES = 6; // as stated
 	var NB_PTS_MIN = 3;
-	var NB_PTS_MAX = 8;
-	var DEVIATION = 0.05; // in percent
+	var NB_PTS_MAX = 10;
+	var DEVIATION = 0.1; // in percent
 	var PAD = 4; // could be negative to allow overlaps
 	var MIN_SIDE_LENGTH = 20;
 	var MAX_SIDE_LENGTH = 200;
