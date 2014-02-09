@@ -101,10 +101,11 @@ svg line {
 	var NB_SHAPES = 6; // as stated
 	var NB_PTS_MIN = 3;
 	var NB_PTS_MAX = 10;
-	var DEVIATION = 0.1; // in percent
-	var PAD = 4; // could be negative to allow overlaps
+	var DEVIATION = 0.2; // in percent
+	var PAD = 4; // could be negative to allow overlaps of centers
 	var MIN_SIDE_LENGTH = 20;
 	var MAX_SIDE_LENGTH = 200;
+	
 	
 	/* UTILS */
 	
@@ -127,6 +128,7 @@ svg line {
 			return value;
 		};
 	};
+	
 	
 	/* DATA */
 	
@@ -173,12 +175,9 @@ svg line {
 		var pts = [];
 		var n = 0;
 		var p;
-		var w = size.shape.width;
-		var h = size.shape.height;
 		
 		var pAngle = 0;
 		var pLength = 1;
-		var subSum = 0;
 		
 		for (n; n < angles.length; n++) {
 			
@@ -238,8 +237,8 @@ svg line {
 		}
 	};
 	
-	/* RENDER */
 	
+	/* RENDER */
 	
 	var renderPoints = function(d) { 
         return d.points().map(function (d) {
