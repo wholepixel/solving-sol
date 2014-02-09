@@ -50,9 +50,9 @@ svg g {
 
 svg line,
 svg path {
-	stroke: #666;
 	stroke-width: 2px;
-	fill: none;	
+	fill: none;
+	opacity: 0.7;
 	
 	transition: all ease 300ms;
 	-webkit-transition: all ease 300ms;
@@ -60,8 +60,8 @@ svg path {
 
 svg line:hover,
 svg path:hover {
-	stroke: #A00;
-	stroke-width: 4px;	
+	stroke-width: 6px;
+	opacity: 1;
 }
 	</style>
 </head>
@@ -106,6 +106,13 @@ svg path:hover {
 	
 	var px = function (cm) {
 		return PPC * cm;	
+	};
+	
+	var color = function () {
+		var r = rnd(256);
+		var g = rnd(256);
+		var b = rnd(256);
+		return 'rgb(' + [r,b,g].join(',') + ')';
 	};
 	
 	var getter = function (value) {
@@ -209,11 +216,13 @@ svg path:hover {
 			.attr('x1', function (d) { return px(d.p1.x); })
 			.attr('y1', function (d) { return px(d.p1.y); })
 			.attr('x2', function (d) { return px(d.p2.x); })
-			.attr('y2', function (d) { return px(d.p2.y); });
+			.attr('y2', function (d) { return px(d.p2.y); })
+			.attr('stroke', color);
 			
 		pathvis.data(curves).enter()
 			.append('path')
-			.attr('d', renderPath);
+			.attr('d', renderPath)
+			.attr('stroke', color);
 	};
 	
 	/* BOOTSTRAP */
