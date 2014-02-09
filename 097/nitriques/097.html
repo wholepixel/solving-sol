@@ -9,9 +9,8 @@
 html, body {
 	margin: 0;
 	padding: 0;
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
+	min-width: 100%;
+	min-height: 100%;
 	font-family: 'Montserrat';
 	color: #111;
 }
@@ -34,18 +33,18 @@ h1, h1 a {
 }
 
 #container {
-	position: absolute;
-	z-index: 1;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
+	
 }
 
 svg {
 	background-color: transparent;
-	width: 100%;
-	height: 100%;	
+	width: 400cm;
+	height: 200cm;	
+}
+
+svg g {
+	width: 200cm;
+	height: 200cm;	
 }
 
 svg line {
@@ -77,13 +76,9 @@ svg path {
 	
 	var DEBUG = !!~document.location.toString().indexOf('?debug');
 	
-	var GRID_STEP = 20;
+	var LINES = DEBUG ? 10 : 10000;
 	
-	var size = {
-		width: 0,
-		height: 0,
-		ratio: 1
-	};
+	var SIZE = 200;
 	
 	var ctn = $('#container');
 	
@@ -113,56 +108,102 @@ svg path {
 	
 	/* DATA */
 	
+	var generateLines = function () {
+		var stack = [];
+		var n = 0;
+		
+		for (n; n < LINES; n++) {
+			stack.push({
+				p1: {
+					x: rnd(SIZE),
+					y: rnd(SIZE)
+				},
+				p2: {
+					x: rnd(SIZE),
+					y: rnd(SIZE)
+				}
+			});
+		}
+		
+		return stack;
+	};
+	
+	var generateCurves = function () {
+		var stack = [];
+		var n = 0;
+		
+		for (n; n < LINES; n++) {
+			stack.push({
+				p1: {
+					x: rnd(SIZE),
+					y: rnd(SIZE)
+				},
+				p2: {
+					x: rnd(SIZE),
+					y: rnd(SIZE)
+				},
+				control: {
+					x: rnd(SIZE),
+					y: rnd(SIZE)
+				}
+			});
+		}
+		
+		return stack;
+	};
+	
 		
 	/* RENDER */
 	
 	var renderPath = function(d) { 
 		var renderPoint = function (p) {
-			return [p.x, p.y].join(',');	
+			return [p.x + 'cm', p.y + 'cm'].join(',');	
 		};
         var p1 = 'M' + renderPoint(d.p1);
-        var p2 = ' ' + renderPoint(d.p2);
+        var p2 = renderPoint(d.p2);
         var c = 'Q' + renderPoint(d.control);
         return [p1,c,p2].join(' ');
     };
 	
-	var draw = function () {
+	var draw = function (lines, curves) {
 		var svg = d3.select(ctn[0])
 			.append("svg")
-				.attr("width", size.width)
-				.attr("height", size.height);
-		var vis = svg
+				.attr("width", '400cm')
+				.attr("height", '200cm');
+		var viss = svg
 			.append('g')
-			.attr("transform", ''); // center it
-		var linevis = vis
+			.attr("width", '200cm')
+			.attr("height", '200cm')
+			.attr("transform", '');
+		var visc = svg
+			.append('g')
+			.attr("width", '200cm')
+			.attr("height", '200cm')
+			.attr("transform", 'translate(200cm,0cm)');
+			
+		var linevis = viss
 			.selectAll('line');
+		var pathvis = visc
+			.selectAll('path');
 		
-		
+		linevis.data(lines).enter()
+			.append('line')
+			.attr('x1', function (d) { return d.p1.x + 'cm'; })
+			.attr('y1', function (d) { return d.p1.y + 'cm'; })
+			.attr('x2', function (d) { return d.p2.x + 'cm'; })
+			.attr('y2', function (d) { return d.p2.y + 'cm'; });
+			
+		pathvis.data(curves).enter()
+			.append('path')
+			.attr('d', renderPath);
 	};
 	
 	/* BOOTSTRAP */
 	
-	var updateSize = function () {
-		size.width = win.width();
-		size.height = win.height();
-		size.ratio = !size.width || !size.height ? 1 : size.width / size.height;
-		size.mean = (size.width + size.height) / 2;
-		
-		console.log('--> Size is %d x %d', size.width, size.height);
-		console.log('--> Ratio %d', size.ratio);
-		console.log('--> Mean %d', size.mean);
-	};
-	
-	var resize = function () {
-		updateSize();
-		// ...
-	};
-	
 	var init = function () {
-		win.resize(resize);
-		updateSize();
-		
-		draw();
+		var lines = generateLines();
+		var curves = generateCurves();
+		draw(lines, curves);
 	};
 	
 	$(init);
