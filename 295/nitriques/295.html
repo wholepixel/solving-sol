@@ -96,9 +96,11 @@ svg line {
 	
 	var NB_SHAPES = 6; // as stated
 	var NB_PTS_MIN = 3;
-	var NB_PTS_MAX = 4;
+	var NB_PTS_MAX = 8;
 	var DEVIATION = 0.05; // in percent
 	var PAD = 4; // could be negative to allow overlaps
+	var MIN_SIDE_LENGTH = 20;
+	var MAX_SIDE_LENGTH = 200;
 	
 	/* UTILS */
 	
@@ -177,13 +179,13 @@ svg line {
 		for (n; n < angles.length; n++) {
 			
 			pAngle = angles[n] + angles.subSum(n);
-			pLength = rnd(80, 30);
+			pLength = rnd(MAX_SIDE_LENGTH, MIN_SIDE_LENGTH);
 			
 			console.log('Current angle %d', pAngle * 180/Math.PI);
 			
 			p = {
-				x: ~~(pLength * Math.sin(-pAngle)),
-				y: ~~(pLength * Math.cos(-pAngle))
+				x: center.x + ~~(pLength * Math.sin(pAngle)),
+				y: center.y + ~~(pLength * Math.cos(pAngle))
 			};
 			
 			// overflow x
