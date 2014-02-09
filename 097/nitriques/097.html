@@ -130,16 +130,17 @@ svg path:hover {
 	var generateLines = function () {
 		var stack = [];
 		var n = 0;
+		var spx = px(SIZE);
 		
 		for (n; n < LINES; n++) {
 			stack.push({
 				p1: {
-					x: rnd(SIZE),
-					y: rnd(SIZE)
+					x: rnd(spx),
+					y: rnd(spx)
 				},
 				p2: {
-					x: rnd(SIZE),
-					y: rnd(SIZE)
+					x: rnd(spx),
+					y: rnd(spx)
 				}
 			});
 		}
@@ -150,28 +151,29 @@ svg path:hover {
 	var generateCurves = function () {
 		var stack = [];
 		var n = 0;
+		var spx = px(SIZE);
 		
 		for (n; n < LINES; n++) {
 			stack.push({
 				p1: {
-					x: rnd(SIZE),
-					y: rnd(SIZE)
+					x: rnd(spx),
+					y: rnd(spx)
 				},
 				p2: {
-					x: rnd(SIZE),
-					y: rnd(SIZE)
+					x: rnd(spx),
+					y: rnd(spx)
 				},
 				p3: {
-					x: rnd(SIZE),
-					y: rnd(SIZE)
+					x: rnd(spx),
+					y: rnd(spx)
 				},
 				control1: {
-					x: rnd(SIZE / 2),
-					y: rnd(SIZE)
+					x: rnd(spx / 2),
+					y: rnd(spx)
 				},
 				control2: {
-					x: rnd(SIZE, SIZE / 2),
-					y: rnd(SIZE)
+					x: rnd(spx, spx / 2),
+					y: rnd(spx)
 				}
 			});
 		}
@@ -184,7 +186,7 @@ svg path:hover {
 	
 	var renderPath = function(d) { 
 		var renderPoint = function (p) {
-			return [px(p.x), px(p.y)].join(',');	
+			return [p.x, p.y].join(',');	
 		};
         var p1 = 'M' + renderPoint(d.p1);
         var p2 = renderPoint(d.p2);
@@ -213,10 +215,10 @@ svg path:hover {
 		
 		linevis.data(lines).enter()
 			.append('line')
-			.attr('x1', function (d) { return px(d.p1.x); })
-			.attr('y1', function (d) { return px(d.p1.y); })
-			.attr('x2', function (d) { return px(d.p2.x); })
-			.attr('y2', function (d) { return px(d.p2.y); })
+			.attr('x1', function (d) { return d.p1.x; })
+			.attr('y1', function (d) { return d.p1.y; })
+			.attr('x2', function (d) { return d.p2.x; })
+			.attr('y2', function (d) { return d.p2.y; })
 			.attr('stroke', color);
 			
 		pathvis.data(curves).enter()
