@@ -53,6 +53,14 @@ svg polygon {
 svg polygon:hover {
 	fill: white;
 }
+
+svg circle {
+	fill: red;
+}
+svg line {
+	stroke: magenta;
+	stroke-width: 1px;
+}
 	</style>
 </head>
 <body class="wall">
@@ -69,6 +77,8 @@ svg polygon:hover {
 	/* CONST */
 	
 	var win = $(window);
+	
+	var DEBUG = !!~document.location.toString().indexOf('?debug');
 	
 	var size = {
 		width: 0,
@@ -104,52 +114,77 @@ svg polygon:hover {
 	};
 	
 	var getter = function (value) {
-		return function () { return value; };
+		return function _get(i) {
+			if (i !== undefined) {
+				return value[i];	
+			}
+			return value;
+		};
 	};
 	
 	/* DATA */
 	
-	var generatePolyPoints = function (sides, index) {
+	var generateCenterPoint = function (index) {
+		var w = size.shape.width;
+		var h = size.shape.height;
+		
+		return {
+			x: ~~rnd((w * (index+1)) - PAD, (w * index) + PAD),
+			y: ~~rnd(h) + 150
+		};
+	};
+	
+	var generateRandomAngles = function (sides, index) {
+		var angles = [];
+		var angleSum = 2 * Math.PI;
+		var angleMean = angleSum / sides;
+		var angleDiff = angleMean * DEVIATION;
+		var angleMax = angleMean + angleDiff;
+		var angleMin = angleMean - angleDiff;
+		var realSum = 0;
+		var a = 0, n = 0;
+		
+		for (n; n < sides; n++) {
+			a = rnd(angleMax, angleMin);
+			realSum += a;
+			angles.push(a);
+		}
+		angles.subSum = function (index) {
+			var subSum = 0;
+			var n = 0;
+			for (n; n < index; n++) {
+				subSum += angles[n];
+			}
+			return subSum;
+		};
+		angles.sum = function () {
+			return realSum;	
+		};
+		return angles;
+	};
+	
+	var generatePolyPoints = function (angles, center, index) {
 		var pts = [];
 		var n = 0;
 		var p;
 		var w = size.shape.width;
 		var h = size.shape.height;
 		
-		var angleSum = (sides - 1) * Math.PI;
-		var angleMean = angleSum / sides;
-		var angleDiff = angleMean * DEVIATION;
-		var angle = 0;
+		var pAngle = 0;
+		var pLength = 1;
+		var subSum = 0;
 		
-		var p1, p2;
-		var pAngle;
-		
-		for (n; n < sides; n++) {
+		for (n; n < angles.length; n++) {
+			
+			pAngle = angles[n] + angles.subSum(n);
+			pLength = rnd(80, 30);
+			
+			console.log('Current angle %d', pAngle * 180/Math.PI);
+			
 			p = {
-				x: 0,
-				y: 0	
+				x: ~~(pLength * Math.sin(-pAngle)),
+				y: ~~(pLength * Math.cos(-pAngle))
 			};
-			if (n < 2) {
-				p.x = rnd((w * (index+1)) - PAD, (w * index) + PAD);
-				p.y = rnd(h) + (100 * (n+1));
-			} else {
-				
-				p1 = pts[n-1];
-				p2 = pts[n-2];
-				pAngle = Math.atan2(p1.y - p2.y, p1.x - p2.x);
-				
-				console.log('Current angle %d', pAngle * 180/Math.PI);
-				
-				//do {
-					angle = rnd(angleMean + angleDiff, angleMean - angleDiff)
-				//} while (angle > Math.PI * 0.95);
-				
-				console.log('New angle %d', angle * 180/Math.PI);
-				
-				p.x = p2.x + (Math.cos(Math.PI-angle - pAngle) * 50);
-				p.y = p2.y + (Math.sin(Math.PI-angle - pAngle) * 50);
-				
-			}
 			
 			// overflow x
 			if (p.x < 0) {
@@ -171,10 +206,14 @@ svg polygon:hover {
 	
 	var createShape = function (index) {
 		var sides = rnd(NB_PTS_MAX + 1, NB_PTS_MIN);
-		var points = generatePolyPoints(sides, index);
+		var center = generateCenterPoint(index);
+		var angles = generateRandomAngles(sides, index);
+		var points = generatePolyPoints(angles, center, index);
 		
 		return {
 			sides: getter(sides),
+			center: getter(center),
+			angles: getter(angles),
 			points: getter(points)
 		};
 	};
@@ -185,6 +224,9 @@ svg polygon:hover {
 		for (n; n < NB_SHAPES; n++) {
 			shape = createShape(n);
 			console.log('Creating a shape with %d sides', shape.sides());
+			console.log('Center %d x %d', shape.center().x, shape.center().y);
+			console.log('Angles', shape.angles());
+			console.log('Angles Sum', shape.angles().sum());
 			console.log('Points', shape.points());
 			shapes.push(shape);
 		}
@@ -195,8 +237,8 @@ svg polygon:hover {
 	
 	var renderPoints = function(d) { 
         return d.points().map(function (d) {
-            return [d.x,d.y].join(",");
-        }).join(" ");
+            return [d.x,d.y].join(',');
+        }).join(' ');
     };
 	
 	var draw = function () {
@@ -209,7 +251,39 @@ svg polygon:hover {
 			.attr("transform", ''); // center it
 		var polys = vis
 			.selectAll('polygon');
+		var centers = vis
+			.selectAll('circle');
+		var links = vis
+			.selectAll('line');
 			
+		if (DEBUG) {
+			links.data(shapes.map(function (d) {
+				return d.center();	
+			})).enter()
+			.append('circle')
+			.attr('r', 2)
+			.attr('cx', function (d) { return d.x; })
+			.attr('cy', function (d) { return d.y; });
+			
+			links.data(d3.merge(shapes.map(function (d) {
+				var l = [];
+				var n = 0;
+				for (n; n < d.angles().length; n++) {
+					l.push({
+						p1: d.center(),
+						p2: d.points(n)
+					});
+				}
+				return l;
+			}))).enter()
+			.append('line')
+			.attr('x1', function (d) { return d.p1.x; })
+			.attr('y1', function (d) { return d.p1.y; })
+			.attr('x2', function (d) { return d.p2.x; })
+			.attr('y2', function (d) { return d.p2.y; });
+			
+		}
+		
 		polys.data(shapes).enter()
 			.append('polygon')
 			.attr("points", renderPoints);
