@@ -145,6 +145,31 @@ svg line {
 		}
 	};
 	
+	var generateArcs = function () {
+		var initArc = function (x, y) {
+			arcs.push({
+				p1: {
+					x: x,
+					y: y	
+				},
+				p2: {
+					x: 0,
+					y: 0	
+				},
+				control: {
+					x: size.width / 2,
+					y: size.height / 2
+				}
+			});
+		};
+		
+		initArc(0, 0);
+		initArc(size.width, 0);
+		initArc(size.width, size.height);
+		initArc(0, size.height);
+		
+	};
+	
 	
 	/* RENDER */
 	
@@ -164,6 +189,8 @@ svg line {
 			.attr("transform", ''); // center it
 		var gridvis = vis
 			.selectAll('line');
+		var arcvis = vis
+			.selectAll('path');
 		
 		gridvis.data(grid).enter()
 			.append('line')
@@ -195,6 +222,7 @@ svg line {
 		win.resize(resize);
 		updateSize();
 		generateGrid();
+		generateArcs();
 		draw();
 	};
 	
