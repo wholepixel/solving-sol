@@ -55,6 +55,7 @@ svg path {
 	fill: none;	
 	
 	transition: all ease 300ms;
+	-webkit-transition: all ease 300ms;
 }
 
 svg line:hover,
@@ -153,8 +154,16 @@ svg path:hover {
 					x: rnd(SIZE),
 					y: rnd(SIZE)
 				},
-				control: {
+				p3: {
 					x: rnd(SIZE),
+					y: rnd(SIZE)
+				},
+				control1: {
+					x: rnd(SIZE / 2),
+					y: rnd(SIZE)
+				},
+				control2: {
+					x: rnd(SIZE, SIZE / 2),
 					y: rnd(SIZE)
 				}
 			});
@@ -172,8 +181,10 @@ svg path:hover {
 		};
         var p1 = 'M' + renderPoint(d.p1);
         var p2 = renderPoint(d.p2);
-        var c = 'Q' + renderPoint(d.control);
-        return [p1,c,p2].join(' ');
+        var c1 = 'Q' + renderPoint(d.control1);
+        var p3 = renderPoint(d.p3);
+        var c2 = 'Q' + renderPoint(d.control2);
+        return [p1,c1,p2,c2,p3].join(' ');
     };
 	
 	var draw = function (lines, curves) {
