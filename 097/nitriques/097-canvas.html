@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>097 - nitriques - canvas</title>
+
+	<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700,800" rel="stylesheet" type="text/css" />
+	<style>
+html, body {
+	margin: 0;
+	padding: 0;
+	min-width: 100%;
+	min-height: 100%;
+	font-family: 'Montserrat';
+	color: #111;
+}
+body.wall {
+    background-color: white;
+    font-size: 62.5%;
+}
+
+h1 {
+	position: absolute;
+	z-index: 10;
+	margin: 0;
+	top: 5px;
+	left: 5px;
+}
+h1, h1 a {
+	font-size: 1.6rem;
+	text-decoration: none;
+	color: #111;
+}
+
+#container {
+	width: 400cm;
+	height: 200cm;
+}
+
+canvas {
+	background-color: transparent;
+	width: 400cm;
+	height: 200cm;	
+}
+	</style>
+</head>
+<body class="wall">
+	<h1>Sol LeWitt's #097 - <a href="https://twitter.com/nitriques">nitriques</a> - canvas</h1>
+    <div id="container">
+    	<canvas />
+    </div>
+	
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.12/paper.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>
+(function _097($, d3) {
+	
+	'use strict';
+	
+	/* CONST */
+	
+	var win = $(window);
+	
+	var DEBUG = !!~document.location.toString().indexOf('?debug');
+	
+	var LINES = DEBUG ? 10 : 10000;
+	
+	var SIZE = 200;
+	
+	var PPC = 0;
+	
+	var ctn = $('#container');
+	
+	
+	/* UTILS */
+	
+	var rnd = function (max, min) {
+		// random "int"
+		var i = ~~(Math.random() * 100000);
+		if (!!max && !!min) {
+			return (i % (max - min)) + min;
+		} else if (!!max) {
+			return i % max;	
+		}
+		return i;
+	};
+	
+	var px = function (cm) {
+		return PPC * cm;	
+	};
+	
+	var color = function () {
+		var r = rnd(256);
+		var g = rnd(256);
+		var b = rnd(256);
+		return 'rgb(' + [r,b,g].join(',') + ')';
+	};
+	
+	var getter = function (value) {
+		return function _get(i) {
+			if (i !== undefined) {
+				return value[i];	
+			}
+			return value;
+		};
+	};
+	
+	
+	/* DATA */
+	
+	var generateLines = function () {
+		var stack = [];
+		var n = 0;
+		var spx = px(SIZE);
+		
+		for (n; n < LINES; n++) {
+			stack.push({
+				p1: {
+					x: rnd(spx),
+					y: rnd(spx)
+				},
+				p2: {
+					x: rnd(spx),
+					y: rnd(spx)
+				}
+			});
+		}
+		
+		return stack;
+	};
+	
+	var generateCurves = function () {
+		var stack = [];
+		var n = 0;
+		var spx = px(SIZE);
+		
+		for (n; n < LINES; n++) {
+			stack.push({
+				p1: {
+					x: spx + rnd(spx),
+					y: rnd(spx)
+				},
+				p2: {
+					x: spx + rnd(spx),
+					y: rnd(spx)
+				},
+				p3: {
+					x: spx + rnd(spx),
+					y: rnd(spx)
+				},
+				control1: {
+					x: spx + rnd(spx / 2),
+					y: rnd(spx)
+				},
+				control2: {
+					x: spx + rnd(spx, spx / 2),
+					y: rnd(spx)
+				}
+			});
+		}
+		
+		return stack;
+	};
+	
+		
+	/* RENDER */
+	
+	var stylePath = function(path) {
+		path.strokeWidth = 2;
+    	path.strokeColor = color();	
+	};
+	
+	var renderCurve = function(p) {
+		var path = new paper.Path();
+		
+		stylePath(path);
+        path.moveTo(new paper.Point(p.p1));
+        path.quadraticCurveTo(
+        		new paper.Point(p.control1),
+        		new paper.Point(p.p2)
+        	);
+        path.quadraticCurveTo(
+        		new paper.Point(p.control2),
+        		new paper.Point(p.p3)
+        	);
+    };
+    
+    var renderLine = function (line) {
+    	var path = new paper.Path();
+    	
+    	stylePath(path);
+    	path.moveTo(new paper.Point(line.p1));
+    	path.lineTo(new paper.Point(line.p2));
+    };
+    
+    var setup = function () {
+    	paper.setup(ctn.find('canvas')[0]);
+    };
+	
+	var draw = function (lines, curves) {
+		var n = 0;
+		for (n; n < lines.length; n++) {
+			renderLine(lines[n]);
+		}
+		for (n = 0; n < curves.length; n++) {
+			renderCurve(curves[n]);
+		}
+		paper.view.draw();
+	};
+	
+	/* BOOTSTRAP */
+	
+	var load = function () {
+		setup();
+		var lines = generateLines();
+		var curves = generateCurves();
+		draw(lines, curves);
+	};
+	
+	var init = function () {
+		PPC = ctn.height() / SIZE;
+		win.load(load);
+	};
+	
+	$(init);
+		
+})(window.jQuery, window.paper);
+	</script>
+</body>
+</html>
