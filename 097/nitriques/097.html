@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>097 - nitriques</title>
+
+	<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700,800" rel="stylesheet" type="text/css" />
+	<style>
+html, body {
+	margin: 0;
+	padding: 0;
+	min-width: 100%;
+	min-height: 100%;
+	font-family: 'Montserrat';
+	color: #111;
+}
+body.wall {
+    background-color: white;
+    font-size: 62.5%;
+}
+
+h1 {
+	position: absolute;
+	z-index: 10;
+	margin: 0;
+	top: 5px;
+	left: 5px;
+}
+h1, h1 a {
+	font-size: 1.6rem;
+	text-decoration: none;
+	color: #111;
+}
+
+#container {
+	width: 400cm;
+	height: 200cm;
+}
+
+svg {
+	background-color: transparent;
+	width: 400cm;
+	height: 200cm;	
+}
+
+svg g {
+	width: 200cm;
+	height: 200cm;	
+}
+
+svg line,
+svg path {
+	stroke-width: 2px;
+	fill: none;
+	opacity: 0.7;
+	
+	transition: all ease 300ms;
+	-webkit-transition: all ease 300ms;
+}
+
+svg line:hover,
+svg path:hover {
+	stroke-width: 6px;
+	opacity: 1;
+}
+	</style>
+</head>
+<body class="wall">
+	<h1>Sol LeWitt's #097 - <a href="https://twitter.com/nitriques">nitriques</a></h1>
+    <div id="container"></div>
+	
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.1/d3.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script>
+(function _097($, d3) {
+	
+	'use strict';
+	
+	/* CONST */
+	
+	var win = $(window);
+	
+	var DEBUG = !!~document.location.toString().indexOf('?debug');
+	
+	var LINES = DEBUG ? 10 : 10000;
+	
+	var SIZE = 200;
+	
+	var PPC = 0;
+	
+	var ctn = $('#container');
+	
+	
+	/* UTILS */
+	
+	var rnd = function (max, min) {
+		// random "int"
+		var i = ~~(Math.random() * 100000);
+		if (!!max && !!min) {
+			return (i % (max - min)) + min;
+		} else if (!!max) {
+			return i % max;	
+		}
+		return i;
+	};
+	
+	var px = function (cm) {
+		return PPC * cm;	
+	};
+	
+	var color = function () {
+		var r = rnd(256);
+		var g = rnd(256);
+		var b = rnd(256);
+		return 'rgb(' + [r,b,g].join(',') + ')';
+	};
+	
+	var getter = function (value) {
+		return function _get(i) {
+			if (i !== undefined) {
+				return value[i];	
+			}
+			return value;
+		};
+	};
+	
+	
+	/* DATA */
+	
+	var generateLines = function () {
+		var stack = [];
+		var n = 0;
+		var spx = px(SIZE);
+		
+		for (n; n < LINES; n++) {
+			stack.push({
+				p1: {
+					x: rnd(spx),
+					y: rnd(spx)
+				},
+				p2: {
+					x: rnd(spx),
+					y: rnd(spx)
+				}
+			});
+		}
+		
+		return stack;
+	};
+	
+	var generateCurves = function () {
+		var stack = [];
+		var n = 0;
+		var spx = px(SIZE);
+		
+		for (n; n < LINES; n++) {
+			stack.push({
+				p1: {
+					x: rnd(spx),
+					y: rnd(spx)
+				},
+				p2: {
+					x: rnd(spx),
+					y: rnd(spx)
+				},
+				p3: {
+					x: rnd(spx),
+					y: rnd(spx)
+				},
+				control1: {
+					x: rnd(spx / 2),
+					y: rnd(spx)
+				},
+				control2: {
+					x: rnd(spx, spx / 2),
+					y: rnd(spx)
+				}
+			});
+		}
+		
+		return stack;
+	};
+	
+		
+	/* RENDER */
+	
+	var renderPath = function(d) { 
+		var renderPoint = function (p) {
+			return [p.x, p.y].join(',');	
+		};
+        var p1 = 'M' + renderPoint(d.p1);
+        var p2 = renderPoint(d.p2);
+        var c1 = 'Q' + renderPoint(d.control1);
+        var p3 = renderPoint(d.p3);
+        var c2 = 'Q' + renderPoint(d.control2);
+        return [p1,c1,p2,c2,p3].join(' ');
+    };
+	
+	var draw = function (lines, curves) {
+		var svg = d3.select(ctn[0])
+			.append("svg")
+				.attr("width", '400cm')
+				.attr("height", '200cm');
+		var viss = svg
+			.append('g')
+			.attr("transform", '');
+		var visc = svg
+			.append('g')
+			.attr("transform", 'translate(' + px(SIZE) + ',0)');
+			
+		var linevis = viss
+			.selectAll('line');
+		var pathvis = visc
+			.selectAll('path');
+		
+		linevis.data(lines).enter()
+			.append('line')
+			.attr('x1', function (d) { return d.p1.x; })
+			.attr('y1', function (d) { return d.p1.y; })
+			.attr('x2', function (d) { return d.p2.x; })
+			.attr('y2', function (d) { return d.p2.y; })
+			.attr('stroke', color);
+			
+		pathvis.data(curves).enter()
+			.append('path')
+			.attr('d', renderPath)
+			.attr('stroke', color);
+	};
+	
+	/* BOOTSTRAP */
+	
+	var init = function () {
+		PPC = ctn.height() / SIZE;
+		var lines = generateLines();
+		var curves = generateCurves();
+		draw(lines, curves);
+	};
+	
+	$(init);
+		
+})(window.jQuery, window.d3);
+	</script>
+</body>
+</html>
