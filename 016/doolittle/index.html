@@ -1,0 +1,120 @@
+<html>
+  <head>
+    <meta>
+      <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.22/paper.min.js" ></script>
+      <style type="text/css">
+
+        html, body {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          padding: 0;
+          margin: 0;
+        }
+
+        canvas {
+          /*
+            With the resize attribute in the canvas tag,
+            paper.js manage the size of the canvas.
+            Sets canvas to 100% of window.
+          */
+        }
+
+      </style>
+    </meta>
+  </head>
+  <body>
+    <script canvas='solving-sol' type='text/paperscript'>
+
+      /*
+        Solving Sol #16
+        Bands of lines 12 inches (30 cm) wide, in three directions
+        (vertical, horizontal, diagonal right) intersecting.
+      */
+
+      var LINE_SPACING = 4,
+          LINE_LENGTH = 360,
+          LINE_COLOR = '#e4e4e4';
+
+      function drawBand(spacing, num_lines) {
+
+        var i = -1,
+            group = new Group(),
+            lines = [],
+            basePoint = new Point(0,0),
+            incrementPoint = new Point(spacing,0),
+            borderLength = num_lines*spacing,
+            borderOffset = LINE_LENGTH/2;
+
+        // Draw lines
+        while (++i < num_lines) {
+          lines.push(
+            LINE_SYMBOL.place(basePoint+(incrementPoint*i))
+          );
+        }
+
+        //Draw borders on bands
+        var topBorder = new Path.Line([0,-borderOffset], [borderLength,-borderOffset]);
+        topBorder.strokeColor = LINE_COLOR;
+
+        var bottomBorder = new Path.Line([0,borderOffset], [borderLength,borderOffset]);
+        bottomBorder.strokeColor = LINE_COLOR;
+
+        lines.push(topBorder, bottomBorder);
+
+        group.addChildren(lines);
+
+        group.position = view.center;
+        return group;
+
+      }
+
+      function onResize() {
+
+        //Wipe layer
+        project.activeLayer.removeChildren();
+
+        draw();
+      }
+
+      function draw() {
+
+        console.time("Drawing #16 in");
+
+        line_path = new Path.Line([0,0], [0, LINE_LENGTH]);
+        line_path.strokeColor = LINE_COLOR;
+        line_path.remove();
+
+        LINE_SYMBOL = new Symbol(line_path, true);
+
+        var viewWidth = view.viewSize.width;
+        var viewHeight = view.viewSize.height;
+
+        var horizontal = drawBand(LINE_SPACING, viewWidth/LINE_SPACING);
+
+        var vertical = drawBand(LINE_SPACING, viewHeight/LINE_SPACING);
+        vertical.rotate(90);
+
+        //Hypotenuse
+        var num_diagonal_lines = Math.sqrt(Math.pow(viewWidth,2)+Math.pow(viewHeight,2))/LINE_SPACING;
+
+        var diagonal = drawBand(LINE_SPACING, num_diagonal_lines);
+
+        //Remember 7th grade geometry to calculate angle...
+        var angle = Math.atan(viewHeight / viewWidth);
+        angle*=(180/Math.PI); // Convert to angle from radians
+
+        diagonal.rotate(-angle); //Angle should divide frame in half.
+
+        console.timeEnd("Drawing #16 in");
+
+      }
+
+      draw();
+
+    </script>
+
+    <canvas id='solving-sol' resize></canvas>
+
+  </body>
+</html>
