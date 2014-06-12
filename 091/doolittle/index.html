@@ -1,0 +1,193 @@
+<html>
+  <head>
+    <meta>
+      <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js" ></script>
+      <style type="text/css">
+
+        html, body {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          padding: 0;
+          margin: 0;
+        }
+
+        canvas {
+          /*
+            With the resize attribute in the canvas tag,
+            paper.js manages the size of the canvas.
+            Sets canvas to 100% of window.
+          */
+        }
+
+      </style>
+    </meta>
+  </head>
+  <body>
+    <script canvas='solving-sol' type='text/paperscript'>
+
+      /*
+        Solving Sol #91
+        A six-inch (15 cm) grid covering the wall. Within each square, not straight lines from side to side,
+        using red, yellow and blue pencils. Each square contains at least one line of each color.
+      */
+
+      // Configure drawing
+      var NUM_COLUMNS      = 8, // Rows will be based on aspect ratio
+          NUM_LINES        = 9, // Number of lines to draw in each square
+          NUM_BUMPS        = 3, // How much variation to put in each line
+          COLORS           = ['#D0021B', '#F8E71C', '#4A90E2'],
+          LINE_COLOR       = '#f1f1f1',
+          BACKGROUND_COLOR = '#FCFEFF';
+
+      function drawBox(width, height) {
+
+        var group     = new Group(),
+            border    = GRID_SYMBOL.place(),
+            children  = [border],
+            numColors = COLORS.length,
+            head      = new Point(),
+            tail      = new Point(),
+            line, vertical, randomPoint,
+            i = -1;
+
+        // Fill with lines
+        while(++i < NUM_LINES) {
+
+          // Choose a direction
+          vertical   = (Point.random().x > 0.5);
+
+          randomPoint = Point.random();
+
+          // Pick heads and tails
+          if (vertical) {
+
+            head.x  = randomPoint.x*width;
+            head.y  = 0;
+
+            tail.x  = randomPoint.y*width;
+            tail.y  = height;
+
+          } else {
+
+            head.x  = 0;
+            head.y  = randomPoint.x * height;
+
+            tail.x  = width;
+            tail.y  = randomPoint.y * height
+
+          }
+
+          line = new Path([head, tail]);
+          line.strokeColor = COLORS[i%numColors];
+
+          //line.selected = true; //Debugging
+          children.push(bumpPath(line, NUM_BUMPS, vertical));
+        }
+
+        group.addChildren(children);
+
+        return group;
+
+      };
+
+      // The instruction calls for not-straight lines,
+      // so we add some variation to them there.
+
+      function bumpPath(path, numBumps, vertical) {
+
+        var j = -1,
+          bumpPoint, handlePoint,
+          segmentLength = path.length/numBumps;
+
+        while (++j < numBumps) {
+
+          // Choose a random point along this segment.
+          bumpPoint = path.getLocationAt((segmentLength*Point.random().x)+(segmentLength*j));
+
+          // Move point off the line
+          if (vertical) {
+            bumpPoint.point.x+=(Point.random().x*10);
+          } else {
+            bumpPoint.point.y+=(Point.random().y*10);
+          }
+
+          // Handles define the bezier curve for the line.
+          // Makes them appear a little more hand drawn.
+          handlePoint = Point.random()*5;
+          path.insert(j+1, new Segment(bumpPoint.point, handlePoint, handlePoint));
+        }
+
+        return path;
+
+      };
+
+
+      function onResize() {
+
+        if (
+          __lastWidth===view.viewSize.width &&
+          __lastHeight===view.viewSize.height
+        ) {
+          // No need to redraw because size hasn't changed.
+          return;
+        }
+
+        //Wipe layer
+        project.activeLayer.removeChildren();
+
+        draw();
+
+      };
+
+      function draw() {
+
+        console.time("Drawing #91 in");
+
+        var numColumns = NUM_COLUMNS,
+          viewWidth    = view.viewSize.width,
+          viewHeight   = view.viewSize.height,
+          gridWidth    = viewWidth/numColumns,
+          numRows      = viewHeight/gridWidth,
+          remainder    = (numRows%1),
+          //Cheat height to evenly fill page
+          gridHeight   = (viewHeight/numRows) + ((remainder*gridWidth)/numRows),
+          box, x, y,
+          gridUnit = new Path.Rectangle(
+              new Point(0,0),
+              new Size(gridWidth, gridHeight));
+
+        //Setup symbol
+        gridUnit.strokeColor = LINE_COLOR;
+        gridUnit.fillColor = BACKGROUND_COLOR;
+        gridUnit.remove();
+
+        GRID_SYMBOL = new Symbol(gridUnit, true);
+
+        x = -1;
+        while (++x < numColumns) {
+          y = -1;
+          while (++y < numRows) {
+            box = drawBox(gridWidth, gridHeight);
+
+            //Place box
+            box.position.x = gridWidth*x + (gridWidth/2);
+            box.position.y = gridHeight*y + (gridHeight/2);
+          }
+        }
+
+        console.timeEnd("Drawing #91 in");
+
+        __lastWidth  = viewWidth;
+        __lastHeight = viewHeight;
+
+      }
+
+      draw();
+
+    </script>
+
+    <canvas id='solving-sol' resize></canvas>
+
+  </body>
+</html>
