@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Solving Sol #118</title>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js"></script>
+    <style type="text/css">
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="solving-sol" resize></canvas>
+    <script canvas='solving-sol' type='text/javascript'>
+        paper.install(window);
+        window.onload = function () {
+            paper.setup('solving-sol');
+
+            /*            
+            
+            Wall Drawing #118 (1971)
+            On a wall surface, any continuous stretch of wall, using a hard pencil, place fifty points at random. 
+            The points should be evenly distributed over the area of the wall. 
+            All of the points should be connected by straight lines.        
+            
+            */
+
+            // Create fifty points
+            var points = new Array();
+
+            // TODO - evently distribute the random points
+
+            function randomPoint() {
+                var x = Math.random() * view.size.width;
+                var y = Math.random() * view.size.height;
+                var point = new Point(x, y);
+                return point;
+            }
+
+            for (i = 0; i < 50; i++) {
+                points.push(randomPoint());
+            }
+
+            // Connect the points with straight lines
+            for (j = 0; j < points.length; j++) {
+                var dot = new Path.Circle(points[j], 1.5);
+                dot.fillColor = '#666666';
+                for (k = 0; k < points.length; k++) {
+                    var path = new Path.Line(points[j], points[k]);
+                    path.strokeColor = '#999999';
+                    path.strokeWidth = .1;
+                }
+            }
+
+            view.draw();
+        }
+    </script>
+</body>
+
+</html>
