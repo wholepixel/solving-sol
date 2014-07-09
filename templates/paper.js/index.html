@@ -1,0 +1,78 @@
+<html>
+  <head>
+    <meta>
+
+      <!--
+        Paper.js template for solving a Sol Lewitt instruction.
+
+        Paper.js is a simple way to draw graphics with Canvas. It uses PaperScript,
+        a light abstraction of JavaScript that makes it easy to draw graphics.
+        It's very similar to drawing graphics with ActionScript.
+
+        More about PaperScript: http://paperjs.org/tutorials/getting-started/working-with-paper-js/
+
+        Note: you don't need to use Paper.js for Solving Sol. You can use any library you'd like,
+        or no library at all. The only requirement is that the solution runs in a modern browser.
+
+        If you have another library you like, please submit a template like this one for other folks to use.
+      -->
+
+      <title>Solving Sol</title>
+
+      <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js" ></script>
+      <style type="text/css">
+
+        html, body {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          padding: 0;
+          margin: 0;
+        }
+
+        canvas {
+          /*
+            With the resize attribute in the canvas tag,
+            paper.js manages the size of the canvas.
+            Sets canvas to 100% of window.
+          */
+        }
+
+      </style>
+    </meta>
+  </head>
+  <body>
+    <script canvas='solving-sol' type='text/paperscript'>
+
+      /*
+
+        PASTE SOL INSTRUCTIONS HERE i.e...
+
+        Solving Sol #16
+        Bands of lines 12 inches (30 cm) wide, in three directions
+        (vertical, horizontal, diagonal right) intersecting.
+
+      */
+
+      function onResize() {
+        // Handle resizes
+        // Paper.js will call this handler automatically on resize.
+      }
+
+
+      function init() {
+        // Draw the instruction here.
+        // Be mindful of long loops!
+      }
+
+      // This will fire when Paper.js is ready
+      init();
+
+    </script>
+
+    <canvas id='solving-sol' resize>
+      <!-- Paperscript will draw the graphics here -->
+    </canvas>
+
+  </body>
+</html>
