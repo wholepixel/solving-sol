@@ -3,6 +3,10 @@
     "title" : "Wall Drawing #16 (1969)",
     "description" : "Bands of lines 12 inches (30 cm) wide, in three directions (vertical, horizontal, diagonal right) intersecting."
   },
+  "017" : {
+    "title" : "Wall Drawing #17 (1969)",
+    "description" : "Four-part drawing with a different line direction in each part."
+  },
   "045" : {
     "title" : "Wall Drawing #45 (1970)",
     "description" : "Straight lines 10\" (25 cm) long, not touching, covering the wall evenly."
@@ -11,13 +15,29 @@
     "title" : "Wall Drawing #46 (1970)",
     "description" : "Vertical lines, not straight, not touching, covering the wall evenly."
   },
+  "056" : {
+    "title" : "Wall Drawing #56 (1970)",
+    "description" : "A square is divided horizontally and vertically into four equal parts, each with lines in four directions superimposed progressively."
+  },
   "065" : {
     "title" : "Wall Drawing #65 (1971)",
     "description" : "Lines not short, not straight, crossing and touching, drawn at random, using four colors, uniformly dispersed with maximum density, covering the entire surface of the wall."
   },
+  "085" : {
+    "title" : "Wall Drawing #85 (1971)",
+    "description" : "A wall is divided into four horizontal parts. In the top row are four equal divisions, each with lines in a different direction. In the second row, six double combinations; in the third row, four triple combinations; in the bottom row, all four combinations superimposed."
+  },
   "086" : {
     "title" : "Wall Drawing #86 (1971)",
     "description" : "Ten thousand lines about 10 inches (25 cm) long, covering the wall evenly."
+  },
+  "087" : {
+    "title" : "Wall Drawing #87 (1971)",
+    "description" : "A square divided horizontally and vertically into four equal parts, each with lines and colors in four directions superimposed progressively."
+  },
+  "088" : {
+    "title" : "Wall Drawing #88 (1971)",
+    "description" : "A 6-inch (15 cm) grid covering the wall. Within each square, not straight lines in either of four directions. Only one direction in each square but as many as desired, and at least one line in each square."
   },
   "091" : {
     "title" : "Wall Drawing #91 (1971)",
@@ -59,6 +79,14 @@
     "title" : "Wall Drawing #328 (1980)",
     "description" : "On a black wall, a white circle within which are white vertical parallel lines, and a white parallelogram within which are white horizontal parallel lines. The vertical lines within the circle do not enter the parallelogram, and the horizontal lines within the parallelogram do not enter the circle."
   },
+  "335" : {
+    "title" : "Wall Drawing #335 (1980)",
+    "description" : "On four black walls, white vertical parallel lines, and in the center of the walls, eight geometric figures (including cross, X) within which are white horizontal parallel lines. The vertical lines do not enter the figures."
+  },
+  "340" : {
+    "title" : "Wall Drawing #340 (1980)",
+    "description" : "Six-part drawing. The wall is divided horizontally and vertically into six equal parts. 1st part: On red, blue horizontal parallel lines, and in the center, a circle within which are yellow vertical parallel lines; 2nd part: On yellow, red horizontal parallel lines, and in the center, a square within which are blue vertical parallel lines; 3rd part: On blue, yellow horizontal parallel lines, and in the center, a triangle within which are red vertical parallel lines; 4th part: On red, yellow horizontal parallel lines, and in the center, a rectangle within which are blue vertical parallel lines; 5th part: On yellow, blue horizontal parallel lines, and in the center, a trapezoid within which are red vertical parallel lines; 6th part: On blue, red horizontal parallel lines, and in the center, a parallelogram within which are yellow vertical parallel lines. The horizontal lines do not enter the figures."
+  },
   "391" : {
     "title" : "Wall Drawing #391 (1983)",
     "description": "Two-part drawing. The two walls are each divided horizontally and vertically into four equal parts. First wall: 12-inch (30 cm) bands of lines in four directions, one direction in each part, drawn in black India ink. Second wall: Same, but with four colors drawn in India ink and color ink washes."
@@ -70,6 +98,10 @@
   "614" : {
     "title" : "Wall Drawing #614 (1989)",
     "description": "Rectangles formed by 3-inch (8 cm) wide India ink bands, meeting at right angles."
+  },
+  "630" : {
+    "title" : "Wall Drawing #630 (1990)",
+    "description": "A wall is divided horizontally into two equal parts. Top: alternating horizontal black and white 8-inch (20 cm) bands. Bottom: alternating vertical black and white 8-inch (20 cm) bands."
   },
   "797" : {
     "title" : "Wall Drawing #797 (1995)",
