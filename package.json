@@ -1,0 +1,26 @@
+{
+  "name": "solving-sol",
+  "version": "0.0.0",
+  "description": "An open project to solve Sol LeWitt's instructions in JavaScript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wholepixel/solving-sol.git"
+  },
+  "author": "Brad Bouse (doolittle)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wholepixel/solving-sol/issues"
+  },
+  "homepage": "https://github.com/wholepixel/solving-sol",
+  "devDependencies": {
+    "connect-livereload": "^0.4.0",
+    "express": "^4.6.1",
+    "gulp": "^3.8.6",
+    "gulp-livereload": "^2.1.0",
+    "tiny-lr": "0.0.9"
+  }
+}
