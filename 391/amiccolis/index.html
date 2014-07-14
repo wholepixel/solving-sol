@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Solving Sol #391 (HTML/CSS)</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <style>
+        div {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        .wall {
+            border: 10px solid black;
+            width: 300px;
+            height: 300px;
+            float: left;
+            margin: 20px;
+        }
+        .box {
+            width: 50%;
+            height: 50%;
+            border: 10px solid black;
+        }
+        .left {
+            float: left;
+        }
+        .right {
+            margin-left: 50%;
+        }
+        .upper.left {
+            background: -webkit-linear-gradient(0deg, transparent 25%, #000 25%, #000 50%, transparent 50%, transparent 75%, #000 75%);
+            background: -moz-linear-gradient(0deg, transparent 25%, #000 25%, #000 50%, transparent 50%, transparent 75%, #000 75%);
+            75%, #e287e8 75%);
+            background: -ms-linear-gradient(0deg, transparent 25%, #000 25%, #000 50%, transparent 50%, transparent 75%, #000 75%);
+            background-size: 70px 70px;
+        }
+        #wall_left .upper.right {
+            background: -webkit-linear-gradient(270deg, transparent 25%, #000 25%, #000 50%, transparent 50%, transparent 75%, #000 75%);
+            background: -moz-linear-gradient(270deg, transparent 25%, #000 25%, #000 50%, transparent 50%, transparent 75%, #000 75%);
+            75%, #e287e8 75%);
+            background: -ms-linear-gradient(270deg, transparent 25%, #000 25%, #000 50%, transparent 50%, transparent 75%, #000 75%);
+            background-size: 70px 70px;
+        }
+        #wall_left .lower.right {
+            background: -webkit-linear-gradient(-135deg, transparent 25%, #000 25%, #000 50%, transparent 50%, transparent 75%, #000 75%);
+            background: -moz-linear-gradient(-135deg, transparent 25%, #000 25%, #000 50%, transparent 50%, transparent 75%, #000 75%);
+            75%, #e287e8 75%);
+            background: -ms-linear-gradient(-135deg, transparent 25%, #000 25%, #000 50%, transparent 50%, transparent 75%, #000 75%);
+            background-size: 50px 50px;
+            background-position: 22px, 0px;
+        }
+        #wall_left .lower.left {
+            background: -webkit-linear-gradient(-45deg, transparent 25%, #000 25%, #000 50%, transparent 50%, transparent 75%, #000 75%);
+            background: -moz-linear-gradient(-45deg, transparent 25%, #000 25%, #000 50%, transparent 50%, transparent 75%, #000 75%);
+            75%, #e287e8 75%);
+            background: -ms-linear-gradient(-45deg, transparent 25%, #000 25%, #000 50%, transparent 50%, transparent 75%, #000 75%);
+            background-size: 50px 50px;
+            background-position: -4px, 0px;
+        }
+        #wall_right .upper.right {
+            background: -webkit-linear-gradient(270deg, transparent 25%, yellow 25%, yellow 50%, transparent 50%, transparent 75%, yellow 75%);
+            background: -moz-linear-gradient(270deg, transparent 25%, yellow 25%, yellow 50%, transparent 50%, transparent 75%, yellow 75%);
+            75%, #e287e8 75%);
+            background: -ms-linear-gradient(270deg, transparent 25%, yellow 25%, yellow 50%, transparent 50%, transparent 75%, yellow 75%);
+            background-size: 70px 70px;
+        }
+        #wall_right .lower.right {
+            background: -webkit-linear-gradient(-135deg, transparent 25%, blue 25%, blue 50%, transparent 50%, transparent 75%, blue 75%);
+            background: -moz-linear-gradient(-135deg, transparent 25%, blue 25%, blue 50%, transparent 50%, transparent 75%, blue 75%);
+            75%, #e287e8 75%);
+            background: -ms-linear-gradient(-135deg, transparent 25%, blue 25%, blue 50%, transparent 50%, transparent 75%, blue 75%);
+            background-size: 50px 50px;
+            background-position: 22px, 0px;
+        }
+        #wall_right .lower.left {
+            background: -webkit-linear-gradient(-45deg, transparent 25%, red 25%, red 50%, transparent 50%, transparent 75%, red 75%);
+            background: -moz-linear-gradient(-45deg, transparent 25%, red 25%, red 50%, transparent 50%, transparent 75%, red 75%);
+            75%, #e287e8 75%);
+            background: -ms-linear-gradient(-45deg, transparent 25%, red 25%, red 50%, transparent 50%, transparent 75%, red 75%);
+            background-size: 50px 50px;
+            background-position: -4px, 0px;
+        }
+    </style>
+</head>
+<body>
+<!--
+
+    Wall Drawing #391 (1983)
+
+    Two-part drawing. The two walls are each divided horizontally and vertically into four equal parts. First wall: 12-inch (30 cm) bands of lines in four directions, one direction in each part, drawn in black India ink. Second wall: Same, but with four colors drawn in India ink and color ink washes.
+
+-->
+    <div id="wall_left" class="wall">
+        <div class="upper left box"></div>
+        <div class="upper right box"></div>
+        <div class="lower left box"></div>
+        <div class="lower right box"></div>
+    </div>
+    <div id="wall_right" class="wall">
+        <div class="upper left box"></div>
+        <div class="upper right box"></div>
+        <div class="lower left box"></div>
+        <div class="lower right box"></div>
+    </div>
+</body>
+
+</html>
