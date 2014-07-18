@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 
 <head>
@@ -17,42 +16,59 @@
 </head>
 
 <body>
-    <canvas id="solving-sol" resize></canvas>
-    <script canvas='solving-sol' type='text/javascript'>
-        paper.install(window);
-        window.onload = function () {
-            paper.setup('solving-sol');
-
-            /*            
+    <canvas id='solving-sol' resize></canvas>
+    <script canvas='solving-sol' type='text/paperscript'>
+        /*            
             
-            Wall Drawing #118 (1971)
-            On a wall surface, any continuous stretch of wall, using a hard pencil, place fifty points at random. 
-            The points should be evenly distributed over the area of the wall. 
-            All of the points should be connected by straight lines.        
+        Wall Drawing #118 (1971)
+        On a wall surface, any continuous stretch of wall, using a hard pencil, place fifty points at random. 
+        The points should be evenly distributed over the area of the wall. 
+        All of the points should be connected by straight lines.        
             
-            */
+        */
 
-            // Create fifty points
+        var numberOfPoints = 50;
+        var randomness = .75;
+
+        function init() {
+
+            var width = view.viewSize.width;
+            var height = view.viewSize.height;
+
+            // Figure out how many columns and rows to have
+            var columns = numberOfPoints;
+            var rows = 1;
+            while ((columns / rows) > (width / height)) {
+                rows += 1;
+                columns = Math.ceil(numberOfPoints / rows);
+            }
+
+            // Create randomly offset grid of points
             var points = new Array();
 
-            // TODO - evently distribute the random points
+            for (var col = 0; col < columns; col++) {
+                for (var row = 0; row < rows; row++) {
+                    var cell_width = width / columns;
+                    var cell_height = height / rows;
+                    var x = ((cell_width * col) + (cell_width / 2)) + ((Math.random() - .5) * (randomness * cell_width));
+                    var y = (cell_height * row) + (cell_height / 2) + ((Math.random() - .5) * (randomness * cell_height));
 
-            function randomPoint() {
-                var x = Math.random() * view.size.width;
-                var y = Math.random() * view.size.height;
-                var point = new Point(x, y);
-                return point;
+                    // Keep within bounds
+                    if (x > width) x = width;
+                    else if (x < 0) x = 0;
+                    else if (y > height) y = height;
+                    else if (y < 0) y = 0;
+
+                    points.push(new Point(x, y));
+                }
             }
 
-            for (i = 0; i < 50; i++) {
-                points.push(randomPoint());
-            }
-
-            // Connect the points with straight lines
-            for (j = 0; j < points.length; j++) {
+            // Draw cirlces at each point...
+            for (j = 0; j < numberOfPoints; j++) {
                 var dot = new Path.Circle(points[j], 1.5);
                 dot.fillColor = '#666666';
-                for (k = 0; k < points.length; k++) {
+                // ... then connect them with lines
+                for (k = 0; k < numberOfPoints; k++) {
                     var path = new Path.Line(points[j], points[k]);
                     path.strokeColor = '#999999';
                     path.strokeWidth = .1;
@@ -61,7 +77,15 @@
 
             view.draw();
         }
+
+        function onResize() {
+            project.activeLayer.removeChildren();
+            init();
+        }
+
+        init();
     </script>
+
 </body>
 
 </html>
