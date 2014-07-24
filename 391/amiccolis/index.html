@@ -41,8 +41,9 @@
                 // Paper.js will call this handler automatically on resize.
             }
 
-            var thickness = 30;
-            var spacing = 30;
+            var thickness = 20;
+            var spacing = thickness;
+            var padding = 30;
 
             function inkBox(x, y, width, height, direction, lineColor) {
 
@@ -96,7 +97,7 @@
 
                     lines = createLines(diagonal.length);
                     // Rotate and shift lines to fit
-                    (direction == 'skewedRight') ? lines.rotate(diagonal.angle) : lines.rotate(-diagonal.angle);
+                    (direction == 'skewedRight') ? lines.rotate(90 - diagonal.angle) : lines.rotate(90 + diagonal.angle);
                     lines.position.x -= (diagonal.length - width) / 2;
                     lines.position.y -= (diagonal.length - height) / 2;
 
@@ -112,32 +113,36 @@
                 return lines;
             }
 
-            function init() {
+            function createWall(x, y, padding) {
 
-                var canvasWidth = view.viewSize.width;
-                var canvasHeight = view.viewSize.height;
+                var wall = new Rectangle({
+                    x: x + padding,
+                    y: y + padding,
+                    width: (view.viewSize.width / 2) - padding + x,
+                    height: view.viewSize.height - padding + y
+                });
 
-                var boxWidth = (canvasWidth / 2) - (thickness * 1.5);
-                var boxHeight = (canvasHeight / 2) - (thickness * 1.5);
+                var boxWidth = (wall.width - wall.x - (thickness * 3)) / 2;
+                var boxHeight = (wall.height - wall.y - (thickness * 3)) / 2;
 
-                var box1 = inkBox(thickness, thickness, boxWidth, boxHeight, 'vertical');
-                var box2 = inkBox((canvasWidth + thickness) / 2, thickness, boxWidth, boxHeight, 'horizontal');
-                var box3 = inkBox((canvasWidth + thickness) / 2, (canvasHeight + thickness) / 2, boxWidth, boxHeight, 'skewedLeft');
-                var box4 = inkBox(thickness, (canvasHeight + thickness) / 2, boxWidth, boxHeight, 'skewedRight');
+                var box1 = inkBox(wall.x + thickness, wall.y + thickness, boxWidth, boxHeight, 'vertical');
+                var box2 = inkBox(wall.x + boxWidth + (2 * thickness), wall.y + thickness, boxWidth, boxHeight, 'horizontal');
+                var box3 = inkBox(wall.x + boxWidth + (2 * thickness), wall.y + boxHeight + (2 * thickness), boxWidth, boxHeight, 'skewedLeft');
+                var box4 = inkBox(wall.x + thickness, wall.y + boxHeight + (2 * thickness), boxWidth, boxHeight, 'skewedRight');
 
                 var outline = new Path.Rectangle({
-                    from: [thickness / 2, thickness / 2],
-                    to: [canvasWidth - (thickness / 2), canvasHeight - (thickness / 2)],
+                    from: [wall.x + (thickness / 2), wall.y + (thickness / 2)],
+                    to: [wall.width - (thickness / 2), wall.height - (thickness / 2)],
                 })
 
                 var verticalDivider = new Path.Line({
-                    from: [canvasWidth / 2, 0],
-                    to: [canvasWidth / 2, canvasHeight],
+                    from: [(wall.width + wall.x) / 2, wall.y],
+                    to: [(wall.width + wall.x) / 2, wall.height],
                 })
 
                 var horizontalDivider = new Path.Line({
-                    from: [0 / 2, canvasHeight / 2],
-                    to: [canvasWidth, canvasHeight / 2],
+                    from: [wall.x, (wall.height + wall.y) / 2],
+                    to: [wall.width, (wall.height + wall.y) / 2],
                 })
 
                 var border = new Group(outline, verticalDivider, horizontalDivider);
@@ -145,6 +150,13 @@
                     strokeColor: 'black',
                     strokeWidth: thickness
                 };
+
+            }
+
+            function init() {
+
+                createWall(0, 0, padding);
+                createWall(view.viewSize.width / 2, 0, padding);
 
                 view.draw();
             }
