@@ -1,0 +1,163 @@
+<html>
+
+<head>
+    <meta>
+
+    <title>Solving Sol #391</title>
+
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js"></script>
+    <style type="text/css">
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    </meta>
+</head>
+
+<body>
+    <script canvas='solving-sol' type='text/javascript'>
+        paper.install(window);
+        window.onload = function () {
+            // Setup directly from canvas id:
+            paper.setup('solving-sol');
+
+            /*
+
+            Wall Drawing #391 (1983)
+
+            Two-part drawing. The two walls are each divided horizontally and vertically into four equal parts. 
+            First wall: 12-inch (30 cm) bands of lines in four directions, one direction in each part, drawn in black India ink. 
+            Second wall: Same, but with four colors drawn in India ink and color ink washes.
+
+            */
+
+            function onResize() {
+                // Handle resizes
+                // Paper.js will call this handler automatically on resize.
+            }
+
+            var thickness = 30;
+            var spacing = 30;
+
+            function inkBox(x, y, width, height, direction, lineColor) {
+
+                direction = (direction == undefined) ? 'vertical' : direction;
+                lineColor = (lineColor == undefined) ? 'black' : lineColor;
+
+                var lineWidth = thickness;
+                var lineSpacing = spacing;
+                var diagonal = new Point(width, height);
+                var lines = new Group();
+
+                function createLines(dimension) {
+
+                    // Calculate max number of lines
+                    var maxLines = Math.floor((dimension - lineSpacing) / (lineWidth + lineSpacing));
+
+                    // Divides leftover space between lineWidth and lineSpacing until another line can be added.
+                    var remainder = ((dimension - lineSpacing) % (lineWidth + lineSpacing)) / maxLines;
+                    lineWidth = lineWidth + (remainder / 2);
+                    lineSpacing = lineSpacing + (remainder / 2);
+
+                    // Draws lines
+                    for (i = 0; i < maxLines; i++) {
+                        var line = new Path.Line({
+                            from: [x + lineSpacing + ((lineWidth + lineSpacing) * i) + (lineWidth / 2), y],
+                            to: [x + lineSpacing + ((lineWidth + lineSpacing) * i) + (lineWidth / 2), y + dimension],
+                            strokeCap: 'square',
+                            strokeColor: lineColor,
+                            strokeWidth: lineWidth
+                        });
+
+                        lines.addChild(line);
+                    }
+                    return lines;
+                }
+
+                if (direction == 'horizontal') {
+
+                    lines = createLines(height);
+                    // Rotate and scale lines to fit
+                    lines.rotate(90);
+                    lines.scale((width / height), 1, [x, y]);
+
+                } else if (direction == 'vertical') {
+
+                    lines = createLines(width);
+                    //Scale lines to fit
+                    lines.scale(1, (height / width), [x, y]);
+
+                } else if (direction == 'skewedRight' || direction == 'skewedLeft') {
+
+                    lines = createLines(diagonal.length);
+                    // Rotate and shift lines to fit
+                    (direction == 'skewedRight') ? lines.rotate(diagonal.angle) : lines.rotate(-diagonal.angle);
+                    lines.position.x -= (diagonal.length - width) / 2;
+                    lines.position.y -= (diagonal.length - height) / 2;
+
+                    // Mask overflow
+                    var mask = new Path.Rectangle({
+                        point: [x, y],
+                        size: [width, height],
+                        clipMask: true
+                    });
+                    lines.addChild(mask);
+                }
+
+                return lines;
+            }
+
+            function init() {
+
+                var canvasWidth = view.viewSize.width;
+                var canvasHeight = view.viewSize.height;
+
+                var boxWidth = (canvasWidth / 2) - (thickness * 1.5);
+                var boxHeight = (canvasHeight / 2) - (thickness * 1.5);
+
+                var box1 = inkBox(thickness, thickness, boxWidth, boxHeight, 'vertical');
+                var box2 = inkBox((canvasWidth + thickness) / 2, thickness, boxWidth, boxHeight, 'horizontal');
+                var box3 = inkBox((canvasWidth + thickness) / 2, (canvasHeight + thickness) / 2, boxWidth, boxHeight, 'skewedLeft');
+                var box4 = inkBox(thickness, (canvasHeight + thickness) / 2, boxWidth, boxHeight, 'skewedRight');
+
+                var outline = new Path.Rectangle({
+                    from: [thickness / 2, thickness / 2],
+                    to: [canvasWidth - (thickness / 2), canvasHeight - (thickness / 2)],
+                })
+
+                var verticalDivider = new Path.Line({
+                    from: [canvasWidth / 2, 0],
+                    to: [canvasWidth / 2, canvasHeight],
+                })
+
+                var horizontalDivider = new Path.Line({
+                    from: [0 / 2, canvasHeight / 2],
+                    to: [canvasWidth, canvasHeight / 2],
+                })
+
+                var border = new Group(outline, verticalDivider, horizontalDivider);
+                border.style = {
+                    strokeColor: 'black',
+                    strokeWidth: thickness
+                };
+
+                view.draw();
+            }
+
+            // This will fire when Paper.js is ready
+            init();
+        }
+    </script>
+
+    <canvas id='solving-sol' resize>
+        <!-- Paperscript will draw the graphics here -->
+    </canvas>
+
+</body>
+
+</html>
