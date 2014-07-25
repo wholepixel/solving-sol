@@ -1,0 +1,105 @@
+<html>
+
+<head>
+    <meta>
+    <title>Solving Sol #328</title>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js"></script>
+    <style type="text/css">
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            background: black;
+        }
+    </style>
+    </meta>
+</head>
+
+<body>
+    <script canvas='solving-sol' type='text/paperscript'>
+        /*
+        Wall Drawing #328 (1980)
+        
+        On a black wall, a white circle within which are white vertical parallel lines, 
+        and a white parallelogram within which are white horizontal parallel lines. 
+        The vertical lines within the circle do not enter the parallelogram, 
+        and the horizontal lines within the parallelogram do not enter the circle.
+        */
+
+         // Globals
+        var lineWidth = 1;
+        var lineSpacing = 10;
+        var lineColor = 'white';
+        var pgramSlant = -25;
+
+        function init() {
+
+            var width = view.viewSize.width;
+            var height = view.viewSize.height;
+
+            // Create vertical lines
+            var vlines = new Group();
+            for (var i = 0; i * (lineWidth + lineSpacing) < width; i++) {
+                var line = new Path({
+                    segments: [[(i * (lineWidth + lineSpacing)), 0], [(i * (lineWidth + lineSpacing)), height]],
+                    strokeColor: lineColor,
+                    strokeWidth: lineWidth
+                });
+                vlines.addChild(line);
+            }
+
+            // Create horizontal lines
+            var hLines = vlines.clone().rotate(90);
+
+            // Create the parallelogram
+            var pgram = new Path.Rectangle(new Rectangle({
+                x: (width / 2) - (height / 6),
+                y: (height / 3),
+                width: height / 3,
+                height: height / 3
+            }));
+            pgram.skew(new Point(pgramSlant, 0));
+
+            // Create the circle
+            var circle = new CompoundPath({
+                children: [new Path.Circle({
+                        center: view.center,
+                        radius: (height / 2) * .9
+                    }),
+                                pgram.clone()
+                        ],
+            });
+
+            // Create shape outlines
+            var outline = circle.clone();
+            outline.strokeColor = lineColor;
+
+            // Masking
+            var circleGroup = new Group(circle, vlines);
+            circleGroup.clipped = true;
+            var pgramGroup = new Group(pgram, hLines);
+            pgramGroup.clipped = true;
+
+            // Draw!
+            view.draw();
+        }
+
+        function onResize() {
+            project.activeLayer.removeChildren();
+            init();
+        }
+
+         // This will fire when Paper.js is ready
+        init();
+    </script>
+
+    <canvas id='solving-sol' resize>
+        <!-- Paperscript will draw the graphics here -->
+    </canvas>
+
+</body>
+
+</html>

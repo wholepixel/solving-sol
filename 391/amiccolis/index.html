@@ -1,0 +1,160 @@
+<html>
+
+<head>
+    <title>Solving Sol #391</title>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js"></script>
+    <style type="text/css">
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id='solving-sol' resize></canvas>
+    <script canvas='solving-sol' type='text/paperscript'>
+        /*
+
+        Wall Drawing #391 (1983)
+        Two-part drawing. The two walls are each divided horizontally and vertically into four equal parts. 
+        First wall: 12-inch (30 cm) bands of lines in four directions, one direction in each part, drawn in black India ink. 
+        Second wall: Same, but with four colors drawn in India ink and color ink washes.
+
+        */
+
+        var thickness = 20;
+        var padding = 40;
+
+        function inkBox(x, y, width, height, direction, lineColor) {
+
+            direction = (direction == undefined) ? 'vertical' : direction;
+            lineColor = (lineColor == undefined) ? 'black' : lineColor;
+
+            var lineWidth = thickness;
+            var lineSpacing = thickness;
+            var diagonal = new Point(width, height);
+            var lines = new Group();
+
+            function createLines(dimension) {
+
+                // Calculate max number of lines
+                var maxLines = Math.floor((dimension - lineSpacing) / (lineWidth + lineSpacing));
+
+                // Divides leftover space between lineWidth and lineSpacing until another line can be added.
+                var remainder = ((dimension - lineSpacing) % (lineWidth + lineSpacing)) / maxLines;
+                lineWidth = lineWidth + (remainder / 2);
+                lineSpacing = lineSpacing + (remainder / 2);
+
+                // Draws lines
+                for (i = 0; i < maxLines; i++) {
+                    var line = new Path.Line({
+                        from: [x + lineSpacing + ((lineWidth + lineSpacing) * i) + (lineWidth / 2), y],
+                        to: [x + lineSpacing + ((lineWidth + lineSpacing) * i) + (lineWidth / 2), y + dimension],
+                        strokeCap: 'square',
+                        strokeColor: lineColor,
+                        strokeWidth: lineWidth
+                    });
+
+                    lines.addChild(line);
+                }
+                return lines;
+            }
+
+            if (direction == 'horizontal') {
+
+                lines = createLines(height);
+                // Rotate and scale lines to fit
+                lines.rotate(90);
+                lines.scale((width / height), 1, [x, y]);
+
+            } else if (direction == 'vertical') {
+
+                lines = createLines(width);
+                //Scale lines to fit
+                lines.scale(1, (height / width), [x, y]);
+
+            } else if (direction == 'skewedRight' || direction == 'skewedLeft') {
+
+                lines = createLines(diagonal.length);
+                // Rotate and shift lines to fit
+                (direction == 'skewedRight') ? lines.rotate(90 - diagonal.angle) : lines.rotate(90 + diagonal.angle);
+                lines.position.x -= (diagonal.length - width) / 2;
+                lines.position.y -= (diagonal.length - height) / 2;
+
+                // Mask overflow
+                var mask = new Path.Rectangle({
+                    point: [x, y],
+                    size: [width, height],
+                    clipMask: true
+                });
+                lines.addChild(mask);
+            }
+
+            return lines;
+        }
+
+        function createWall(x, y, padding, colorBox1, colorBox2, colorBox3, colorBox4) {
+
+            var wall = new Rectangle({
+                x: x + padding,
+                y: y + padding,
+                width: (view.viewSize.width / 2) - padding + x,
+                height: view.viewSize.height - padding + y
+            });
+
+            var boxWidth = (wall.width - wall.x - (thickness * 3)) / 2;
+            var boxHeight = (wall.height - wall.y - (thickness * 3)) / 2;
+
+            var box1 = inkBox(wall.x + thickness, wall.y + thickness, boxWidth, boxHeight, 'vertical', colorBox1);
+            var box2 = inkBox(wall.x + boxWidth + (2 * thickness), wall.y + thickness, boxWidth, boxHeight, 'horizontal', colorBox2);
+            var box3 = inkBox(wall.x + boxWidth + (2 * thickness), wall.y + boxHeight + (2 * thickness), boxWidth, boxHeight, 'skewedLeft', colorBox3);
+            var box4 = inkBox(wall.x + thickness, wall.y + boxHeight + (2 * thickness), boxWidth, boxHeight, 'skewedRight', colorBox4);
+
+            var outline = new Path.Rectangle({
+                from: [wall.x + (thickness / 2), wall.y + (thickness / 2)],
+                to: [wall.width - (thickness / 2), wall.height - (thickness / 2)],
+            })
+
+            var verticalDivider = new Path.Line({
+                from: [(wall.width + wall.x) / 2, wall.y],
+                to: [(wall.width + wall.x) / 2, wall.height],
+            })
+
+            var horizontalDivider = new Path.Line({
+                from: [wall.x, (wall.height + wall.y) / 2],
+                to: [wall.width, (wall.height + wall.y) / 2],
+            })
+
+            var border = new Group(outline, verticalDivider, horizontalDivider);
+            border.style = {
+                strokeColor: 'black',
+                strokeWidth: thickness
+            };
+
+        }
+
+        function init() {
+            createWall(0, 0, padding);
+            createWall(view.viewSize.width / 2, 0, padding, 'black', '#FFEA15', '#1481CC', '#FF0300');
+            view.draw();
+        }
+
+         // Handle resizes
+         // Paper.js will call this handler automatically on resize.
+        function onResize() {
+            project.activeLayer.removeChildren();
+            init();
+        }
+
+         // This will fire when Paper.js is ready
+        init();
+    </script>
+
+</body>
+
+</html>
