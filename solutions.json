@@ -24,6 +24,13 @@
         "entry" : "097-canvas.html"
       }
     ],
+  "118" :
+    [
+      {
+        "author" : "amiccolis",
+        "entry" : "index.html"
+      }
+    ],
   "273" :
     [
       {
@@ -36,6 +43,27 @@
       {
         "author" : "nitriques",
         "entry" : "295.html"
+      }
+    ],
+  "328" :
+    [
+      {
+        "author" : "amiccolis",
+        "entry" : "index.html"
+      }
+    ],
+  "391" :
+    [
+      {
+        "author" : "amiccolis",
+        "entry" : "index.html"
+      }
+    ],
+  "797" :
+    [
+      {
+        "author" : "doolittle",
+        "entry" : "index.html"
       }
     ]
 }
