@@ -43,7 +43,7 @@
 
             var thickness = 20;
             var spacing = thickness;
-            var padding = 30;
+            var padding = 40;
 
             function inkBox(x, y, width, height, direction, lineColor) {
 
@@ -113,7 +113,7 @@
                 return lines;
             }
 
-            function createWall(x, y, padding) {
+            function createWall(x, y, padding, colorBox1, colorBox2, colorBox3, colorBox4) {
 
                 var wall = new Rectangle({
                     x: x + padding,
@@ -125,10 +125,10 @@
                 var boxWidth = (wall.width - wall.x - (thickness * 3)) / 2;
                 var boxHeight = (wall.height - wall.y - (thickness * 3)) / 2;
 
-                var box1 = inkBox(wall.x + thickness, wall.y + thickness, boxWidth, boxHeight, 'vertical');
-                var box2 = inkBox(wall.x + boxWidth + (2 * thickness), wall.y + thickness, boxWidth, boxHeight, 'horizontal');
-                var box3 = inkBox(wall.x + boxWidth + (2 * thickness), wall.y + boxHeight + (2 * thickness), boxWidth, boxHeight, 'skewedLeft');
-                var box4 = inkBox(wall.x + thickness, wall.y + boxHeight + (2 * thickness), boxWidth, boxHeight, 'skewedRight');
+                var box1 = inkBox(wall.x + thickness, wall.y + thickness, boxWidth, boxHeight, 'vertical', colorBox1);
+                var box2 = inkBox(wall.x + boxWidth + (2 * thickness), wall.y + thickness, boxWidth, boxHeight, 'horizontal', colorBox2);
+                var box3 = inkBox(wall.x + boxWidth + (2 * thickness), wall.y + boxHeight + (2 * thickness), boxWidth, boxHeight, 'skewedLeft', colorBox3);
+                var box4 = inkBox(wall.x + thickness, wall.y + boxHeight + (2 * thickness), boxWidth, boxHeight, 'skewedRight', colorBox4);
 
                 var outline = new Path.Rectangle({
                     from: [wall.x + (thickness / 2), wall.y + (thickness / 2)],
@@ -156,7 +156,7 @@
             function init() {
 
                 createWall(0, 0, padding);
-                createWall(view.viewSize.width / 2, 0, padding);
+                createWall(view.viewSize.width / 2, 0, padding, 'black', '#FFEA15', '#1481CC', '#FF0300');
 
                 view.draw();
             }
