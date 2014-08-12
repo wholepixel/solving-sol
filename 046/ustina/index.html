@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <meta>
+
+      <title>Solving Sol</title>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.8/processing.min.js"></script>
+
+      <style type="text/css">
+
+        html, body {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          padding: 0;
+          margin: 0;
+        }
+
+      </style>
+    </meta>
+  </head>
+  <body>
+    <script type="application/processing" data-processing-target="pjs">
+
+      /*
+
+        ## Wall Drawing #46 (1970)
+
+        Vertical lines, not straight, not touching, covering the wall evenly.
+
+      */
+
+      void setup() {
+        size(window.innerWidth, window.innerHeight);
+        background(250);
+        stroke(10,200,50,200);
+        strokeCap(SQUARE);
+        strokeWeight(3);
+        for (int x = 0; x < window.innerWidth; x = x+12) {
+          int y = random(2,window.innerHeight);
+          line( x, 0, x, y);
+          line(x, y, x+7, y+7);
+          line(x+7, y+7, x, y+14);
+          line(x, y+14, x, window.innerHeight);
+        }
+      }
+
+    </script>
+
+    <canvas id="pjs"></canvas>
+
+  </body>
+</html>
