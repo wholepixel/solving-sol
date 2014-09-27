@@ -22,14 +22,14 @@
         var ctx = c.getContext('2d');
         var height = ctx.canvas.height = ctx.canvas.clientHeight;
         var width = ctx.canvas.width = ctx.canvas.clientHeight;
-        
+
         // clear screen on resize
         ctx.clearRect(0, 0, c.width, c.height);
-        
+
         // more pencil gray than black
         ctx.strokeStyle = '#444';
         ctx.lineWidth = 1.0;
-        
+
         var preferedGap = 16; // modify this value according to your wishes
         var suggestedLines = Math.ceil(width / preferedGap);
         // always have an even amount of lines
@@ -45,13 +45,13 @@
             var vx2 = vx1;
             var vy1 = 0;
             var vy2 = height;
-            
+
             ctx.beginPath();
             ctx.moveTo(vx1, vy1);
             ctx.lineTo(vx2, vy2);
             ctx.stroke();
         }
-        
+
         for (var l = 0; l <= hlines; l++) {
             var hx1 = (l < (hlines / 2)) ? halfheight : 0;
             var hx2 = width;
@@ -63,8 +63,7 @@
             ctx.lineTo(hx2, hy2);
             ctx.stroke();
         }
-        
-        var points = lines;
+
         var halflines = Math.floor(.5 * lines);
         var count = Math.floor(1.5 * lines); // width + half height
 
@@ -86,15 +85,15 @@
             var y1 = (tt > halflines) ? halfheight : halfheight + (tt * calculatedGap);
             var x2 = (tt < halflines) ? width - (tt * calculatedGap) : width ;
             var y2 = (tt < halflines) ? height : (height + halfheight) - (tt * calculatedGap);
-            
+
             ctx.beginPath();
             ctx.moveTo(x1, y1);
             ctx.lineTo(x2, y2);
             ctx.stroke();
         }
     }
-    
+
     window.onresize = number56;
-    
+
     number56();
     </script>
