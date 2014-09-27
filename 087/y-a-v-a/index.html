@@ -1,0 +1,109 @@
+<!doctype html>
+    <meta charset="utf-8">
+    <title>y_a_v_a ❤︎ Sol LeWitt • #087</title>
+    <style>
+    html,body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    canvas {
+        height: 90%;
+        margin: 2.5% auto;
+        display: block;
+    }
+    </style>
+    <canvas></canvas>
+    <script>
+    function number87() {
+        var c = document.getElementsByTagName('canvas')[0];
+        var ctx = c.getContext('2d');
+        var height = ctx.canvas.height = ctx.canvas.clientHeight;
+        var width = ctx.canvas.width = ctx.canvas.clientHeight;
+
+        // clear screen on resize
+        ctx.clearRect(0, 0, c.width, c.height);
+        
+        var green = '#0f0';
+        var yellow = '#ff0';
+        var red = '#f00';
+        var blue = '#00f';
+
+        // more pencil gray than black
+        ctx.strokeStyle = green;
+        ctx.lineWidth = 1.0;
+
+        var preferedGap = 16; // modify this value according to your wishes
+        var suggestedLines = Math.ceil(width / preferedGap);
+        // always have an even amount of lines
+        var lines = suggestedLines % 2 === 1 ? suggestedLines + 1: suggestedLines;
+        var vlines = lines;
+        var hlines = lines;
+        var calculatedGap = width / lines; // change gap to match full width
+        var halfwidth = Math.ceil(lines / 2) * calculatedGap;
+        var halfheight = Math.ceil(lines / 2) * calculatedGap;
+
+        for (var s = 0; s <= vlines; s++) {
+            var vx1 = s * calculatedGap;
+            var vx2 = vx1;
+            var vy1 = 0;
+            var vy2 = height;
+
+            ctx.beginPath();
+            ctx.moveTo(vx1, vy1);
+            ctx.lineTo(vx2, vy2);
+            ctx.stroke();
+        }
+
+        ctx.strokeStyle = yellow;
+        for (var l = 0; l <= hlines; l++) {
+            var hx1 = (l < (hlines / 2)) ? halfheight : 0;
+            var hx2 = width;
+            var hy1 = l * calculatedGap;
+            var hy2 = hy1;
+
+            ctx.beginPath();
+            ctx.moveTo(hx1, hy1);
+            ctx.lineTo(hx2, hy2);
+            ctx.stroke();
+        }
+
+        ctx.strokeStyle = red;
+        var halflines = Math.floor(.5 * lines);
+        var count = Math.floor(1.5 * lines); // width + half height
+
+        for (var w = 0; w <= count; w++) {
+            var wx1 = Math.min(w * calculatedGap, width);
+            var wy1 = (w > lines) ? (w * calculatedGap) - (height - halfheight): halfheight;
+            var wx2 = (w > halflines) ? (w - halflines) * calculatedGap : 0;
+            var wy2 = (w < halflines) ? w * calculatedGap + halfheight : height;
+
+            ctx.beginPath();
+            ctx.moveTo(wx1, wy1);
+            ctx.lineTo(wx2, wy2);
+            ctx.stroke();
+        }
+
+        ctx.strokeStyle = blue;
+        // we use lines because the area takes half width + half height
+        for (var tt = 0; tt < lines; tt++) {
+            var x1 = (tt > halflines) ? tt * calculatedGap : halfwidth;
+            var y1 = (tt >= halflines) ? halfheight : halfheight + (tt * calculatedGap);
+            var x2 = (tt < halflines) ? width - (tt * calculatedGap) : width ;
+            var y2 = (tt < halflines) ? height : (height + halfheight) - (tt * calculatedGap);
+            if (tt === (.5 * lines)) { // skip one line halfway
+                continue;
+            }
+
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+    }
+
+    window.onresize = number87;
+
+    number87();
+    </script>
