@@ -1,0 +1,111 @@
+<!doctype html>
+    <meta charset="utf-8">
+    <title>y_a_v_a ❤︎ Sol LeWitt • #017</title>
+    <style>
+    html,body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+    </style>
+    <canvas></canvas>
+    <script>
+    /**
+     * assumptions
+     * 4 blocks make 5 margins horizontally
+     * margin left is 2 in-between margins
+     * margin right is also 2 in-between margins
+     * each block is 5 margins wide
+     * 4 blocks * 5 margins = 20 margins
+     * 20 margins + 3 margins + 4 margins = 27 margins
+     * hence a margin is 1/27 of width
+     * and a block is 5/27 of width
+     *
+     * a block is 80% of the clientHeight
+     * the vertical margin takes .2 * height
+     * top margin equals bottom margin equals .1 * height
+     */
+    function number017() {
+        var c = document.getElementsByTagName('canvas')[0];
+        var ctx = c.getContext('2d');
+        var width = ctx.canvas.width = ctx.canvas.clientWidth;
+        var height = ctx.canvas.height = ctx.canvas.clientHeight;
+
+        // clear screen on resize
+        ctx.clearRect(0, 0, c.width, c.height);
+        var cols = 27;
+        var space = 8;
+
+        var vmargin = (1 / 10) * height;
+        var hmargin = (1 / cols) * width;
+        var hrmargin;
+        var hlmargin = hrmargin = (hmargin * 2);
+        var blockwidth = .25 * (width - hlmargin - hrmargin - (3 * hmargin)); // each block is 4 * margin wide.
+        var blockheight = (8 / 10) * height;
+
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 1.0;
+    
+        var vlineoffset = hlmargin; // vertical
+        var hlineoffset = vlineoffset + blockwidth + hmargin; // horizontal
+        var dupoffset = hlineoffset + blockwidth + hmargin; // diagonal up
+        var ddownoffset = dupoffset + blockwidth + hmargin; // diagonal down
+
+        var s = 0;
+        // o
+        var ll = 0;
+        // e
+        var w = 0;
+        // i
+        var tt = 0;
+
+        var vlines = blockwidth / space;
+        for (; s < vlines; s++) {
+            ctx.beginPath();
+            var sx = ((s / vlines) * blockwidth) + vlineoffset;
+            ctx.moveTo(sx, vmargin);
+            ctx.lineTo(sx, blockheight + vmargin);
+            ctx.stroke();
+        }
+
+        var hlines = blockheight / space;
+        for (; ll <= hlines; ll++) {
+            ctx.beginPath();
+            var lly = ((ll / hlines) * blockheight) + vmargin;
+            ctx.moveTo(hlineoffset, lly);
+            ctx.lineTo(hlineoffset + blockwidth, lly);
+            ctx.stroke();
+        }
+
+        var points = Math.floor(blockwidth / space);
+        var count = (blockheight / blockwidth) * points + points;
+        var gap = blockheight / (count - points);
+
+        for (; w < count; w++) {
+            ctx.beginPath();
+            var wy = (w > points) ? ((w * gap) - blockwidth): 0;
+            var wx = (w > (count - points)) ? (w - (count - points)) * gap : 0;
+            ctx.moveTo(Math.min(w * gap, blockwidth) + dupoffset, wy + vmargin);
+            ctx.lineTo(wx + dupoffset, Math.min(w * gap, blockheight) + vmargin);
+            ctx.stroke();
+        }
+
+        for (; tt <= count; tt++) {
+            ctx.beginPath();
+            var tty = (tt > points) ? (tt - points) * (blockheight / (count - points)) : 0;
+            var ttx = (tt > (count - points)) ? (count - tt) * gap : blockwidth;
+            ctx.moveTo(Math.max(blockwidth - (tt * gap), 0) + ddownoffset, tty + vmargin);
+            ctx.lineTo(ttx + ddownoffset, Math.min(tt * gap, blockheight) + vmargin);
+            ctx.stroke();
+        }
+    }
+
+    window.onresize = number017;
+
+    number017();
+    </script>
