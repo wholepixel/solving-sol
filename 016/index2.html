@@ -27,12 +27,14 @@ function band(ctx, x1, x2) {
   }
 }
 
-function draw(canvas) {
+function draw(canvas, X, Y) {
   var ctx = canvas.getContext("2d"),
       w = canvas.width,
       h = canvas.height,
-      X = w/2,
-      Y = h/2;
+      X = X || w/2,
+      Y = Y || h/2;
+
+  ctx.clearRect(0,0,w,h);
 
   // horizontal band
   ctx.save();
@@ -48,9 +50,11 @@ function draw(canvas) {
   ctx.restore();
 
   // vertical band
+  ctx.save();
   ctx.translate(X, 0);
   ctx.rotate(Math.PI/2);
   band(ctx, 0, h);
+  ctx.restore();
 }
 
 function resizeCanvas(canvas) {
@@ -60,10 +64,17 @@ function resizeCanvas(canvas) {
   draw(canvas);
 }
 
+function click(canvas, evt) {
+  console.log(evt);
+  draw(canvas, evt.clientX, evt.clientY);
+}
+
 $(function() {
   var canvas = $("#wall")[0];
 
   window.addEventListener('resize', function() { resizeCanvas(canvas); }, false);
+
+  $(window).click(function(e) { click(canvas, e); });
 
   resizeCanvas(canvas);
 });
