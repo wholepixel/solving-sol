@@ -1,0 +1,75 @@
+<!-- ## Wall Drawing #16 (1969)
+
+Bands of lines 12 inches (30 cm) wide, in three directions (vertical, horizontal, diagonal right) intersecting.
+
+http://www.massmoca.org/lewitt/grid.php
+-->
+<html><head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+function line(ctx, x1, y1, x2, y2) {
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+}
+
+var linew = 3,
+    n = 100;
+
+function hband(ctx, x1, x2, height) {
+  line(ctx, x1, height, x2, height);
+  for (var i=1; i < n; i++) {
+    var y = height+i*linew;
+    line(ctx, x1, y, x2, y);
+    var ny = height-i*linew;
+    line(ctx, x1, ny, x2, ny);
+  }
+}
+
+function vband(ctx, y1, y2, width) {
+  line(ctx, width, y1, width, y2);
+  for (var i=1; i < n; i++) {
+    var x = width+i*linew;
+    line(ctx, x, y1, x, y2);
+    var nx = width-i*linew;
+    line(ctx, nx, y1, nx, y2);
+  }
+}
+
+function dband(ctx, m, height, width) {
+  // This line starts at (0,h) and runs with slope m until y == 0
+  var x2 = -height/m;
+  line(ctx, 0, height, x2, 0);
+  for (var i=1; i < n; i++) {
+    x = i*linew;
+    // TODO: how to calculate the exact factor needed to get the diagonal
+    //       line at the same width as the straight?
+    //
+    // ALT: just transform(), rotate(), and use hband/vband?
+    x *= 1.5;
+    line(ctx, x, height, x2 + x, 0);
+    x = -i*linew;
+    x *= 1.5;
+    line(ctx, x, height, x2 + x, 0);
+    console.log(m, width, height, x2);
+  }
+}
+
+$(function() {
+  var canvas = $("#wall")[0],
+      ctx = canvas.getContext("2d"),
+      w = canvas.width,
+      h = canvas.height,
+      X = w/2,
+      Y = h/2,
+      m = -(h-X)/Y;
+  console.log(h,X,w,Y,m);
+  hband(ctx, 0, w, Y);
+  vband(ctx, 0, h, X);
+  dband(ctx, m, h, w);
+});
+</script>
+<html>
+  <canvas id="wall" width=1000 height=1000></canvas>
+</html>
