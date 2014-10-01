@@ -96,9 +96,8 @@ $(function() {
       diffX = evt.clientX - mousedown.clientX;
       diffY = evt.clientY - mousedown.clientY;
 
-      // every 100 pixels = 1 more line on each side
       temp_linen = clamp(linen - diffY/5, 4, 200);
-      temp_linew = clamp(linew - diffX/10, 2, 20);
+      temp_linew = clamp(linew - diffX/20, 2, 20);
       draw(canvas, X, Y, temp_linen, temp_linew);
     }
   }, false);
