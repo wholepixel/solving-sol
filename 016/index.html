@@ -14,10 +14,7 @@ function line(ctx, x1, y1, x2, y2) {
   ctx.stroke();
 }
 
-var linew = 3,
-    n = 100;
-
-function band(ctx, x1, x2) {
+function band(ctx, x1, x2, n, linew) {
   line(ctx, x1, 0, x2, 0);
   for (var i=1; i < n; i++) {
     var y = i*linew;
@@ -27,33 +24,35 @@ function band(ctx, x1, x2) {
   }
 }
 
-function draw(canvas, X, Y) {
+function draw(canvas, X, Y, linen, linew) {
   var ctx = canvas.getContext("2d"),
       w = canvas.width,
       h = canvas.height,
       X = X || w/2,
-      Y = Y || h/2;
+      Y = Y || h/2,
+      linen = linen || 100,
+      linew = linew || 3;
 
   ctx.clearRect(0,0,w,h);
 
   // horizontal band
   ctx.save();
   ctx.translate(0, Y);
-  band(ctx, 0, w);
+  band(ctx, 0, w, linen, linew);
   ctx.restore();
 
   // diagonal band
   ctx.save();
   ctx.translate(0, h);
   ctx.rotate(-Math.atan((h-Y)/X));
-  band(ctx, 0, h*2);
+  band(ctx, 0, h*2, linen, linew);
   ctx.restore();
 
   // vertical band
   ctx.save();
   ctx.translate(X, 0);
   ctx.rotate(Math.PI/2);
-  band(ctx, 0, h);
+  band(ctx, 0, h, linen, linew);
   ctx.restore();
 }
 
@@ -66,22 +65,82 @@ function resizeCanvas(canvas) {
 
 function click(canvas, evt) {
   console.log(evt);
-  draw(canvas, evt.clientX, evt.clientY);
+}
+
+function drag(canvas, evt) {
+}
+
+function clamp(n, min, max) {
+  if (n > min) return Math.min(n, max);
+  return Math.max(n, min);
 }
 
 $(function() {
-  var canvas = $("#wall")[0];
+  var canvas = $("#wall")[0],
+      linew = 3,
+      linen = 100,
+      temp_linen = linen,
+      X = canvas.height/2,
+      Y = canvas.height/2,
+      mousemove = false,
+      mousedown = undefined;
 
   window.addEventListener('resize', function() { resizeCanvas(canvas); }, false);
-
-  $(window).click(function(e) { click(canvas, e); });
-
   resizeCanvas(canvas);
+
+  X = canvas.width/2;
+  Y = canvas.height/2;
+
+  window.addEventListener("mousedown", function(evt){
+    mousemove = false;
+    mousedown = evt;
+  }, false);
+  window.addEventListener("mousemove", function(evt){
+    if (mousedown !== undefined) {
+      mousemove = true;
+      diffX = evt.clientX - mousedown.clientX;
+      diffY = evt.clientY - mousedown.clientY;
+
+      // every 100 pixels = 1 more line on each side
+      temp_linen = clamp(linen - diffY/5, 4, 200);
+      draw(canvas, X, Y, temp_linen, linew);
+      console.log(diffX, diffY);
+    }
+  }, false);
+  window.addEventListener("mouseup", function(evt){
+      if(!mousemove) {
+        draw(canvas, evt.clientX, evt.clientY, linen, linew);
+        X = evt.clientX;
+        Y = evt.clientY;
+      }
+      else {
+        linen = temp_linen;
+      }
+      mousedown = undefined;
+  }, false);
+
+  $("#A").hide();
+  $("#Q").bind("mouseover", function() {
+    $("#A").show();
+    $("#Q").hide();
+  });
+  $("#A").bind("mouseout", function() {
+    $("#A").hide();
+    $("#Q").show();
+  });
 });
 </script>
 <style>
 body { margin: 0; }
+#Q { position: absolute; bottom: 5px; right: 5px; opacity: 0.5;}
+#A { position: absolute; bottom: 5px; right: 0px; }
 </style>
 <html>
   <canvas id="wall" width=1000 height=1000></canvas>
+  <span id="Q">?</span>
+  <pre id="A">Sol Lewitt Wall Drawing #16 (1969)
+Bands of lines 12 inches (30 cm) wide, in three directions
+(vertical, horizontal, diagonal right) intersecting.
+  
+Try clicking and click-and-drag.</pre>
 </html>
