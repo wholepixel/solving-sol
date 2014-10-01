@@ -63,13 +63,6 @@ function resizeCanvas(canvas) {
   draw(canvas);
 }
 
-function click(canvas, evt) {
-  console.log(evt);
-}
-
-function drag(canvas, evt) {
-}
-
 function clamp(n, min, max) {
   if (n > min) return Math.min(n, max);
   return Math.max(n, min);
@@ -79,6 +72,7 @@ $(function() {
   var canvas = $("#wall")[0],
       linew = 3,
       linen = 100,
+      temp_linew = linew,
       temp_linen = linen,
       X = canvas.height/2,
       Y = canvas.height/2,
@@ -103,8 +97,8 @@ $(function() {
 
       // every 100 pixels = 1 more line on each side
       temp_linen = clamp(linen - diffY/5, 4, 200);
-      draw(canvas, X, Y, temp_linen, linew);
-      console.log(diffX, diffY);
+      temp_linew = clamp(linew - diffX/10, 2, 20);
+      draw(canvas, X, Y, temp_linen, temp_linew);
     }
   }, false);
   window.addEventListener("mouseup", function(evt){
@@ -115,6 +109,7 @@ $(function() {
       }
       else {
         linen = temp_linen;
+        linew = temp_linew;
       }
       mousedown = undefined;
   }, false);
@@ -133,14 +128,16 @@ $(function() {
 <style>
 body { margin: 0; }
 #Q { position: absolute; bottom: 5px; right: 5px; opacity: 0.5;}
-#A { position: absolute; bottom: 5px; right: 0px; }
+#A { position: absolute; bottom: 5px; right: 0px; background-color: white; }
 </style>
 <html>
   <canvas id="wall" width=1000 height=1000></canvas>
   <span id="Q">?</span>
   <pre id="A">Sol Lewitt Wall Drawing #16 (1969)
+
 Bands of lines 12 inches (30 cm) wide, in three directions
 (vertical, horizontal, diagonal right) intersecting.
   
-Try clicking and click-and-drag.</pre>
+Try clicking and click-and-drag. The X and Y axes have
+different meanings when dragging.</pre>
 </html>
