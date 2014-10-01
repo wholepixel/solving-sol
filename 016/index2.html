@@ -1,0 +1,75 @@
+<!-- ## Wall Drawing #16 (1969)
+
+Bands of lines 12 inches (30 cm) wide, in three directions (vertical, horizontal, diagonal right) intersecting.
+
+http://www.massmoca.org/lewitt/grid.php
+-->
+<html><head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+function line(ctx, x1, y1, x2, y2) {
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+}
+
+var linew = 3,
+    n = 100;
+
+function hband(ctx, x1, x2, height) {
+  line(ctx, x1, height, x2, height);
+  for (var i=1; i < n; i++) {
+    var y = height+i*linew;
+    line(ctx, x1, y, x2, y);
+    var ny = height-i*linew;
+    line(ctx, x1, ny, x2, ny);
+  }
+}
+
+function compass(ctx) {
+  ctx.fillStyle = "#00A308";
+  ctx.beginPath();
+  ctx.arc(0, 0, 30, 0, Math.PI*2, true);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle="#000";
+  line(ctx, 0, 0, 100, 100);
+  ctx.strokeStyle="#FF0000";
+  line(ctx, 0, 0, -100, -100);
+  ctx.strokeStyle="#00FF00";
+  line(ctx, 0, 0, 100, -100);
+  ctx.strokeStyle="#0000FF";
+  line(ctx, 0, 0, -100, 100);
+  ctx.strokeStyle="#000";
+}
+
+$(function() {
+  var canvas = $("#wall")[0],
+      ctx = canvas.getContext("2d"),
+      w = canvas.width,
+      h = canvas.height,
+      X = w/2,
+      Y = h/2,
+      m = -(h-X)/Y;
+  //ctx.translate(20, 20);
+  console.log(h,X,w,Y,m);
+  hband(ctx, 0, w, Y);
+  ctx.save();
+  ctx.translate(0, h);
+  // TODO: figure out angle if X != Y
+  ctx.rotate(-Math.atan(Y/(h-X)));
+  hband(ctx, 0, h*Math.sqrt(2), 0);
+  ctx.restore();
+  compass(ctx);
+  ctx.translate(Y, 0);
+  ctx.rotate(Math.PI/2);
+  compass(ctx);
+  hband(ctx, 0, h, 0);
+  //ctx.rotate(Math.PI/4);
+  //hband(ctx, m, h, w);
+});
+</script>
+<html>
+  <canvas id="wall" width=1000 height=1000></canvas>
+</html>
