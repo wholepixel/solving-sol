@@ -17,59 +17,60 @@ function line(ctx, x1, y1, x2, y2) {
 var linew = 3,
     n = 100;
 
-function hband(ctx, x1, x2, height) {
-  line(ctx, x1, height, x2, height);
+function band(ctx, x1, x2) {
+  line(ctx, x1, 0, x2, 0);
   for (var i=1; i < n; i++) {
-    var y = height+i*linew;
+    var y = i*linew;
     line(ctx, x1, y, x2, y);
-    var ny = height-i*linew;
+    var ny = -i*linew;
     line(ctx, x1, ny, x2, ny);
   }
 }
 
-function compass(ctx) {
-  ctx.fillStyle = "#00A308";
-  ctx.beginPath();
-  ctx.arc(0, 0, 30, 0, Math.PI*2, true);
-  ctx.closePath();
-  ctx.fill();
-  ctx.strokeStyle="#000";
-  line(ctx, 0, 0, 100, 100);
-  ctx.strokeStyle="#FF0000";
-  line(ctx, 0, 0, -100, -100);
-  ctx.strokeStyle="#00FF00";
-  line(ctx, 0, 0, 100, -100);
-  ctx.strokeStyle="#0000FF";
-  line(ctx, 0, 0, -100, 100);
-  ctx.strokeStyle="#000";
-}
-
-$(function() {
-  var canvas = $("#wall")[0],
-      ctx = canvas.getContext("2d"),
+function draw(canvas) {
+  var ctx = canvas.getContext("2d"),
       w = canvas.width,
       h = canvas.height,
       X = w/2,
-      Y = h/2,
-      m = -(h-X)/Y;
-  //ctx.translate(20, 20);
-  console.log(h,X,w,Y,m);
-  hband(ctx, 0, w, Y);
+      Y = h/2;
+
+  // horizontal band
+  ctx.save();
+  ctx.translate(0, Y);
+  band(ctx, 0, w);
+  ctx.restore();
+
+  // diagonal band
   ctx.save();
   ctx.translate(0, h);
-  // TODO: figure out angle if X != Y
-  ctx.rotate(-Math.atan(Y/(h-X)));
-  hband(ctx, 0, h*Math.sqrt(2), 0);
+  ctx.rotate(-Math.atan((h-Y)/X));
+  band(ctx, 0, h*2);
   ctx.restore();
-  compass(ctx);
-  ctx.translate(Y, 0);
+
+  // vertical band
+  ctx.translate(X, 0);
   ctx.rotate(Math.PI/2);
-  compass(ctx);
-  hband(ctx, 0, h, 0);
-  //ctx.rotate(Math.PI/4);
-  //hband(ctx, m, h, w);
+  band(ctx, 0, h);
+}
+
+function resizeCanvas(canvas) {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  draw(canvas);
+}
+
+$(function() {
+  var canvas = $("#wall")[0];
+
+  window.addEventListener('resize', function() { resizeCanvas(canvas); }, false);
+
+  resizeCanvas(canvas);
 });
 </script>
+<style>
+body { margin: 0; }
+</style>
 <html>
   <canvas id="wall" width=1000 height=1000></canvas>
 </html>
