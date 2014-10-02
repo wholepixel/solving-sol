@@ -12,12 +12,12 @@ function line(ctx, x1, y1, x2, y2) {
   ctx.stroke();
 }
 
-function grid(ctx, height, width, linew) {
+function grid(ctx, height, width, gridw) {
   // Adding .5 gets us sharper lines
-  for (var x=linew; x < width; x += linew) {
+  for (var x=gridw; x < width; x += gridw) {
     line(ctx, x+.5, 0, x+.5, height);
   }
-  for (var y=linew; y < height; y += linew) {
+  for (var y=gridw; y < height; y += gridw) {
     line(ctx, 0, y+.5, width, y+.5);
   }
 }
@@ -30,23 +30,27 @@ function arc(ctx, x, y, r) {
   ctx.stroke();
 }
 
-function radiate(ctx, x, y, h, w, linew) {
+function radiate(ctx, x, y, h, w, arcw) {
   var diag = Math.sqrt(Math.pow(h, 2) + Math.pow(w, 2));
-  for (var r=linew; r < diag; r += linew) {
+  for (var r=arcw; r < diag; r += arcw) {
     arc(ctx, x, y, r);
   }
 }
 
-function draw(canvas, linew) {
+function draw(canvas, gridw, arcw) {
   var ctx = canvas.getContext("2d"),
       h = canvas.height,
       w = canvas.width;
 
-  grid(ctx, h, w, linew);
-  radiate(ctx, 0, 0, h, w, linew);
-  radiate(ctx, w, 0, h, w, linew);
-  radiate(ctx, 0, h, h, w, linew);
-  radiate(ctx, w, h, h, w, linew);
+  console.log("draw gridw", gridw);
+
+  ctx.clearRect(0,0,w,h);
+
+  grid(ctx, h, w, gridw);
+  radiate(ctx, 0, 0, h, w, arcw);
+  radiate(ctx, w, 0, h, w, arcw);
+  radiate(ctx, 0, h, h, w, arcw);
+  radiate(ctx, w, h, h, w, arcw);
 }
 
 function clamp(n, min, max) {
@@ -56,17 +60,43 @@ function clamp(n, min, max) {
 
 document.addEventListener("DOMContentLoaded", function() {
   var canvas = document.getElementById("wall"),
-      linew = 10;
+      gridw = 20,
+      arcw = 20,
+      mousemove = false,
+      mousedown = undefined;
 
   function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    draw(canvas, linew);
+    draw(canvas, gridw, arcw);
   }
 
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas(canvas);
+
+  window.addEventListener("mousedown", function(evt) {
+    mousemove = false;
+    mousedown = evt;
+  }, false);
+  window.addEventListener("mousemove", function(evt) {
+    if (mousedown !== undefined) {
+      mousemove = true;
+      diffX = evt.clientX - mousedown.clientX;
+      diffY = evt.clientY - mousedown.clientY;
+
+      temp_arcw = clamp(arcw - diffY/10, 2, 50);
+      temp_gridw = clamp(gridw - diffX/10, 2, 50);
+      draw(canvas, temp_gridw, temp_arcw);
+    }
+  }, false);
+  window.addEventListener("mouseup", function(evt) {
+      if(mousemove) {
+        arcw = temp_arcw;
+        gridw = temp_gridw;
+      }
+      mousedown = undefined;
+  }, false);
 
   var A = document.getElementById("A");
   var Q = document.getElementById("Q");
