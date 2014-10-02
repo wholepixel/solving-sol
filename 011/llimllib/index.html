@@ -1,0 +1,151 @@
+<!--
+## Wall Drawing #11 (1969)
+
+A wall divided horizontally and vertically into four equal parts. Within each part, three of the four kinds of lines are superimposed.
+-->
+<html><head>
+<title>Sol LeWitt Wall Drawing #11</title>
+<script>
+function line(ctx, x1, y1, x2, y2) {
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+}
+
+function grid(ctx, height, width, gridw) {
+  // start with the X midline
+  var midx = (width/2)+.5;
+  line(ctx, midx, 0, midx, height);
+  for (var i=0; midx + gridw*i < width; i++) {
+    var pos = midx+gridw*i;
+    var neg = midx-gridw*i;
+    line(ctx, pos, 0, pos, height);
+    line(ctx, neg, 0, neg, height);
+  }
+
+  var midy = (height/2)+.5;
+  line(ctx, 0, midy, width, midy);
+  for (var i=0; midy + gridw*i < height; i++) {
+    var pos = midy+gridw*i;
+    var neg = midy-gridw*i;
+    line(ctx, 0, pos, width, pos);
+    line(ctx, 0, neg, width, neg);
+  }
+}
+
+function diag(ctx, linew, diaglength) {
+  for (var i=0; i*linew < diaglength; i++) {
+    console.log(i*linew);
+    line(ctx, i*linew, 0, 0, i*linew);
+  }
+}
+
+function draw(canvas, linew, gridw) {
+  var ctx = canvas.getContext("2d"),
+      h = canvas.height,
+      w = canvas.width;
+
+  ctx.clearRect(0,0,w,h);
+
+  // Sol LeWitt's drawing of #11 shows that he means a grid throughout the whole piece
+  grid(ctx, h, w, gridw);
+
+  ctx.save();
+
+  // Move to the center
+  ctx.translate(w/2, h/2);
+
+  diag(ctx, linew, w);
+  ctx.rotate(Math.PI/2);
+  diag(ctx, linew, w);
+  ctx.rotate(Math.PI/2);
+  diag(ctx, linew, w);
+  ctx.rotate(Math.PI/2);
+  diag(ctx, linew, w);
+
+  ctx.restore();
+}
+
+function clamp(n, min, max) {
+  if (n > min) return Math.min(n, max);
+  return Math.max(n, min);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  var canvas = document.getElementById("wall"),
+      linew = 10,
+      temp_linew = 10,
+      gridw = 10,
+      temp_gridw = 10,
+      mousemove = false,
+      mousedown = undefined;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    draw(canvas, linew, gridw);
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas(canvas);
+
+  window.addEventListener("mousedown", function(evt) {
+    mousemove = false;
+    mousedown = evt;
+  }, false);
+  window.addEventListener("mousemove", function(evt) {
+    if (mousedown !== undefined) {
+      mousemove = true;
+      diffX = evt.clientX - mousedown.clientX;
+      diffY = evt.clientY - mousedown.clientY;
+
+      temp_linew = clamp(linew - diffY/10, 2, 50);
+      temp_gridw = clamp(linew - diffX/10, 2, 50);
+      draw(canvas, temp_linew, temp_gridw);
+    }
+  }, false);
+  window.addEventListener("mouseup", function(evt) {
+    if(mousemove) {
+      linew = temp_linew;
+      gridw = temp_gridw;
+    }
+    mousedown = undefined;
+  }, false);
+
+  window.addEventListener("keypress", function(evt) {
+    // r for reset
+    if (evt.keyCode == 114) {
+      linew = 10;
+      gridw = 10;
+      draw(canvas, linew, gridw);
+    }
+  });
+
+  var A = document.getElementById("A");
+  var Q = document.getElementById("Q");
+  A.style["visibility"] = "hidden";
+  document.getElementById("Q").addEventListener("mouseover", function() {
+    A.style["visibility"] = "";
+    Q.style["visibility"] = "hidden";
+  });
+  document.getElementById("A").addEventListener("mouseout", function() {
+    A.style["visibility"] = "hidden";
+    Q.style["visibility"] = "";
+  });
+});
+</script>
+<style>
+body { margin: 0; }
+#Q { position: absolute; bottom: 5px; right: 5px; color: blue; background-color: white; font-size: 24px; }
+#A { position: absolute; bottom: 5px; right: 5px; background-color: white; }
+</style>
+<html>
+  <canvas id="wall"></canvas>
+  <span id="Q">?</span>
+  <pre id="A">Sol Lewitt Wall Drawing #11 (1969)
+
+A wall divided horizontally and vertically into four equal parts. Within each part, three of the four kinds of lines are superimposed.
+</pre>
+</html>
