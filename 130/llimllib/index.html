@@ -1,0 +1,94 @@
+<!-- ## Wall Drawing #130 (1972)
+
+Grid and arcs from four corners.
+-->
+<html><head>
+<title>Sol LeWitt Wall Drawing #16</title>
+<script>
+function line(ctx, x1, y1, x2, y2) {
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+}
+
+function grid(ctx, height, width, linew) {
+  // Adding .5 gets us sharper lines
+  for (var x=linew; x < width; x += linew) {
+    line(ctx, x+.5, 0, x+.5, height);
+  }
+  for (var y=linew; y < height; y += linew) {
+    line(ctx, 0, y+.5, width, y+.5);
+  }
+}
+
+function arc(ctx, x, y, r) {
+  ctx.beginPath();
+  // Just draw the full circle, it'll be 3/4 offscreen
+  ctx.arc(x, y, r, 0, Math.PI*2);
+  ctx.closePath();
+  ctx.stroke();
+}
+
+function radiate(ctx, x, y, h, w, linew) {
+  var diag = Math.sqrt(Math.pow(h, 2) + Math.pow(w, 2));
+  for (var r=linew; r < diag; r += linew) {
+    arc(ctx, x, y, r);
+  }
+}
+
+function draw(canvas, linew) {
+  var ctx = canvas.getContext("2d"),
+      h = canvas.height,
+      w = canvas.width;
+
+  grid(ctx, h, w, linew);
+  radiate(ctx, 0, 0, h, w, linew);
+  radiate(ctx, w, 0, h, w, linew);
+  radiate(ctx, 0, h, h, w, linew);
+  radiate(ctx, h, w, h, w, linew);
+}
+
+function clamp(n, min, max) {
+  if (n > min) return Math.min(n, max);
+  return Math.max(n, min);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  var canvas = document.getElementById("wall"),
+      linew = 10;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    draw(canvas, linew);
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas(canvas);
+
+  //$("#A").hide();
+  //$("#Q").bind("mouseover", function() {
+  //  $("#A").show();
+  //  $("#Q").hide();
+  //});
+  //$("#A").bind("mouseout", function() {
+  //  $("#A").hide();
+  //  $("#Q").show();
+  //});
+});
+</script>
+<style>
+body { margin: 0; }
+#Q { position: absolute; bottom: 5px; right: 5px; opacity: 0.5;}
+#A { position: absolute; bottom: 5px; right: 5px; background-color: white; }
+</style>
+<html>
+  <canvas id="wall"></canvas>
+  <span id="Q">?</span>
+  <pre id="A">Sol Lewitt Wall Drawing #130 (1972)
+
+Grid and arcs from four corners.
+</pre>
+</html>
