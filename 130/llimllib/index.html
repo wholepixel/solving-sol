@@ -46,7 +46,7 @@ function draw(canvas, linew) {
   radiate(ctx, 0, 0, h, w, linew);
   radiate(ctx, w, 0, h, w, linew);
   radiate(ctx, 0, h, h, w, linew);
-  radiate(ctx, h, w, h, w, linew);
+  radiate(ctx, w, h, h, w, linew);
 }
 
 function clamp(n, min, max) {
@@ -68,20 +68,22 @@ document.addEventListener("DOMContentLoaded", function() {
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas(canvas);
 
-  //$("#A").hide();
-  //$("#Q").bind("mouseover", function() {
-  //  $("#A").show();
-  //  $("#Q").hide();
-  //});
-  //$("#A").bind("mouseout", function() {
-  //  $("#A").hide();
-  //  $("#Q").show();
-  //});
+  var A = document.getElementById("A");
+  var Q = document.getElementById("Q");
+  A.style["visibility"] = "hidden";
+  document.getElementById("Q").addEventListener("mouseover", function() {
+    A.style["visibility"] = "";
+    Q.style["visibility"] = "hidden";
+  });
+  document.getElementById("A").addEventListener("mouseout", function() {
+    A.style["visibility"] = "hidden";
+    Q.style["visibility"] = "";
+  });
 });
 </script>
 <style>
 body { margin: 0; }
-#Q { position: absolute; bottom: 5px; right: 5px; opacity: 0.5;}
+#Q { position: absolute; bottom: 5px; right: 5px; color: blue; background-color: white;}
 #A { position: absolute; bottom: 5px; right: 5px; background-color: white; }
 </style>
 <html>
