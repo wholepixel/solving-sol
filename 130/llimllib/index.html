@@ -42,8 +42,6 @@ function draw(canvas, gridw, arcw) {
       h = canvas.height,
       w = canvas.width;
 
-  console.log("draw gridw", gridw);
-
   ctx.clearRect(0,0,w,h);
 
   grid(ctx, h, w, gridw);
@@ -91,12 +89,21 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }, false);
   window.addEventListener("mouseup", function(evt) {
-      if(mousemove) {
-        arcw = temp_arcw;
-        gridw = temp_gridw;
-      }
-      mousedown = undefined;
+    if(mousemove) {
+      arcw = temp_arcw;
+      gridw = temp_gridw;
+    }
+    mousedown = undefined;
   }, false);
+
+  window.addEventListener("keypress", function(evt) {
+    // r for reset
+    if (evt.keyCode == 114) {
+      gridw = 20;
+      arcw = 20;
+      draw(canvas, gridw, arcw);
+    }
+  });
 
   var A = document.getElementById("A");
   var Q = document.getElementById("Q");
@@ -113,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 <style>
 body { margin: 0; }
-#Q { position: absolute; bottom: 5px; right: 5px; color: blue; background-color: white;}
+#Q { position: absolute; bottom: 5px; right: 5px; color: blue; background-color: white; font-size: 24px; }
 #A { position: absolute; bottom: 5px; right: 5px; background-color: white; }
 </style>
 <html>
@@ -122,5 +129,9 @@ body { margin: 0; }
   <pre id="A">Sol Lewitt Wall Drawing #130 (1972)
 
 Grid and arcs from four corners.
+
+Clicking and dragging in the X changes sets the grid width
+Clicking and dragging in the Y changes sets the arc width
+Pres "r" to reset
 </pre>
 </html>
