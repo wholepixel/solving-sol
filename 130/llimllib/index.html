@@ -1,0 +1,137 @@
+<!-- ## Wall Drawing #130 (1972)
+
+Grid and arcs from four corners.
+-->
+<html><head>
+<title>Sol LeWitt Wall Drawing #130</title>
+<script>
+function line(ctx, x1, y1, x2, y2) {
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+}
+
+function grid(ctx, height, width, gridw) {
+  // Adding .5 gets us sharper lines
+  for (var x=gridw; x < width; x += gridw) {
+    line(ctx, x+.5, 0, x+.5, height);
+  }
+  for (var y=gridw; y < height; y += gridw) {
+    line(ctx, 0, y+.5, width, y+.5);
+  }
+}
+
+function arc(ctx, x, y, r) {
+  ctx.beginPath();
+  // Just draw the full circle, it'll be 3/4 offscreen
+  ctx.arc(x, y, r, 0, Math.PI*2);
+  ctx.closePath();
+  ctx.stroke();
+}
+
+function radiate(ctx, x, y, h, w, arcw) {
+  var diag = Math.sqrt(Math.pow(h, 2) + Math.pow(w, 2));
+  for (var r=arcw; r < diag; r += arcw) {
+    arc(ctx, x, y, r);
+  }
+}
+
+function draw(canvas, gridw, arcw) {
+  var ctx = canvas.getContext("2d"),
+      h = canvas.height,
+      w = canvas.width;
+
+  ctx.clearRect(0,0,w,h);
+
+  grid(ctx, h, w, gridw);
+  radiate(ctx, 0, 0, h, w, arcw);
+  radiate(ctx, w, 0, h, w, arcw);
+  radiate(ctx, 0, h, h, w, arcw);
+  radiate(ctx, w, h, h, w, arcw);
+}
+
+function clamp(n, min, max) {
+  if (n > min) return Math.min(n, max);
+  return Math.max(n, min);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  var canvas = document.getElementById("wall"),
+      gridw = 20,
+      arcw = 20,
+      mousemove = false,
+      mousedown = undefined;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    draw(canvas, gridw, arcw);
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas(canvas);
+
+  window.addEventListener("mousedown", function(evt) {
+    mousemove = false;
+    mousedown = evt;
+  }, false);
+  window.addEventListener("mousemove", function(evt) {
+    if (mousedown !== undefined) {
+      mousemove = true;
+      diffX = evt.clientX - mousedown.clientX;
+      diffY = evt.clientY - mousedown.clientY;
+
+      temp_arcw = clamp(arcw - diffY/10, 2, 50);
+      temp_gridw = clamp(gridw - diffX/10, 2, 50);
+      draw(canvas, temp_gridw, temp_arcw);
+    }
+  }, false);
+  window.addEventListener("mouseup", function(evt) {
+    if(mousemove) {
+      arcw = temp_arcw;
+      gridw = temp_gridw;
+    }
+    mousedown = undefined;
+  }, false);
+
+  window.addEventListener("keypress", function(evt) {
+    // r for reset
+    if (evt.keyCode == 114) {
+      gridw = 20;
+      arcw = 20;
+      draw(canvas, gridw, arcw);
+    }
+  });
+
+  var A = document.getElementById("A");
+  var Q = document.getElementById("Q");
+  A.style["visibility"] = "hidden";
+  document.getElementById("Q").addEventListener("mouseover", function() {
+    A.style["visibility"] = "";
+    Q.style["visibility"] = "hidden";
+  });
+  document.getElementById("A").addEventListener("mouseout", function() {
+    A.style["visibility"] = "hidden";
+    Q.style["visibility"] = "";
+  });
+});
+</script>
+<style>
+body { margin: 0; }
+#Q { position: absolute; bottom: 5px; right: 5px; color: blue; background-color: white; font-size: 24px; }
+#A { position: absolute; bottom: 5px; right: 5px; background-color: white; }
+</style>
+<html>
+  <canvas id="wall"></canvas>
+  <span id="Q">?</span>
+  <pre id="A">Sol Lewitt Wall Drawing #130 (1972)
+
+Grid and arcs from four corners.
+
+Clicking and dragging in the X changes sets the grid width
+Clicking and dragging in the Y changes sets the arc width
+Pres "r" to reset
+</pre>
+</html>
