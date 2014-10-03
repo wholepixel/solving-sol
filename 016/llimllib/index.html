@@ -1,0 +1,143 @@
+<!-- ## Wall Drawing #16 (1969)
+
+Bands of lines 12 inches (30 cm) wide, in three directions (vertical, horizontal, diagonal right) intersecting.
+
+http://www.massmoca.org/lewitt/grid.php
+-->
+<html><head>
+<title>Sol LeWitt Wall Drawing #16</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+function line(ctx, x1, y1, x2, y2) {
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+}
+
+function band(ctx, x1, x2, n, linew) {
+  line(ctx, x1, 0, x2, 0);
+  for (var i=1; i < n; i++) {
+    var y = i*linew;
+    line(ctx, x1, y, x2, y);
+    var ny = -i*linew;
+    line(ctx, x1, ny, x2, ny);
+  }
+}
+
+function draw(canvas, X, Y, linen, linew) {
+  var ctx = canvas.getContext("2d"),
+      w = canvas.width,
+      h = canvas.height,
+      X = X || w/2,
+      Y = Y || h/2,
+      linen = linen || 100,
+      linew = linew || 3;
+
+  ctx.clearRect(0,0,w,h);
+
+  // horizontal band
+  ctx.save();
+  ctx.translate(0, Y);
+  band(ctx, 0, w, linen, linew);
+  ctx.restore();
+
+  // diagonal band
+  ctx.save();
+  ctx.translate(0, h);
+  ctx.rotate(-Math.atan((h-Y)/X));
+  band(ctx, 0, h*2, linen, linew);
+  ctx.restore();
+
+  // vertical band
+  ctx.save();
+  ctx.translate(X, 0);
+  ctx.rotate(Math.PI/2);
+  band(ctx, 0, h, linen, linew);
+  ctx.restore();
+}
+
+function resizeCanvas(canvas) {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  draw(canvas);
+}
+
+function clamp(n, min, max) {
+  if (n > min) return Math.min(n, max);
+  return Math.max(n, min);
+}
+
+$(function() {
+  var canvas = $("#wall")[0],
+      linew = 3,
+      linen = 100,
+      temp_linew = linew,
+      temp_linen = linen,
+      X = canvas.height/2,
+      Y = canvas.height/2,
+      mousemove = false,
+      mousedown = undefined;
+
+  window.addEventListener('resize', function() { resizeCanvas(canvas); }, false);
+  resizeCanvas(canvas);
+
+  X = canvas.width/2;
+  Y = canvas.height/2;
+
+  window.addEventListener("mousedown", function(evt){
+    mousemove = false;
+    mousedown = evt;
+  }, false);
+  window.addEventListener("mousemove", function(evt){
+    if (mousedown !== undefined) {
+      mousemove = true;
+      diffX = evt.clientX - mousedown.clientX;
+      diffY = evt.clientY - mousedown.clientY;
+
+      temp_linen = clamp(linen - diffY/5, 4, 200);
+      temp_linew = clamp(linew - diffX/20, 2, 20);
+      draw(canvas, X, Y, temp_linen, temp_linew);
+    }
+  }, false);
+  window.addEventListener("mouseup", function(evt){
+      if(!mousemove) {
+        draw(canvas, evt.clientX, evt.clientY, linen, linew);
+        X = evt.clientX;
+        Y = evt.clientY;
+      }
+      else {
+        linen = temp_linen;
+        linew = temp_linew;
+      }
+      mousedown = undefined;
+  }, false);
+
+  $("#A").hide();
+  $("#Q").bind("mouseover", function() {
+    $("#A").show();
+    $("#Q").hide();
+  });
+  $("#A").bind("mouseout", function() {
+    $("#A").hide();
+    $("#Q").show();
+  });
+});
+</script>
+<style>
+body { margin: 0; }
+#Q { position: absolute; bottom: 5px; right: 5px; opacity: 0.5;}
+#A { position: absolute; bottom: 5px; right: 5px; background-color: white; }
+</style>
+<html>
+  <canvas id="wall" width=1000 height=1000></canvas>
+  <span id="Q">?</span>
+  <pre id="A">Sol Lewitt Wall Drawing #16 (1969)
+
+Bands of lines 12 inches (30 cm) wide, in three directions
+(vertical, horizontal, diagonal right) intersecting.
+
+Try clicking and click-and-drag. The X and Y axes have
+different meanings when dragging.</pre>
+</html>
