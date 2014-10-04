@@ -13,7 +13,6 @@ function line(ctx, x1, y1, x2, y2) {
   ctx.stroke();
 }
 
-
 var ptable = {
   "4": [.01, .099, 0],
   "3": [.1, .088, .02],
@@ -25,9 +24,8 @@ var ptable = {
 function lsr(ctx, originalx, curx) {
   // The probability of curx turning is 1/2**d, where d is the distance
   // from originalx
-  var d = Math.round(Math.abs(originalx - curx));
-  if (d > 4) { console.log("wtf", originalx, curx); }
-  var p_straight = ptable[d.toString()][0],
+  var d = Math.round(Math.abs(originalx - curx)),
+      p_straight = ptable[d.toString()][0],
       p_turnhome = ptable[d.toString()][1],
       p_turnaway = ptable[d.toString()][2];
 
@@ -45,30 +43,47 @@ function lsr(ctx, originalx, curx) {
   }
 }
 
+function find(pixels, x, y) {
+  return pixels.hasOwnProperty(x.toString()+","+(y.toString()));
+}
+
+function save(pixels, x, y) {
+  pixels[x.toString()+","+((y-1).toString())] = undefined;
+}
+
 // Uneven Vertical Line
-function uvl(ctx, x, h) {
+function uvl(ctx, x, h, pixels) {
   ctx.beginPath();
   var y = 0;
   var originalx = x;
   ctx.moveTo(x, y);
   for (; y<h; y++) {
     x = lsr(ctx, originalx, x);
+    // If two lines would touch... don't
+    if (find(pixels, x, y-1) || find(pixels, x-1, y+1) ||
+        find(pixels, x-1, y) || find(pixels, x-1, y-1)) {
+      x += 1
+    }
+    save(pixels, x, y);
     ctx.lineTo(x, y);
   }
   ctx.stroke()
 }
 
-function draw(canvas, linespace, linew) {
+function draw(canvas, linespace, linea) {
   var ctx = canvas.getContext("2d"),
+      linespace = Math.round(linespace),
       h = canvas.height,
       w = canvas.width;
 
-  console.log("drawing", linespace, linew)
-
   ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle = "rgba(0,0,0,"+linea+")";
 
+  //console.log("drawing", linespace, linea)
+
+  pixels = {}
   for (var x=linespace; x < w; x+=linespace) {
-    uvl(ctx, x, h);
+    uvl(ctx, x, h, pixels);
   }
 }
 
@@ -79,8 +94,8 @@ function clamp(n, min, max) {
 
 document.addEventListener("DOMContentLoaded", function() {
   var canvas = document.getElementById("wall"),
-      linespace = 8,
-      linew = 1,
+      linespace = 5,
+      linea = .4,
       mousemove = false,
       mousedown = undefined;
 
@@ -88,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    draw(canvas, linespace, linew);
+    draw(canvas, linespace, linea);
   }
 
   window.addEventListener('resize', resizeCanvas);
@@ -104,15 +119,15 @@ document.addEventListener("DOMContentLoaded", function() {
       diffX = evt.clientX - mousedown.clientX;
       diffY = evt.clientY - mousedown.clientY;
 
-      temp_linespace = clamp(linespace - diffY/10, 2, 30);
-      temp_linew = clamp(linew - diffX/10, 1, 10);
-      draw(canvas, temp_linespace, temp_linew);
+      temp_linespace = clamp(linespace - diffY/10, 4, 30);
+      temp_linea = clamp(linea - diffX/1000, .3, 1);
+      draw(canvas, temp_linespace, temp_linea);
     }
   }, false);
   window.addEventListener("mouseup", function(evt) {
     if(mousemove) {
       linespace = temp_linespace;
-      linew = temp_linew;
+      linea = temp_linea;
     }
     mousedown = undefined;
   }, false);
@@ -120,9 +135,9 @@ document.addEventListener("DOMContentLoaded", function() {
   window.addEventListener("keypress", function(evt) {
     // r for reset
     if (evt.keyCode == 114) {
-      linew = 20;
-      linespace = 20;
-      draw(canvas, linespace, linew);
+      linea = .3;
+      linespace = 5;
+      draw(canvas, linespace, linea);
     }
   });
 
@@ -147,11 +162,11 @@ body { margin: 0; }
 <html>
   <canvas id="wall"></canvas>
   <span id="Q">?</span>
-  <pre id="A">Sol Lewitt Wall Drawing #130 (1972)
+  <pre id="A">Sol LeWitt Wall Drawing #46 (1970)
 
-Grid and arcs from four corners.
+Vertical lines, not straight, not touching, covering the wall evenly.
 
-Clicking and dragging in the X changes sets the grid width
+Clicking and dragging in the X changes sets the line spacing
 Clicking and dragging in the Y changes sets the arc width
 Pres "r" to reset
 </pre>
