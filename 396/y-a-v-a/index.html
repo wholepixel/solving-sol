@@ -1,0 +1,85 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>y-a-v-a ❤︎ sol lewitt • #396</title>
+<style>
+html,body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+canvas {
+    height: 100%;
+    width: 100%;
+}
+</style>
+<canvas><script>
+function number396() {
+    var canvas = document.getElementsByTagName('canvas')[0];
+    var context = canvas.getContext('2d');
+    context.canvas.width = context.canvas.clientWidth;
+    context.canvas.height = context.canvas.clientHeight;
+    var radius = canvas.height * 0.22;
+    var margin = canvas.height * 0.04;
+    var offset = (canvas.width - canvas.height) / 2;
+    
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    var polygons = [5, 6, 7, 8];
+    var colors = ['#050505','#ffe632','#d4405a','#0094c8'];
+    var orders = [[1, 3, 0, 2, 4], [0, 2, 4, 1, 3, 5], [1, 3, 5, 0, 2, 4, 6], [0, 2, 4, 6, 1, 3, 5, 7]];
+    context.lineWidth = 0;
+    var index = 0;
+    var sides;
+    var offsetX;
+    var offsetY;
+    var coords;
+    var order;
+    var angle;
+    var i = 1;
+    var j = 0;
+    var x, y;
+    
+    for (var k = 1; k <= polygons.length; k++) {
+        index = k - 1;
+        context.save();
+        sides = polygons[index];
+        offsetX = offset + ((k % 2 === 1) ? 0 : 2 * radius + margin);
+        offsetY = ((k <= 2) ? 0 : 2 * radius + margin) + margin;
+        context.translate(offsetX, offsetY);
+        coords = [];
+        order = orders[index];
+    
+        for(i = 1; i <= sides; i++) {
+            angle = (2 * Math.PI) * (i / sides) - (0.5 * Math.PI);
+            x = radius + Math.cos(angle) * radius;
+            y = radius + Math.sin(angle) * radius;
+            coords.push([x, y]);
+        }
+
+        context.beginPath();
+        context.fillStyle = colors[index];
+
+        context.moveTo(coords[sides % 2][0], coords[sides % 2][1]);
+        for (j = 0; j < sides; j++) {
+            if (sides % 2 === 0 && j === (sides  / 2)) {
+                context.closePath();
+                context.fill();
+                context.beginPath();
+                context.fillStyle = colors[index];
+                context.moveTo(coords[order[j]][0], coords[order[j]][1]);
+            } else {
+                context.lineTo(coords[order[j]][0], coords[order[j]][1]);
+            }
+            context.lineJoin = 'miter';
+        }
+        context.closePath();
+        context.fill();
+        context.restore();
+    }
+}
+
+window.onresize = number396;
+
+number396();
+</script>
