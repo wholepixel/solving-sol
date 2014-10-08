@@ -14,4 +14,4 @@ D The background is BB. Left plane: GYB. right plane: GRR; top plane: YGY
 
 Key: Red = R; Yellow = Y; Blue = B; Gray = G
 
-![diagram](https://raw.githubusercontent.com/llimllib/solving-sol/541/541/541.jpg)
+![diagram](541.jpg)
