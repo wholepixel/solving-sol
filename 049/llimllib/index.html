@@ -17,7 +17,9 @@ function line(ctx, x1, y1, x2, y2) {
 
 function region1(ctx, linew, startx, endx, h) {
   ctx.strokeStyle = 'black';
-  for (var i=startx; i < endx; i += linew) {
+
+  // The black lines don't look good near the start or end, so don't draw them there
+  for (var i=startx+linew; i < endx - (linew/2); i += linew) {
     line(ctx, i, 0, i, h);
   }
 }
