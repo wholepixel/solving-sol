@@ -22,8 +22,6 @@ var ptable = {
 }
 
 function lsr(ctx, originalx, curx) {
-  // The probability of curx turning is 1/2**d, where d is the distance
-  // from originalx
   var d = Math.round(Math.abs(originalx - curx)),
       p_straight = ptable[d.toString()][0],
       p_turnhome = ptable[d.toString()][1],
