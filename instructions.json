@@ -67,6 +67,14 @@
     "title" : "Wall Drawing #132 (1972)",
     "description" : "A 36 in. (90 cm) grid covering the wall. All two-part combinations of arcs from corners and sides, straight and not straight lines, systematically."
   },
+  "146" : {
+    "title" : "Wall Drawing #146 (1972)",
+    "description" : "All two-part combinations of blue arcs from corners and sides, and blue straight, not straight, and broken lines."
+  },
+  "232" : {
+    "title" : "Wall Drawing #232 (1975)",
+    "description" : "A square, each side of which is equal to a tenth of the total length of three lines, the first of which is drawn from a point halfway between the center of the wall and a point halfway between the center of the wall and the upper left corner and the midpoint of the left side to a point halfway between the center of the wall and a point halfway between the center of the wall and the midpoint of the bottom side; the second line is drawn from a point halfway between the start of the first line and a point halfway between the center of the wall and the upper right corner and the midpoint of the top side to the start of the first line; the third line is drawn from a point halfway between a point equidistant from the end of the first line, the start of the second line and a point halfway between a point halfway between the center of the wall and the midpoint of the right side and a point halfway between the center of the wall and the upper right corner and the midpoint of the top side to the point where the first line starts and the second line ends; the right side is located on the axis of, and equidistant from two points, the first of which is located at a point halfway between a point halfway between the center of the wall and the midpoint of the right side and the lower right corner to a point halfway between a point halfway between the midpoint of the top side and the upper right corner and the start of the third line."
+  },
   "273" : {
     "title" : "Wall Drawing #273 (1975)",
     "description" : "Lines to points on a grid. A six-inch (15 cm) grid covering the wall. Lines from the corners, sides, and center of the walls to random points on the grid. Composite (seventh wall): red lines from the midpoints of four sides, blue lines from four corners, yellow lines from the center."
@@ -91,6 +99,10 @@
     "title" : "Wall Drawing #340 (1980)",
     "description" : "Six-part drawing. The wall is divided horizontally and vertically into six equal parts. 1st part: On red, blue horizontal parallel lines, and in the center, a circle within which are yellow vertical parallel lines; 2nd part: On yellow, red horizontal parallel lines, and in the center, a square within which are blue vertical parallel lines; 3rd part: On blue, yellow horizontal parallel lines, and in the center, a triangle within which are red vertical parallel lines; 4th part: On red, yellow horizontal parallel lines, and in the center, a rectangle within which are blue vertical parallel lines; 5th part: On yellow, blue horizontal parallel lines, and in the center, a trapezoid within which are red vertical parallel lines; 6th part: On blue, red horizontal parallel lines, and in the center, a parallelogram within which are yellow vertical parallel lines. The horizontal lines do not enter the figures."
   },
+  "366" : {
+    "title" : "Wall Drawing #366 (1982)",
+    "description" : "Black arcs using the height of the wall as a radius, and black arcs using the midpoints of the wall as a radius. The arcs are filled in solid and drawn in India ink."
+  },
   "391" : {
     "title" : "Wall Drawing #391 (1983)",
     "description": "Two-part drawing. The two walls are each divided horizontally and vertically into four equal parts. First wall: 12-inch (30 cm) bands of lines in four directions, one direction in each part, drawn in black India ink. Second wall: Same, but with four colors drawn in India ink and color ink washes."
@@ -98,6 +110,14 @@
   "392" : {
     "title" : "Wall Drawing #392 (1983)",
     "description": "A 12\" (30 cm) grid covering the black wall. Within each 12\" (30 cm) square, a vertical, horizontal, diagonal right or diagonal left line bisecting the square. All squares are filled. (The direction of the line in each square is determined by the drafter)"
+  },
+  "396" : {
+    "title" : "Wall Drawing #396 (1983)",
+    "description": "A black five-pointed star, a yellow six-pointed star, a red seven-pointed star, and a blue eight-pointed star, drawn in color and India ink washes."
+  },
+  "541" : {
+    "title" : "Wall Drawing #541 (1987)",
+    "description": "On each of four walls, a tilted form with color ink washes superimposed.\n\nColor ink wash\n\nA First wall: The background is GG -Left plane: YRY; right plane: YBY; bottom plane: BRB\n\nB Second wall: The background is YY. Left plane: GBG; right plane: RGG; top plane: YGR\n\nC third wall: The background is RR. Left plane: GBB; right plane: RYG; bottom plane: GGY;\n\nD The background is BB. Left plane: GYB. right plane: GRR; top plane: YGY\n\nKey: Red = R; Yellow = Y; Blue = B; Gray = G"
   },
   "614" : {
     "title" : "Wall Drawing #614 (1989)",
@@ -114,5 +134,9 @@
   "959" : {
     "title" : "Wall Drawing #959 (2001)",
     "description": "Uneven bands from the upper right corner."
+  },
+  "1180" : {
+    "title" : "Wall Drawing #1180 (2005)",
+    "description": "Within a circle, draw 10,000 black straight lines and 10,000 black not straight lines. All lines are randomly spaced and equally distributed."
   }
 }
