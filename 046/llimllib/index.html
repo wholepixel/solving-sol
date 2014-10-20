@@ -1,0 +1,171 @@
+<!--
+## Wall Drawing #46 (1970)
+
+Vertical lines, not straight, not touching, covering the wall evenly.
+-->
+<html><head>
+<title>Sol LeWitt Wall Drawing #46</title>
+<script>
+function line(ctx, x1, y1, x2, y2) {
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+}
+
+var ptable = {
+  "4": [.01, .099, 0],
+  "3": [.1, .088, .02],
+  "2": [.25, .6, .15],
+  "1": [.4, .4, .2],
+  "0": [.5, .25, .25],
+}
+
+function lsr(ctx, originalx, curx) {
+  var d = Math.round(Math.abs(originalx - curx)),
+      p_straight = ptable[d.toString()][0],
+      p_turnhome = ptable[d.toString()][1],
+      p_turnaway = ptable[d.toString()][2];
+
+  var r = Math.random();
+  if (r < p_straight) {
+    return curx;
+  } else if (r > (1-p_turnaway)) {
+    if (originalx == curx)     { return curx + (Math.random() < .5 ? -1 : 1); }
+    else if (originalx > curx) { return curx-1; }
+    else                       { return curx+1; }
+  } else {
+    if (originalx == curx)     { return curx + (Math.random() < .5 ? -1 : 1); }
+    else if (originalx > curx) { return curx+1; }
+    else                       { return curx-1; }
+  }
+}
+
+function find(pixels, x, y) {
+  return pixels.hasOwnProperty(x.toString()+","+(y.toString()));
+}
+
+function save(pixels, x, y) {
+  pixels[x.toString()+","+((y-1).toString())] = undefined;
+}
+
+// Uneven Vertical Line
+function uvl(ctx, x, h, pixels) {
+  ctx.beginPath();
+  var y = 0;
+  var originalx = x;
+  ctx.moveTo(x, y);
+  for (; y<h; y++) {
+    x = lsr(ctx, originalx, x);
+    // If two lines would touch... don't
+    if (find(pixels, x, y-1) || find(pixels, x-1, y+1) ||
+        find(pixels, x-1, y) || find(pixels, x-1, y-1)) {
+      x += 1
+    }
+    save(pixels, x, y);
+    ctx.lineTo(x, y);
+  }
+  ctx.stroke()
+}
+
+function draw(canvas, linespace, linea) {
+  var ctx = canvas.getContext("2d"),
+      linespace = Math.round(linespace),
+      h = canvas.height,
+      w = canvas.width;
+
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle = "rgba(0,0,0,"+linea+")";
+
+  //console.log("drawing", linespace, linea)
+
+  pixels = {}
+  for (var x=linespace; x < w; x+=linespace) {
+    uvl(ctx, x, h, pixels);
+  }
+}
+
+function clamp(n, min, max) {
+  if (n > min) return Math.min(n, max);
+  return Math.max(n, min);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  var canvas = document.getElementById("wall"),
+      linespace = 5,
+      linea = .4,
+      mousemove = false,
+      mousedown = undefined;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    draw(canvas, linespace, linea);
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas(canvas);
+
+  window.addEventListener("mousedown", function(evt) {
+    mousemove = false;
+    mousedown = evt;
+  }, false);
+  window.addEventListener("mousemove", function(evt) {
+    if (mousedown !== undefined) {
+      mousemove = true;
+      diffX = evt.clientX - mousedown.clientX;
+      diffY = evt.clientY - mousedown.clientY;
+
+      temp_linespace = clamp(linespace - diffY/10, 4, 30);
+      temp_linea = clamp(linea - diffX/1000, .3, 1);
+      draw(canvas, temp_linespace, temp_linea);
+    }
+  }, false);
+  window.addEventListener("mouseup", function(evt) {
+    if(mousemove) {
+      linespace = temp_linespace;
+      linea = temp_linea;
+    }
+    mousedown = undefined;
+  }, false);
+
+  window.addEventListener("keypress", function(evt) {
+    // r for reset
+    if (evt.keyCode == 114) {
+      linea = .3;
+      linespace = 5;
+      draw(canvas, linespace, linea);
+    }
+  });
+
+  var A = document.getElementById("A");
+  var Q = document.getElementById("Q");
+  A.style["visibility"] = "hidden";
+  document.getElementById("Q").addEventListener("mouseover", function() {
+    A.style["visibility"] = "";
+    Q.style["visibility"] = "hidden";
+  });
+  document.getElementById("A").addEventListener("mouseout", function() {
+    A.style["visibility"] = "hidden";
+    Q.style["visibility"] = "";
+  });
+});
+</script>
+<style>
+body { margin: 0; }
+#Q { position: absolute; bottom: 5px; right: 5px; color: blue; background-color: white; font-size: 24px; }
+#A { position: absolute; bottom: 5px; right: 5px; background-color: white; }
+</style>
+<html>
+  <canvas id="wall"></canvas>
+  <span id="Q">?</span>
+  <pre id="A">Sol LeWitt Wall Drawing #46 (1970)
+
+Vertical lines, not straight, not touching, covering the wall evenly.
+
+Clicking and dragging in the X changes the line spacing
+Clicking and dragging in the Y changes the stroke alpha
+Pres "r" to reset
+</pre>
+</html>
