@@ -1,0 +1,53 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>y-a-v-a ❤︎ sol lewitt • #138</title>
+<style>
+html,body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+canvas {
+    height: 100%;
+    width: 100%;
+}
+</style>
+<canvas></canvas>
+<script>
+function number138() {
+    var canvas = document.getElementsByTagName('canvas')[0];
+    var context = canvas.getContext('2d');
+    context.canvas.width = context.canvas.clientWidth;
+    context.canvas.height = context.canvas.clientHeight;
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    var xs = [0, canvas.width / 2, canvas.width];
+    var ys = [0, canvas.height / 2, canvas.height];
+    var radius = 9;
+    var s;
+    var xy = [
+        [0, 1, 1, 1, 2],
+        [1, 0, 1, 2, 1]
+    ];
+
+    while(radius < canvas.width + 138) {
+        context.fillStyle = 'transparent';
+        context.lineWidth = 0.2;
+        context.strokeStyle = '#000000';
+
+        for(s = 0; s < 5; s++) {
+            context.beginPath();
+            context.arc(xs[xy[0][s]], ys[xy[1][s]], radius, 0, 2 * Math.PI, false);
+            context.fill();
+            context.stroke();
+        }
+        radius += 18;
+    }
+}
+
+window.onresize = number138;
+
+number138();
+</script>
