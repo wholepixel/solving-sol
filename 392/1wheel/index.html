@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Sol Lewitt - Wall Drawing #392</title>
+<style>
+body{
+  margin: 0px;
+  overflow: hidden;
+}
+
+.grid{
+  stroke: darkgrey;
+  stroke-width: 1;
+}
+
+.diagonal{
+  stroke: white;
+  stroke-width: 2;
+}
+
+</style>
+<svg></svg>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.compat.min.js"></script>
+<script>
+
+function draw(){
+  var height = window.innerHeight,
+      width = window.innerWidth,
+      s = 25,
+      rows = d3.range(0, height, s),
+      cols = d3.range(0, width, s),
+      paths = [
+        ['M', 0,    0, 'L', s,    s],
+        ['M', s/2,  0, 'L', s/2,  s],
+        ['M', s,    0, 'L', 0,    s],
+        ['M', s,  s/2, 'L', 0,  s/2],
+      ].map(function(d){ return d.join(' ') }),
+      throttledMouseover = _.throttle(mouseover, 250)
+
+  var svg = d3.select('svg')
+      .attr({height: height, width: width})
+
+  svg.append('rect')
+      .attr({height: height, width: width})
+      .on('mouseover', function(){
+        throttledMouseover(d3.mouse(this)) })
+
+  function mouseover(pos){
+    diagonals
+      .filter(function(d){
+        d.dist = Math.sqrt(Math.pow(d.x - pos[0], 2) + Math.pow(d.y - pos[1], 2))
+        return !d.moving && d.dist < 15*s })
+      .transition().delay(function(d){ return d.dist*3 }).duration(200)
+        .call(setPath)
+        .styleTween('opacity', function(){
+          return function(t){ return Math.abs(.5 - t)*2 } 
+        })
+        .each('start', function(d){ d.moving = true  })
+        .each('end',   function(d){ d.moving = false })
+  }
+
+  svg.selectAll('vline')
+      .data(cols).enter()
+    .append('line').classed('grid', true)
+      .attr({x1: id, x2: id, y2: height})
+
+  svg.selectAll('hline')
+      .data(rows).enter()
+    .append('line').classed('grid', true)
+      .attr({y1: id, y2: id, x2: width})
+
+  var boxes = []
+  cols.forEach(function(x){
+    rows.forEach(function(y){
+      boxes.push({x: x, y: y})
+    })
+  })
+
+  diagonals = svg.selectAll('boxG')
+      .data(boxes).enter()
+    .append('g').classed('diagonal', true)
+      .attr('transform', function(d){
+        return 'translate(' + d.x + ',' + d.y + ')' })
+    .append('path')
+      .call(setPath)
+
+
+  function setPath(selection){
+    selection.attr('d', function(){ return paths[Math.floor(Math.random()*4)] })
+  }
+
+}
+draw()
+
+window.onresize = draw
+
+
+function id(d){ return d }
+</script>
