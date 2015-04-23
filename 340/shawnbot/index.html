@@ -67,7 +67,7 @@ var lineWidth = 1;
   function part1() {
     frame('red');
     horizontalLines('#00f');
-    shape(circle, 'yellow');
+    shape(circle, 'red', 'yellow');
   },
   // 2nd part: On yellow, red horizontal parallel lines, and in the center, a
   // square within which are blue vertical parallel lines;
@@ -75,7 +75,7 @@ var lineWidth = 1;
     ctx.translate(w, 0);
     frame('yellow');
     horizontalLines('red');
-    shape(square, 'blue');
+    shape(square, 'yellow', 'blue');
   },
   // 3rd part: On blue, yellow horizontal parallel lines, and in the center, a
   // triangle within which are red vertical parallel lines;
@@ -83,7 +83,7 @@ var lineWidth = 1;
     ctx.translate(0, h);
     frame('blue');
     horizontalLines('yellow');
-    shape(triangle, 'red');
+    shape(triangle, 'blue', 'red');
   },
   // 4th part: On red, yellow horizontal parallel lines, and in the center, a
   // rectangle within which are blue vertical parallel lines;
@@ -91,7 +91,7 @@ var lineWidth = 1;
     ctx.translate(w, h);
     frame('red');
     horizontalLines('yellow');
-    shape(rectangle, 'blue');
+    shape(rectangle, 'red', 'blue');
   },
   // 5th part: On yellow, blue horizontal parallel lines, and in the center, a
   // trapezoid within which are red vertical parallel lines;
@@ -99,7 +99,7 @@ var lineWidth = 1;
     ctx.translate(0, h * 2);
     frame('yellow');
     horizontalLines('blue');
-    shape(trapezoid, 'red');
+    shape(trapezoid, 'yellow', 'red');
   },
   // 6th part: On blue, red horizontal parallel lines, and in the center, a
   // parallelogram within which are yellow vertical parallel lines.
@@ -107,7 +107,7 @@ var lineWidth = 1;
     ctx.translate(w, h * 2);
     frame('blue');
     horizontalLines('red');
-    shape(parallelogram, 'yellow');
+    shape(parallelogram, 'blue', 'yellow');
   },
 ].forEach(function(part) {
   ctx.save();
@@ -143,11 +143,13 @@ function verticalLines(color) {
   ctx.fillStyle = null;
 }
 
-function shape(path, lineColor) {
+function shape(path, fillColor, lineColor) {
+  ctx.fillStyle = fillColor;
   ctx.beginPath();
   path();
   ctx.closePath();
   ctx.fill();
+  ctx.fillStyle = null;
 
   ctx.beginPath();
   path();
