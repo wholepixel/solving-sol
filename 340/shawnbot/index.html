@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Sol Lewitt: Wall Drawing #232 (1975)</title>
+    <style type="text/css">
+      body {
+        font-family: "Helvetica Neue", Helvetica, arial, sans-serif;
+        padding: 2em;
+        margin: 0;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        margin-top: 0;
+      }
+
+      canvas {
+        display: block;
+        max-width: 100%;
+      }
+
+      pre {
+        white-space: normal;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Wall Drawing #630 (1975)</h1>
+
+      <pre>Six-part drawing. The wall is divided horizontally and vertically
+      into six equal parts. 1st part: On red, blue horizontal parallel lines,
+      and in the center, a circle within which are yellow vertical parallel
+      lines; 2nd part: On yellow, red horizontal parallel lines, and in the
+      center, a square within which are blue vertical parallel lines; 3rd part:
+      On blue, yellow horizontal parallel lines, and in the center, a triangle
+      within which are red vertical parallel lines; 4th part: On red, yellow
+      horizontal parallel lines, and in the center, a rectangle within which
+      are blue vertical parallel lines; 5th part: On yellow, blue horizontal
+      parallel lines, and in the center, a trapezoid within which are red
+      vertical parallel lines; 6th part: On blue, red horizontal parallel
+      lines, and in the center, a parallelogram within which are yellow
+      vertical parallel lines. The horizontal lines do not enter the
+      figures.</pre>
+
+      <canvas width="600" height="900"></canvas>
+    </div>
+    <script>
+
+var canvas = document.querySelector('canvas');
+var width = canvas.width;
+var height = canvas.height;
+var ctx = canvas.getContext('2d');
+var w = width / 2;
+var h = height / 3;
+var lineStart = 2;
+var lineStep = 5;
+var lineWidth = 1;
+
+[
+  // 1st part: On red, blue horizontal parallel lines, and in the center, a
+  // circle within which are yellow vertical parallel lines;
+  function part1() {
+    frame('red');
+    horizontalLines('#00f');
+    shape(circle, 'red', 'yellow');
+  },
+  // 2nd part: On yellow, red horizontal parallel lines, and in the center, a
+  // square within which are blue vertical parallel lines;
+  function part2() {
+    ctx.translate(w, 0);
+    frame('yellow');
+    horizontalLines('red');
+    shape(square, 'yellow', 'blue');
+  },
+  // 3rd part: On blue, yellow horizontal parallel lines, and in the center, a
+  // triangle within which are red vertical parallel lines;
+  function part3() {
+    ctx.translate(0, h);
+    frame('blue');
+    horizontalLines('yellow');
+    shape(triangle, 'blue', 'red');
+  },
+  // 4th part: On red, yellow horizontal parallel lines, and in the center, a
+  // rectangle within which are blue vertical parallel lines;
+  function part4() {
+    ctx.translate(w, h);
+    frame('red');
+    horizontalLines('yellow');
+    shape(rectangle, 'red', 'blue');
+  },
+  // 5th part: On yellow, blue horizontal parallel lines, and in the center, a
+  // trapezoid within which are red vertical parallel lines;
+  function part5() {
+    ctx.translate(0, h * 2);
+    frame('yellow');
+    horizontalLines('blue');
+    shape(trapezoid, 'yellow', 'red');
+  },
+  // 6th part: On blue, red horizontal parallel lines, and in the center, a
+  // parallelogram within which are yellow vertical parallel lines.
+  function part6() {
+    ctx.translate(w, h * 2);
+    frame('blue');
+    horizontalLines('red');
+    shape(parallelogram, 'blue', 'yellow');
+  },
+].forEach(function(part) {
+  ctx.save();
+  part();
+  ctx.restore();
+});
+
+function frame(color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = null;
+}
+
+function horizontalLines(color) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  for (var y = lineStart; y < h; y += lineStep) {
+    ctx.rect(0, y, w, lineWidth);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = null;
+}
+
+function verticalLines(color) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  for (var x = lineStart; x < w; x += lineStep) {
+    ctx.rect(x, 0, lineWidth, h);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = null;
+}
+
+function shape(path, fillColor, lineColor) {
+  ctx.fillStyle = fillColor;
+  ctx.beginPath();
+  path();
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = null;
+
+  ctx.beginPath();
+  path();
+  ctx.clip();
+  verticalLines(lineColor);
+}
+
+function circle() {
+  ctx.arc(w / 2, h / 2, w / 4, 0, Math.PI * 2, true);
+}
+
+function square() {
+  ctx.rect(w / 4, w / 4, w / 2, w / 2);
+}
+
+function triangle() {
+  ctx.moveTo(w / 2, h / 4);
+  ctx.lineTo(w * 4/5, h * 3/4);
+  ctx.lineTo(w / 5, h * 3/4);
+  ctx.lineTo(w / 2, h / 4);
+}
+
+function rectangle() {
+  ctx.rect(w / 3, w / 4, w / 3, w / 2);
+}
+
+function trapezoid() {
+  var dx = w / 8;
+  var x0 = w / 5;
+  var x1 = w - x0;
+  var y0 = h / 3;
+  var y1 = h - y0;
+  ctx.moveTo(x0 - dx, y0);
+  ctx.lineTo(x1, y0);
+  ctx.lineTo(x1 - dx, y1);
+  ctx.lineTo(x0 + dx, y1);
+  ctx.lineTo(x0, y0);
+}
+
+function parallelogram() {
+  var dx = w / 8;
+  var x0 = w / 6;
+  var x1 = w - x0;
+  var y0 = h / 3;
+  var y1 = h - y0;
+  ctx.moveTo(x0, y0);
+  ctx.lineTo(x1 - dx, y0);
+  ctx.lineTo(x1, y1);
+  ctx.lineTo(x0 + dx, y1);
+  ctx.lineTo(x0, y0);
+}
+
+    </script>
+  </body>
+</html>
