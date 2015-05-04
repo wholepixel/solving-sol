@@ -1,0 +1,58 @@
+<html>
+<head>
+	<title>Sol Lewitt. Wall Drawing #65. by Max Kolyanov</title>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js" ></script>
+	<style type="text/css">
+		html, body {
+		  width: 100%;
+		  height: 100%;
+		  padding: 0;
+		  margin: 0;
+		}
+	</style>
+</head>
+<body>
+    <script canvas='wall' type='text/paperscript'>
+
+    function randomEl(arr) {
+    	return arr[Math.floor(Math.random()*arr.length)];
+    }
+
+    function createPoint(){
+	    
+		var h = window.innerWidth;
+		var w = window.innerHeight; 
+	    var nh = Math.floor(Math.random() * h);
+	    var nw = Math.floor(Math.random() * w);
+	    
+	    add = [800,-800,0]
+	    var a1 = randomEl(add);
+	    var a2 = randomEl(add);
+	    return [nh+a1,nw+a2]
+    
+	}
+
+	function draw() {
+		colors = ["#346FE2","#3D3A3F","#D0222C","#F3F82F"]
+
+	    for(var i=0; i<500; i++) {
+	        var path = new Path();
+			path.strokeColor = randomEl(colors);
+			var point = createPoint()
+			path.add(new Point(point[0],point[1])); 
+			var point = createPoint()
+			path.add(new Point(point[0],point[1])); 
+			var point = createPoint()
+			path.add(new Point(point[0],point[1]));
+			var point = createPoint()
+			path.add(new Point(point[0],point[1]));
+			path.smooth();
+	    }
+	}
+
+	draw();
+     
+    </script>
+<canvas id='wall' resize></canvas>
+</body>
+</html>
