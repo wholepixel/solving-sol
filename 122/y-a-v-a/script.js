@@ -1,20 +1,21 @@
-var c = document.getElementsByTagName('canvas')[0];
-var ctx = c.getContext('2d');
-var test;
-function draw() {
-  var width = ctx.canvas.width = ctx.canvas.clientWidth;
-  var height = ctx.canvas.height = ctx.canvas.clientHeight;
-
-  var blocksx = Math.floor(width / 100);
-  var blocksy = Math.floor(height / 100);
-
-  var dx = (width - (blocksx * 100)) * .5;
-  var dy = (height - (blocksy * 100)) * .5;
-
-  ctx.clearRect(0, 0, c.width, c.height);
-  ctx.strokeStyle = '#A5A2B9';
-
+/**
+ * Assumptions:
+ * Blocks have a size of 100px x 100px. Modify radius to your liking.
+ * Certain lines can cross each other, others cannot.
+ * The not straight lines have some manipulations that make
+ * it look nice to my humble opinion.
+ *
+ * yet another visual artist • y-a-v-a.org
+ * Vincent Bruijn <vebruijn@gmail.com> - http://www.y-a-v-a.org
+ * 2015 • CC BY SA 3.0
+ */
+(function() {
+  var c = document.getElementsByTagName('canvas')[0];
+  var ctx = c.getContext('2d');
   var dashes = [12, 6];
+  var radius = 100;
+  var lineOne;
+  var lineTwo;
 
   var lineTypes = [
     // arcs from corners
@@ -47,47 +48,48 @@ function draw() {
 
     // straight
     function(c, x, y, radius) {
-      draw09(c, x, y, radius, false, false);
+      drawVert(c, x, y, radius, false, false);
     },
     function(c, x, y, radius) {
-      draw10(c, x, y, radius, false, false);
+      drawHoriz(c, x, y, radius, false, false);
     },
     function(c, x, y, radius) {
-      draw11(c, x, y, radius, false, false);
+      drawDiagonalRight(c, x, y, radius, false, false);
     },
     function(c, x, y, radius) {
-      draw12(c, x, y, radius, false, false);
+      drawDiagonalLeft(c, x, y, radius, false, false);
     },
 
     // not straight
     function(c, x, y, radius) {
-      draw09(c, x, y, radius, false, true);
+      drawVert(c, x, y, radius, false, true);
     },
     function(c, x, y, radius) {
-      draw10(c, x, y, radius, false, true);
+      drawHoriz(c, x, y, radius, false, true);
     },
     function(c, x, y, radius) {
-      draw11(c, x, y, radius, false, true);
+      drawDiagonalRight(c, x, y, radius, false, true);
     },
     function(c, x, y, radius) {
-      draw12(c, x, y, radius, false, true);
+      drawDiagonalLeft(c, x, y, radius, false, true);
     },
 
     // broken
     function(c, x, y, radius) {
-      draw09(c, x, y, radius, true, false);
+      drawVert(c, x, y, radius, true, false);
     },
     function(c, x, y, radius) {
-      draw10(c, x, y, radius, true, false);
+      drawHoriz(c, x, y, radius, true, false);
     },
     function(c, x, y, radius) {
-      draw11(c, x, y, radius, true, false);
+      drawDiagonalRight(c, x, y, radius, true, false);
     },
     function(c, x, y, radius) {
-      draw12(c, x, y, radius, true, false);
+      drawDiagonalLeft(c, x, y, radius, true, false);
     }
   ];
 
+  // arcs from corners
   function drawQuarter(c, x, y, radius, start, end) {
     var clockWise = false;
 
@@ -101,6 +103,7 @@ function draw() {
     c.stroke();
   }
 
+  // arcs from sides
   function drawArc(c, x, y, radius, start) {
     var startAngle = (- (1/6) + (1/2 * start)) * Math.PI;
     var endAngle = (- (1/6) + (1/2 * start) + (1/3)) * Math.PI;
@@ -109,24 +112,24 @@ function draw() {
     var refy;
 
     var halfRadius = radius * 0.5;
-    var offSet = radius * 0.36863;
+    var offset = radius * 0.36863;
 
     switch (start) {
       case 0:
-      refx = x - offSet;
+      refx = x - offset;
       refy = y + halfRadius;
       break;
       case 1:
       refx = x + halfRadius;
-      refy = y - offSet;
+      refy = y - offset;
       break;
       case 2:
-      refx = x + radius + offSet;
+      refx = x + radius + offset;
       refy = y + halfRadius;
       break;
       case 3:
       refx = x + halfRadius;
-      refy = y + radius + offSet;
+      refy = y + radius + offset;
       break;
     }
 
@@ -135,59 +138,77 @@ function draw() {
     c.stroke();
   }
 
-  function draw09(c, x, y, radius, dashed, random) {
+
+  // narrow limit from 0.2 to 0.8 or from -0.3 to 0.3
+  function narrowLimit(signed) {
+    var limit = Math.random() * 0.6;
+    return !!signed ? limit - 0.3 : limit + 0.2;
+  }
+
+  function randomDiagonal(radius) {
+    return narrowLimit() * (radius * Math.sqrt(2) * 0.09);
+  }
+
+  // straight, not straight and broken
+  function drawVert(c, x, y, radius, dashed, random) {
+    var offset = 0.5 * radius;
+    var threshold = 0.1 * radius;
     if (dashed) {
       c.setLineDash(dashes);
     }
     c.beginPath();
-    c.moveTo(x + .5 * radius, y);
+    c.moveTo(x + offset, y);
 
     if (random) {
       var randx;
       var randy;
-      var dx = x + .5 * radius;
+      var dx = x + offset;
       var dy = y;
-      while (dy < (y + radius - (radius * .1))) {
-        randx = (Math.random() * .6 - .3) * (radius * .09);
-        randy = (Math.random() * .6 + .2) * radius * .18;
+      while (dy < (y + radius - threshold)) {
+        randx = narrowLimit(true) * (radius * .09);
+        randy = narrowLimit() * radius * .18;
         c.lineTo(dx + randx, dy += randy);
       }
     }
 
-    c.lineTo(x + .5 * radius, y + radius);
+    c.lineTo(x + offset, y + radius);
     c.stroke();
     if (dashed) {
       c.setLineDash([0,0]);
     }
   }
 
-  function draw10(c, x, y, radius, dashed, random) {
+  function drawHoriz(c, x, y, radius, dashed, random) {
+    var offset = 0.5 * radius;
+    var threshold = 0.1 * radius;
     if (dashed) {
       c.setLineDash(dashes);
     }
     c.beginPath();
-    c.moveTo(x, y + .5 * radius);
+    c.moveTo(x, y + offset);
 
     if (random) {
       var randx;
       var randy;
       var dx = x;
-      var dy = y + .5 * radius;
-      while (dx < (x + radius - (radius * .1))) {
-        randx = (Math.random() * .6 + .2) * radius * .18;
-        randy = (Math.random() * .6 - .3) * (radius * .09);
+      var dy = y + offset;
+      while (dx < (x + radius - threshold)) {
+        randx = narrowLimit() * radius * .18;
+        randy = narrowLimit(true) * (radius * .09);
+
         c.lineTo(dx += randx, dy + randy);
       }
     }
 
-    c.lineTo(x + radius, y + .5 * radius);
+    c.lineTo(x + radius, y + offset);
     c.stroke();
     if (dashed) {
       c.setLineDash([0,0]);
     }
   }
 
-  function draw11(c, x, y, radius, dashed, random) {
+  function drawDiagonalRight(c, x, y, radius, dashed, random) {
+    var threshold = 0.1 * radius;
     if (dashed) {
       c.setLineDash(dashes);
     }
@@ -199,9 +220,9 @@ function draw() {
       var randy;
       var dx = x + radius;
       var dy = y;
-      while (dx > (x + (radius * .1)) && dy < (y + radius - (radius * .1))) {
-        randx = (Math.random() * .6 + .2) * (radius * Math.sqrt(2) * .09);
-        randy = (Math.random() * .6 + .2) * (radius * Math.sqrt(2) * .09);
+      while (dx > (x + threshold) && dy < (y + radius - threshold)) {
+        randx = randomDiagonal(radius);
+        randy = randomDiagonal(radius);
         c.lineTo(dx -= randx, dy += randy);
       }
     }
@@ -213,7 +234,8 @@ function draw() {
     }
   }
 
-  function draw12(c, x, y, radius, dashed, random) {
+  function drawDiagonalLeft(c, x, y, radius, dashed, random) {
+    var threshold = 0.1 * radius;
     if (dashed) {
       c.setLineDash(dashes);
     }
@@ -225,9 +247,9 @@ function draw() {
       var randy;
       var dx = x;
       var dy = y;
-      while (dx < (x + radius - (radius * .1)) && dy < (y + radius - (radius * .1))) {
-        randx = (Math.random() * .6 + .2) * (radius * Math.sqrt(2) * .09);
-        randy = (Math.random() * .6 + .2) * (radius * Math.sqrt(2) * .09);
+      while (dx < (x + radius - threshold) && dy < (y + radius - threshold)) {
+        randx = randomDiagonal(radius);
+        randy = randomDiagonal(radius);
         c.lineTo(dx += randx, dy += randy);
       }
     }
@@ -239,7 +261,9 @@ function draw() {
     }
   }
 
+  // which lines do cross, which do not
   var crossMatrix = [
+  // ◝ ◞ ◟ ◜  ) ⌣ ( ⌢  | - / \  | - / \  ⋮ ⋯ ⋰ ⋱
     [0,1,0,1, 1,1,1,1, 1,1,1,0, 1,1,1,0, 1,1,1,0],
     [1,0,1,0, 1,1,1,1, 1,1,0,1, 1,1,0,1, 1,1,0,1],
     [0,1,0,1, 1,1,1,1, 1,1,1,0, 1,1,1,0, 1,1,1,0],
@@ -266,20 +290,6 @@ function draw() {
     [0,1,0,1, 1,1,1,1, 1,1,1,0, 1,1,1,0, 1,1,1,0]
   ];
 
-  var radius = 100;
-  var lineOne;
-  var lineTwo;
-
-  for (var x = 0; x < blocksx; x++) {
-    for (var y = 0; y < blocksy; y++) {
-      lineOne = Math.floor(Math.random() * lineTypes.length);
-      lineTwo = getUnique(lineOne, lineTypes.length);
-
-      lineTypes[lineOne].call(null, ctx, x * radius + dx, y * radius + dy, radius);
-      lineTypes[lineTwo].call(null, ctx, x * radius + dx, y * radius + dy, radius);
-    }
-  }
-
   function getUnique(oldVal, total) {
     var newVal;
     do {
@@ -291,13 +301,39 @@ function draw() {
     return newVal;
   }
 
+  function draw() {
+    var width = ctx.canvas.width = ctx.canvas.clientWidth;
+    var height = ctx.canvas.height = ctx.canvas.clientHeight;
 
-    // debug
-    // for (var p = 0; p < lineTypes.length; p++) {
-    //   lineTypes[p].call(null, ctx, p * 100, p, 100);
-    // }
-}
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.strokeStyle = '#A5A2B9'; // blue
 
+    var blocksx = Math.floor(width / radius);
+    var blocksy = Math.floor(height / radius);
 
-window.onresize = draw;
-draw();
+    var marginLeft = (width - (blocksx * radius)) * 0.5; // margin left
+    var marginTop = (height - (blocksy * radius)) * 0.5; // margin top
+
+    var x;
+    var y;
+    var row;
+    var col;
+
+    for (row = 0; row < blocksx; row++) {
+      for (col = 0; col < blocksy; col++) {
+        lineOne = Math.floor(Math.random() * lineTypes.length);
+        lineTwo = getUnique(lineOne, lineTypes.length);
+
+        x = row * radius + marginLeft;
+        y = col * radius + marginTop;
+
+        lineTypes[lineOne].call(null, ctx, x, y, radius);
+        lineTypes[lineTwo].call(null, ctx, x, y, radius);
+      }
+    }
+  }
+
+  window.onresize = draw;
+  draw();
+
+}());
