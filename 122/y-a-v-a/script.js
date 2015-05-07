@@ -34,16 +34,16 @@
 
     // arcs from sides
     function(c, x, y, radius) {
-      drawArc(c, x, y, radius, 0);
+      drawArc(c, x, y, radius, 0, -1, 0);
     },
     function(c, x, y, radius) {
-      drawArc(c, x, y, radius, 1);
+      drawArc(c, x, y, radius, 1, 0, -1);
     },
     function(c, x, y, radius) {
-      drawArc(c, x, y, radius, 2);
+      drawArc(c, x, y, radius, 2, 1, 0);
     },
     function(c, x, y, radius) {
-      drawArc(c, x, y, radius, 3);
+      drawArc(c, x, y, radius, 3, 0, 1);
     },
 
     // straight
@@ -104,37 +104,21 @@
   }
 
   // arcs from sides
-  function drawArc(c, x, y, radius, start) {
+  function drawArc(c, x, y, radius, start, cx, cy) {
     var startAngle = (- (1/6) + (1/2 * start)) * Math.PI;
     var endAngle = (- (1/6) + (1/2 * start) + (1/3)) * Math.PI;
     var clockWise = false;
-    var refx;
-    var refy;
+    var refx = x + (0.5 * radius);
+    var refy = y + (0.5 * radius);
 
     var halfRadius = radius * 0.5;
     var offset = radius * 0.36863;
 
-    switch (start) {
-      case 0:
-      refx = x - offset;
-      refy = y + halfRadius;
-      break;
-      case 1:
-      refx = x + halfRadius;
-      refy = y - offset;
-      break;
-      case 2:
-      refx = x + radius + offset;
-      refy = y + halfRadius;
-      break;
-      case 3:
-      refx = x + halfRadius;
-      refy = y + radius + offset;
-      break;
-    }
+    var offsetx = refx + (cx * (halfRadius + offset));
+    var offsety = refy + (cy * (halfRadius + offset));
 
     c.beginPath();
-    c.arc(refx, refy, radius, startAngle, endAngle, clockWise);
+    c.arc(offsetx, offsety, radius, startAngle, endAngle, clockWise);
     c.stroke();
   }
 
@@ -165,8 +149,8 @@
       var dx = x + offset;
       var dy = y;
       while (dy < (y + radius - threshold)) {
-        randx = narrowLimit(true) * (radius * .09);
-        randy = narrowLimit() * radius * .18;
+        randx = narrowLimit(true) * (radius * 0.09);
+        randy = narrowLimit() * radius * 0.18;
         c.lineTo(dx + randx, dy += randy);
       }
     }
@@ -174,7 +158,7 @@
     c.lineTo(x + offset, y + radius);
     c.stroke();
     if (dashed) {
-      c.setLineDash([0,0]);
+      c.setLineDash([]);
     }
   }
 
@@ -193,8 +177,8 @@
       var dx = x;
       var dy = y + offset;
       while (dx < (x + radius - threshold)) {
-        randx = narrowLimit() * radius * .18;
-        randy = narrowLimit(true) * (radius * .09);
+        randx = narrowLimit() * radius * 0.18;
+        randy = narrowLimit(true) * (radius * 0.09);
 
         c.lineTo(dx += randx, dy + randy);
       }
@@ -203,7 +187,7 @@
     c.lineTo(x + radius, y + offset);
     c.stroke();
     if (dashed) {
-      c.setLineDash([0,0]);
+      c.setLineDash([]);
     }
   }
 
@@ -230,7 +214,7 @@
     c.lineTo(x, y + radius);
     c.stroke();
     if (dashed) {
-      c.setLineDash([0,0]);
+      c.setLineDash([]);
     }
   }
 
@@ -257,7 +241,7 @@
     c.lineTo(x + radius, y + radius);
     c.stroke();
     if (dashed) {
-      c.setLineDash([0,0]);
+      c.setLineDash([]);
     }
   }
 
