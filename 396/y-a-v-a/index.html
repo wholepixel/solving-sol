@@ -19,8 +19,8 @@ function number396() {
     var context = canvas.getContext('2d');
     context.canvas.width = context.canvas.clientWidth;
     context.canvas.height = context.canvas.clientHeight;
-    var radius = canvas.height * 0.22;
-    var margin = canvas.height * 0.04;
+    var radius = canvas.height * 0.22; // 4 * 0.22 = 0.88
+    var margin = canvas.height * 0.04; // 3 * 0.04 = 0.12 + 0.88 = 1.00
     var offset = (canvas.width - canvas.height) / 2;
     
     context.clearRect(0, 0, canvas.width, canvas.height);
