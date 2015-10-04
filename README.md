@@ -1,7 +1,7 @@
 Solving Sol
 ===========
 
-![Sol LeWitt Reference Image](http://wholepixel.com/images/sol-lewitt-reference.jpg)
+![Sol LeWitt Reference Image](http://solvingsol.com/screenshots/thumbs/391-amiccolis-index.html.png)
 
 An open project to implement Sol LeWitt's instructions in JavaScript.
 
