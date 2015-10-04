@@ -46,3 +46,11 @@ On a wall surface, any continuous stretch of wall, using a hard pencil, place fi
 - [Radical Art](http://radicalart.info/concept/LeWitt/)
 - [Mass MOCA](http://www.massmoca.org/lewitt/)
 - [Dia Art](http://www.diaart.org/exhibitions/main/3)
+ 
+
+### Other Solutions
+
+![Sol LeWitt Reference Image](http://solvingsol.com/screenshots/thumbs/328-amiccolis-index.html.png)
+![Sol LeWitt Reference Image](http://solvingsol.com/screenshots/thumbs/118-amiccolis-index.html.png)
+![Sol LeWitt Reference Image](http://solvingsol.com/screenshots/thumbs/091-doolittle-index.html.png)
+
