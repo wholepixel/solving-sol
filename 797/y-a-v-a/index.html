@@ -14,6 +14,8 @@ canvas {
 </style>
 <canvas></canvas>
 <script>
+// Javascript port of java code from: http://cs.nyu.edu/~perlin/noise/
+// with a little help of http://jsfiddle.net/aVSX7/light/
 PerlinNoise = new function() {
 
   this.noise = function(x, y, z) {
@@ -88,28 +90,47 @@ function number797() {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     context.lineWidth = 4;
-    var margin = 20;
+    var marginX = 40;
+    var marginY = 40;
+    var stepX = 4;
+    var stepY = 8;
+    var maxX = (context.canvas.clientWidth - (2 * marginX)) / stepX;
+    var maxY = (context.canvas.clientHeight - (2 * marginY)) / stepY;
     var colors = ['#2996f2', '#fe4f5d', '#eedf29'];
 
     var noise;
+    var pointCacheX = [];
+    var pointCacheY = [];
 
-    var colorIndex = 0;
-    for (var y = margin; y < (context.canvas.clientHeight - margin); y += 6) {
-      context.strokeStyle = colorIndex === 0 ? '#000000' : colors[colorIndex % 3];
+    var x = marginX;
+    var y = marginY;
+
+    var sequence = 0;
+    for (var indexY = 0; indexY < maxY; indexY++) {
+      context.strokeStyle = sequence === 0 ? '#000000' : colors[sequence % 3];
 
       context.moveTo(0, y);
       context.beginPath();
-      var m = 0;
-      for (var x = margin; x < (context.canvas.clientWidth - margin); x += 5) {
-        noise = PerlinNoise.noise(x + (100 * m) , 1.1241125124, 0.2345234534 + (300 * m)) * 10;
-        // noise = 0;
-        y = y + Math.sin((x / 20) * (Math.PI * 0.2)) + Math.sin((x / 10) * Math.PI * 0.16) + Math.sin(x / 5 * Math.PI * .2345);
-        context.lineTo(x, y + noise);
-        m += Math.random() * 0.0001;
+
+      for (var index = 0; index < maxX; index++) {
+        noise = PerlinNoise.noise(Math.random(), Math.random(), 0.0009);
+        noise = (noise * 2) - 1;
+
+        if (sequence === 0) {
+          x = x + stepX;
+          y = y + Math.sin(x * Math.PI * 0.01 * noise) + Math.sin(x * Math.PI * (0.016 / noise)) + Math.sin(x * Math.PI * 0.0469 * noise);
+        } else {
+          x = pointCacheX[index];
+          y = pointCacheY[index];
+        }
+        pointCacheX[index] = x + noise;
+        pointCacheY[index] = y + stepY + noise;
+
+        context.lineTo(pointCacheX[index], pointCacheY[index]);
       }
       context.stroke();
 
-      colorIndex++;
+      sequence++;
     }
 
 }
