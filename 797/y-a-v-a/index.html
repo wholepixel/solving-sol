@@ -1,5 +1,6 @@
 <!doctype html>
-<title>#797</title>
+<title>y-a-v-a ❤︎ sol lewitt • #797</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body,html {
   width: 100%;
@@ -113,12 +114,14 @@ function number797() {
       context.beginPath();
 
       for (var index = 0; index < maxX; index++) {
-        noise = PerlinNoise.noise(Math.random(), Math.random(), 0.0009);
+        noise = PerlinNoise.noise(Math.random(), Math.random(), Math.random());
         noise = (noise * 2) - 1;
 
         if (sequence === 0) {
           x = x + stepX;
-          y = y + Math.sin(x * Math.PI * 0.01 * noise) + Math.sin(x * Math.PI * (0.016 / noise)) + Math.sin(x * Math.PI * 0.0469 * noise);
+          y = y + Math.sin(x * Math.PI * 0.01 * noise)
+            + Math.sin(x * Math.PI * (0.016 / noise))
+            + Math.sin(x * Math.PI * 0.0469 * noise);
         } else {
           x = pointCacheX[index];
           y = pointCacheY[index];
@@ -135,7 +138,7 @@ function number797() {
 
 }
 
-document.onresize = number797;
+window.onresize = number797;
 
 number797();
 </script>

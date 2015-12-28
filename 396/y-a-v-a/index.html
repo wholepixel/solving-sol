@@ -1,6 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
 <title>y-a-v-a ❤︎ sol lewitt • #396</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 html,body {
     width: 100%;
@@ -22,7 +23,7 @@ function number396() {
     var radius = canvas.height * 0.22; // 4 * 0.22 = 0.88
     var margin = canvas.height * 0.04; // 3 * 0.04 = 0.12 + 0.88 = 1.00
     var offset = (canvas.width - canvas.height) / 2;
-    
+
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     var polygons = [5, 6, 7, 8];
@@ -39,7 +40,7 @@ function number396() {
     var i = 1;
     var j = 0;
     var x, y;
-    
+
     for (var k = 1; k <= polygons.length; k++) {
         index = k - 1;
         context.save();
@@ -49,7 +50,7 @@ function number396() {
         context.translate(offsetX, offsetY);
         coords = [];
         order = orders[index];
-    
+
         for(i = 1; i <= sides; i++) {
             angle = (2 * Math.PI) * (i / sides) - (0.5 * Math.PI);
             x = radius + Math.cos(angle) * radius;
