@@ -13,3 +13,5 @@ C third wall: The background is RR. Left plane: GBB; right plane: RYG; bottom pl
 D The background is BB. Left plane: GYB. right plane: GRR; top plane: YGY
 
 Key: Red = R; Yellow = Y; Blue = B; Gray = G
+
+![diagram](541.jpg)
