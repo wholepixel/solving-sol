@@ -1,0 +1,179 @@
+<!--
+## Wall Drawing #49 (1970)
+
+A wall divided equally into fifteen equal parts, each with a different line direction and color, and all combinations.
+
+Red, Yellow, Blue, Black pencil
+-->
+<html><head>
+<title>Sol LeWitt Wall Drawing #49</title>
+<script>
+function line(ctx, x1, y1, x2, y2) {
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+}
+
+function region1(ctx, linew, startx, endx, h) {
+  ctx.strokeStyle = 'black';
+
+  // The black lines don't look good near the start or end, so don't draw them there
+  for (var i=startx+linew; i < endx - (linew/2); i += linew) {
+    line(ctx, i, 0, i, h);
+  }
+}
+
+function region2(ctx, linew, startx, endx, h) {
+  ctx.strokeStyle = 'yellow';
+  for (var i=0; i < h; i += linew) {
+    line(ctx, startx, i, endx, i);
+  }
+}
+
+// red diagonal upward to the right
+function region3(ctx, linew, startx, endx, h) {
+  ctx.strokeStyle = 'red';
+
+  var d = endx-startx;
+
+  for (var i=0; i-d < h; i += linew) {
+    line(ctx, startx, i, endx, i-d);
+  }
+}
+
+// blue diagonal downward to the right
+function region4(ctx, linew, startx, endx, h) {
+  ctx.strokeStyle = 'blue';
+
+  var d = endx-startx;
+
+  for (var i=-d; i < h; i += linew) {
+    line(ctx, startx, i, endx, i+d);
+  }
+}
+
+function drawregion(ctx, n, linew, startx, endx, h) {
+  if (n == 1) { region1(ctx, linew, startx, endx, h); }
+  if (n == 2) { region2(ctx, linew, startx, endx, h); }
+  if (n == 3) { region3(ctx, linew, startx, endx, h); }
+  if (n == 4) { region4(ctx, linew, startx, endx, h); }
+}
+
+function draw(canvas, params) {
+  var ctx = canvas.getContext("2d"),
+      h = canvas.height,
+      w = canvas.width
+      regionw = w/15,
+      divs = params.divs || 6,
+      linew = regionw/divs;
+
+  ctx.clearRect(0,0,w,h);
+
+  regions = [
+    [1], [2], [3], [4],
+    [1,2], [1,3], [1,4], [2,3], [2,4], [3,4],
+    [1,2,3], [1,2,4], [1,3,4], [2,3,4],
+    [1,2,3,4]];
+
+  for (var i=0; i < regions.length; i++) {
+    var draw = regions[i];
+    for (var j=0; j < draw.length; j++) {
+      drawregion(ctx, draw[j], linew, i*regionw, (i+1)*regionw, h);
+    }
+  }
+}
+
+function clamp(n, min, max) {
+  if (n > min) return Math.min(n, max);
+  return Math.max(n, min);
+}
+
+function clone(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  var canvas = document.getElementById("wall"),
+      mousemove = false,
+      mousedown = undefined;
+
+  var params = {
+    divs: 6,
+  }
+
+  var original_params = clone(params);
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    draw(canvas, params);
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas(canvas);
+
+  window.addEventListener("mousedown", function(evt) {
+    mousemove = false;
+    mousedown = evt;
+  }, false);
+  window.addEventListener("mousemove", function(evt) {
+    if (mousedown !== undefined) {
+      mousemove = true;
+      diffX = evt.clientX - mousedown.clientX;
+      diffY = evt.clientY - mousedown.clientY;
+
+      params.divs = clamp(params.divs - diffY/100, 2, 15);
+      draw(canvas, params);
+    }
+  }, false);
+  window.addEventListener("mouseup", function(evt) {
+    mousemove = false;
+    mousedown = undefined;
+  }, false);
+
+  window.addEventListener("keypress", function(evt) {
+    // r for reset
+    if (evt.keyCode == 114) {
+      params = clone(original_params);
+      draw(canvas, params);
+    }
+  });
+
+  var A = document.getElementById("A");
+  var Q = document.getElementById("Q");
+  A.style["visibility"] = "hidden";
+  document.getElementById("Q").addEventListener("mouseover", function() {
+    A.style["visibility"] = "";
+    Q.style["visibility"] = "hidden";
+  });
+  document.getElementById("A").addEventListener("mouseout", function() {
+    A.style["visibility"] = "hidden";
+    Q.style["visibility"] = "";
+  });
+});
+</script>
+<style>
+body { margin: 0; }
+#Q { position: absolute; bottom: 5px; right: 5px; color: blue; background-color: white; font-size: 24px; }
+#A { position: absolute; bottom: 5px; right: 5px; background-color: white; }
+</style>
+<html>
+  <canvas id="wall"></canvas>
+  <span id="Q">?</span>
+  <pre id="A">Wall Drawing #49 (1970)
+
+A wall divided equally into fifteen equal parts, each with a different line direction and color, and all combinations.
+
+Red, Yellow, Blue, Black pencil
+
+Click + Drag to change the line spacing
+Press 'r' to reset
+</pre>
+</html>
