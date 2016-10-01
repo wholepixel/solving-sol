@@ -1,0 +1,91 @@
+<!doctype html>
+  <meta charset="utf-8">
+  <title>y_a_v_a ❤︎ Sol LeWitt • #118</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  html,body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  canvas {
+    width: 100%;
+    height: 100%;
+  }
+  </style>
+  <canvas></canvas>
+  <script>
+  function wallDrawing118() {
+    // On a wall surface, ...
+    var c = document.getElementsByTagName('canvas')[0];
+    var ctx = c.getContext('2d');
+
+    // ... any continuous stretch of wall, ...
+    var sol = ctx.canvas.width = ctx.canvas.clientWidth;
+    var lewitt = ctx.canvas.height = ctx.canvas.clientHeight;
+
+    ctx.clearRect(0, 0, c.width, c.height);
+
+    // ... using a hard pencil, ...
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 0.1;
+
+    var points = [];
+    // ... place fifty points at random. ...
+    for(var i = 0; i < 50; i++) {
+      points.push(newCoord());
+
+      ctx.fillRect(points[i][0], points[i][1], 1, 1);
+
+      if (i > 0) {
+        // ... All of the points should be connected by straight lines.
+        for (var j = (points.length - 1); j >= 0; j--) {
+          drawStraightLine(points[i][0], points[i][1], points[j][0], points[j][1]);
+        }
+      }
+    }
+
+    // ... The points should be evenly distributed over the area of the wall. ...
+    function newCoord() {
+      // 50 = 10 * 5
+      // 84 = (10 + 2) * (5 + 2)
+      var limit = Math.sqrt((sol * lewitt) / 84);
+      var newCoord;
+      var shouldRenew = [];
+      do {
+        newCoord = randomCoord();
+        shouldRenew = points.filter(function(existingCoord, index, array) {
+          var distance = Math.round(
+            Math.sqrt(
+              Math.pow(newCoord[0] - existingCoord[0], 2) +
+              Math.pow(newCoord[1] - existingCoord[1], 2)
+            )
+          );
+          return distance < limit;
+        });
+      } while (shouldRenew.length > 0);
+
+      return newCoord;
+    }
+
+    function randomCoord() {
+      return [randomValue(sol), randomValue(lewitt)];
+    }
+
+    function randomValue(maximum) {
+      return Math.round(Math.random() * maximum);
+    }
+
+    function drawStraightLine(x1, y1, x2, y2) {
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+  }
+
+  window.onresize = wallDrawing118;
+
+  wallDrawing118();
+  </script>
