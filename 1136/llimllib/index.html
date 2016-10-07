@@ -1,7 +1,7 @@
 <html><head><title>Sol LeWitt Wall Drawing #1136</title>
 <style>
-#Q { position: absolute; bottom: 15px; right: 15px; color: blue; background-color: white; font-size: 24px; }
-#A { position: absolute; bottom: 15px; right: 15px; padding: 10px; background-color: white; }
+#Q { position: fixed; bottom: 15px; right: 15px; color: blue; background-color: white; font-size: 24px; }
+#A { position: fixed; bottom: 15px; right: 15px; padding: 10px; background-color: white; }
 body {
   margin: 0;
   font: 13px sans-serif;
@@ -73,17 +73,17 @@ function drawbg(canvas) {
 }
 
 function resize(e) {
-  var width = window.innerWidth,
-      height = width * 0.3,
-      canvas = document.getElementById("wall");
+  var canvas = document.getElementById("wall"),
+      svgscale = 4116.660/1235,
+      svgheight = window.innerHeight*1.3,
+      svgwidth = svgheight * svgscale * .88;
 
-  canvas.width = width;
-  canvas.height = height*.95;
+  canvas.width = svgwidth;
+  canvas.height = window.innerHeight;
 
   drawbg(canvas);
-  document.getElementById("obj").style.height = height*1.2+"px";
-  document.querySelector(".container").style.height = height*.95+"px";
-  document.getElementById("wall").style.height = height*.95+"px";
+  document.getElementById("obj").style.height = svgheight+"px";
+  document.querySelector(".container").style.width = svgwidth+"px";
 }
 
 function init() {
