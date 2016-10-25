@@ -1,0 +1,126 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>y-a-v-a ❤︎ sol lewitt • #295</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html,body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+</style>
+<canvas></canvas>
+<script>
+function wallDrawing295() {
+  'use strict';
+
+  var canvas = document.getElementsByTagName('canvas')[0];
+  var ctx = canvas.getContext('2d');
+
+  var width = ctx.canvas.width = ctx.canvas.clientWidth;
+  var height =ctx.canvas.height = ctx.canvas.clientHeight;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2;
+
+  /*
+    Imagine a 5 x 5 grid.
+    The circle, square, triangle
+    trapezoid, parallelogram and rectangle
+    can all be drawn within this grid.
+    Except for the circle, all forms
+    can be displayed in one continuous line.
+      0 1 2 3 4
+    0 . . . . .
+    1 . . . . .
+    2 . . . . .
+    3 . . . . .
+    4 . . . . .
+  */
+  var points = [
+    [1, 4],
+    [1, 0],
+    [0, 0],
+    [0, 4],
+    [1, 0],
+    [4, 0],
+    [4, 4],
+    [3, 0],
+    [3, 4],
+    [4, 4],
+    [2, 0],
+    [0, 4],
+    [3, 4],
+    [4, 0]
+  ];
+
+  ctx.beginPath();
+  var circlePoint = [2, 2];
+  var radius = 2;
+  ctx.arc(
+    relativeX(circlePoint[0]),
+    relativeY(circlePoint[1]),
+    relative(radius),
+    0, 2 * Math.PI, false
+  );
+
+  // move to starting point
+  ctx.moveTo(relativeX(points[0][0]), relativeY(points[0][1]));
+
+  for (var i = 1; i < points.length; i++) {
+    var x = relativeX(points[i][0]);
+    var y = relativeY(points[i][1]);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    // in order to remove ugly angles
+    // we relocate the pointer and start a new line
+    ctx.moveTo(x, y);
+  }
+
+  function relativeX(value) {
+    return relativate(value, 'x');
+  }
+
+  function relativeY(value) {
+    return relativate(value, 'y');
+  }
+
+  function relative(value) {
+    return relativate(value, undefined);
+  }
+
+  function relativate(value, axis) {
+    var referenceSize = width > height ? height : width;
+
+    // 10% margin
+    var margin = Math.round(referenceSize / 5);
+    var maxSize = referenceSize - margin;
+    // 4 areas in the grid
+    var multiplier = Math.round(maxSize / 4);
+    var offset = 0;
+    // center offset by division of 2
+    if (axis === 'x') {
+      offset = Math.round((width - maxSize) / 2);
+    } else if (axis === 'y') {
+      offset = (height - maxSize) / 2;
+    }
+
+    return (value * multiplier) + offset;
+  }
+}
+
+window.onresize = wallDrawing295;
+
+wallDrawing295();
+</script>
