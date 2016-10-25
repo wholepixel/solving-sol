@@ -1,0 +1,209 @@
+<html>
+<head>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+	<title>Sol LeWitt Wall Drawing 289</title>
+	<style type="text/css">
+		body {
+			background: #000;
+			margin: 0;
+		}
+		.drawing {
+			margin: 0;
+			text-align: center;
+
+		}
+		#lines {
+			width:100%;
+			height: 100%;
+		}
+
+		line {
+		  stroke: #fff;
+		  stroke-width: 3;
+		}
+	</style>
+</head>
+<body>
+
+<div class="drawing">
+	<div id="lines"></div>
+</div>
+</div>
+
+
+<script>
+
+function sol289() {
+var svg = d3.select('#lines')
+	.append('svg')
+	.attr("width", "100%")
+	.attr("height", "100%");
+
+function getRandomArbitrary(min, max) {
+  return Math.round(Math.random() * (max - min) + min);
+}
+
+function lineData() {
+	var data = new Array();
+	var id = 1;	
+	var ww = window.innerWidth;
+	var wh = window.innerHeight;
+	var numLines = 12;
+	// iterate for cells/columns inside rows
+		for (var center = 0; center < numLines * 2; center++) {	
+				data.push({
+				id: id,
+				class: "center",
+				x1: ww/2,
+				y1: wh/2,
+				x2: getRandomArbitrary(0, ww),
+				y2: getRandomArbitrary(0, wh)
+			})
+			id++;
+		}
+				
+		for (var topleft = 0; topleft < numLines; topleft++) {	
+				data.push({
+				id: id,
+				class: "topleft",
+				x1: 0,
+				y1: 0,
+				x2: getRandomArbitrary(0, ww),
+				y2: getRandomArbitrary(0, wh)
+			})
+			id++;
+		}
+
+		for (var topright = 0; topright < numLines; topright++) {	
+				data.push({
+				id: id,
+				class: "topright",
+				x1: ww,
+				y1: 0,
+				x2: getRandomArbitrary(0, ww),
+				y2: getRandomArbitrary(0, wh)
+			})
+			id++;
+		}
+
+		for (var bottomright = 0; bottomright < numLines; bottomright++) {		
+				data.push({
+				id: id,
+				class: "bottomright",
+				x1: ww,
+				y1: wh,
+				x2: getRandomArbitrary(0, ww),
+				y2: getRandomArbitrary(0, wh)
+			})
+			id++;
+		}
+
+		for (var bottomleft = 0; bottomleft < numLines; bottomleft++) {		
+				data.push({
+				id: id,
+				class: "bottomleft",
+				x1: 0,
+				y1: wh,
+				x2: getRandomArbitrary(0, ww),
+				y2: getRandomArbitrary(0, wh)
+			})
+			id++;
+		}
+
+		for (var middleleft = 0; middleleft < numLines; middleleft++) {		
+				data.push({
+				id: id,
+				class: "middleleft",
+				x1: 0,
+				y1: wh/2,
+				x2: getRandomArbitrary(0, ww),
+				y2: getRandomArbitrary(0, wh)
+			})
+			id++;
+		}
+
+		for (var middleright = 0; middleright < numLines; middleright++) {		
+				data.push({
+				id: id,
+				class: "middleright",
+				x1: ww,
+				y1: wh/2,
+				x2: getRandomArbitrary(0, ww),
+				y2: getRandomArbitrary(0, wh)
+			})
+			id++;
+		}
+
+
+		for (var middletop = 0; middletop < numLines; middletop++) {		
+				data.push({
+				id: id,
+				class: "middletop",
+				x1: ww/2,
+				y1: 0,
+				x2: getRandomArbitrary(0, ww),
+				y2: getRandomArbitrary(0, wh)
+			})
+			id++;
+		}
+
+		for (var middlebottom = 0; middlebottom < numLines; middlebottom++) {		
+				data.push({
+				id: id,
+				class: "middlebottom",
+				x1: ww/2,
+				y1: wh,
+				x2: getRandomArbitrary(0, ww),
+				y2: getRandomArbitrary(0, wh)
+			})
+			id++;
+		}
+	return data;
+} 
+
+
+
+var lineData = lineData();
+console.log(lineData);
+
+
+/*var row = svg.selectAll(".row")
+	.data(lineData)
+	.enter().append("g")
+	.attr("class", "row");*/
+
+var line = svg.selectAll(".rand")
+	.data(lineData)
+	.enter().append('line')
+	.attr("class", function(d) { return d.class; })
+	.attr("id", function(d) { return d.id; })
+ .attr("x1", function(d) { return d.x1; } )
+ .attr("y1", function(d) { return d.y1; })
+ .attr("x2", function(d) { return d.x1; } )
+ .attr("y2", function(d) { return d.y1; })
+ .transition().duration(2000)
+ .attr("x2", function(d) { return d.x2; })
+ .attr("y2", function(d) { return d.y2; });
+ 
+ }
+ 
+ // run first time
+sol289();
+
+$(window).resize(function() {
+    if(this.resizeTO) clearTimeout(this.resizeTO);
+    this.resizeTO = setTimeout(function() {
+        $(this).trigger('resizeEnd');
+    }, 500);
+});
+
+//resize on resizeEnd function
+$(window).bind('resizeEnd', function() {
+	 d3.selectAll("svg").remove();
+	 sol289();
+});
+ 
+ 
+</script>
+
