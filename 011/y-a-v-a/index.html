@@ -1,0 +1,96 @@
+<!doctype html>
+  <meta charset="utf-8">
+  <title>y_a_v_a ❤︎ Sol LeWitt • #011</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  html,body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  canvas {
+    height: 100%;
+    width: 100%;
+  }
+  </style>
+  <canvas></canvas>
+  <script>
+  function number87() {
+    var c = document.getElementsByTagName('canvas')[0];
+    var ctx = c.getContext('2d');
+    var height = ctx.canvas.height = ctx.canvas.clientHeight;
+    var width = ctx.canvas.width = ctx.canvas.clientWidth;
+
+    // clear screen on resize
+    ctx.clearRect(0, 0, c.width, c.height);
+
+    // more pencil gray than black
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 0.2;
+
+    var increment = 20;
+    var halfHeight = Math.ceil(height / 2);
+    var halfWidth = Math.ceil(width / 2);
+    var stepsX = Math.ceil(halfWidth / increment);
+    var stepsY = Math.ceil(halfHeight / increment);
+    var stepLimit = (stepsX + stepsY) * increment;
+
+    for (var i = 0; i < width; i += increment) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, height);
+      ctx.stroke();
+    }
+
+    for (var j = 0; j < height; j += increment) {
+      ctx.beginPath();
+      ctx.moveTo(0, j);
+      ctx.lineTo(width, j);
+      ctx.stroke();
+    }
+
+    var offsetX = offsetY = x1 = x2 = y1 = y2 = 0;
+    for (var p = 0; p < 2; p++) {
+      for (var q = 0; q < 2; q++) {
+        var m = 0;
+        var n = 0;
+        var r = 0;
+        offsetX = p * stepsX * increment;
+        offsetY = q * stepsY * increment;
+        if (p === q) {
+          for (var k = 0; k <= stepLimit; k += increment) {
+            x1 = Math.min(k, stepsX * increment) + offsetX;
+            y1 = (k >= halfWidth ? m++ * increment : 0) + offsetY;
+            x2 = (k >= halfHeight ? n++ * increment : 0) + offsetX;
+            y2 = Math.min(k, stepsY * increment) + offsetY;
+
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+          }
+        }
+
+        if (p !== q) {
+          m = 0, n = 0, r = 0;
+          for (var l = 0; l <= stepLimit; l += increment) {
+            x1 = Math.min(l, stepsX * increment) + offsetX;
+            y1 = (l < halfWidth ? (stepsY * increment) : (stepsY - m++) * increment) + offsetY;
+            x2 = (l < halfHeight ? 0 : n++ * increment) + offsetX;
+            y2 = (l < halfHeight ? ((stepsY - r++) * increment) : 0) + offsetY;
+
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+  }
+
+  window.onresize = number87;
+
+  number87();
+  </script>
