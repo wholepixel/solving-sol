@@ -8,7 +8,11 @@
       {
         "author" : "y-a-v-a",
         "entry" : "index.html"
-      }
+      },
+      {
+        "author" : "cagrimmett",
+        "entry" : "index.html"
+      }      
     ],
   "016" :
     [
@@ -44,6 +48,10 @@
       {
         "author" : "y-a-v-a",
         "entry" : "index.html"
+      },
+      {
+        "author" : "cagrimmett",
+        "entry" : "index.html"
       }
     ],
   "065" :
@@ -53,10 +61,21 @@
         "entry" : "index.html"
       }
     ],
+  "086" :
+    [
+      {
+        "author" : "cagrimmett",
+        "entry" : "index.html"
+      }
+    ],
   "087" :
     [
       {
         "author" : "y-a-v-a",
+        "entry" : "index.html"
+      },
+      {
+        "author" : "cagrimmett",
         "entry" : "index.html"
       }
     ],
@@ -117,6 +136,13 @@
         "entry" : "273.html"
       }
     ],
+  "289" :
+    [
+      {
+        "author" : "cagrimmett",
+        "entry" : "index.html"
+      }
+    ],  
   "295" :
     [
       {
@@ -140,6 +166,10 @@
       {
         "author" : "amiccolis",
         "entry" : "index.html"
+      },
+      {
+        "author" : "cagrimmett",
+        "entry" : "index.html"
       }
     ],
   "392" :
@@ -156,6 +186,13 @@
         "entry" : "index.html"
       }
     ],
+  "614" :
+    [
+      {
+        "author" : "cagrimmett",
+        "entry" : "index.html"
+      }
+    ],  
   "797" :
     [
       {
