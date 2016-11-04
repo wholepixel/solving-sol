@@ -1,0 +1,99 @@
+<html>
+	<head>
+		<!-- Implemented by Chuck Grimmett http://cagrimmett.com -->
+		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+		<title>Sol LeWitt Wall Drawing 614</title>
+		<style>
+		
+			body {
+			  margin-top:-15px;
+			  margin-left: -15px;
+			  padding:0;
+			  position: relative;
+			  background: #000;
+			}
+			
+			.node {
+			  box-sizing: border-box;
+			  position: absolute;
+			  overflow: hidden;
+			}
+		
+		</style>
+	</head>
+<body>
+
+	<script>
+		
+	function sol614() {
+		
+		var width = window.innerWidth + 30,
+		    height = window.innerHeight + 30;
+		var format = d3.format(",d");
+		
+		function getRandomArbitrary(min, max) {
+			  return Math.random() * (max - min) + min;
+		}
+		
+		function treeData() {
+		  var obj = {name: "rect"};
+		  var children = [];
+		  for (var row = 0; row < 40; row++) {
+		    children.push({id: row, value: getRandomArbitrary(60, 1000)})
+		  }
+		  obj['children'] = children;
+		  return obj;
+		}
+		
+		var tree = treeData();
+		console.log(tree);
+		
+		var treemap = d3.treemap()
+		    .size([width, height])
+		    .padding(15)
+		    .round(true)
+		    .tile(d3.treemapBinary);
+		
+		var tree = d3.hierarchy(tree);
+		
+		tree.sum(function(d) { return d.value; });
+		console.log(tree);
+		
+		treemap(tree);
+		
+		d3.select("body")
+		.selectAll(".node")
+		.data(tree.leaves())
+		.enter().append("div")
+		  .attr("class", "node")
+		  .attr("title", function(d) { return d.data.id; })
+		  .style("left", function(d) { return d.x0 + "px"; })
+		  .style("top", function(d) { return d.y0 + "px"; })
+		  .style("width", function(d) { return d.x1 - d.x0 + "px"; })
+		  .style("height", function(d) { return d.y1 - d.y0 + "px"; })
+		  .style("background", "#fff");
+		  
+	}
+
+	//first run
+	sol614();
+	
+	$(window).resize(function() {
+	    if(this.resizeTO) clearTimeout(this.resizeTO);
+	    this.resizeTO = setTimeout(function() {
+	        $(this).trigger('resizeEnd');
+	    }, 500);
+	});
+	
+	//resize on resizeEnd function
+	$(window).bind('resizeEnd', function() {
+		 d3.selectAll("div.node").remove();
+		 sol614();
+	});
+	
+	
+	
+	</script>
+</body>
+</html>
