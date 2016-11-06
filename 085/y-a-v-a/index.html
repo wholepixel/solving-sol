@@ -1,0 +1,131 @@
+<!doctype html>
+  <meta charset="utf-8">
+  <title>y_a_v_a ❤︎ Sol LeWitt • #85</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+    body {
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .number85 {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      height: 100%;
+    }
+    .sol {
+      width: calc(100% / 4);
+    }
+    .lewitt {
+      width: calc(100% / 6);
+    }
+    .wall {
+      width: calc(100% / 4);
+    }
+    .drawing {
+      width: 100%;
+    }
+
+    .vertical {
+      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px);
+    }
+
+    .horizontal {
+      background-image: repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px);
+    }
+
+    .diagonal-right {
+      background-image: repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px)
+    }
+
+    .diagonal-left {
+      background-image: repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
+    }
+
+    .vertical-horizontal {
+      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
+        repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px);
+    }
+
+    .vertical-diagonal-right {
+      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
+        repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px);
+    }
+
+    .vertical-diagonal-left {
+      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
+        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
+    }
+
+    .horizontal-diagonal-right {
+      background-image: repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px),
+        repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px);
+    }
+
+    .horizontal-diagonal-left {
+      background-image: repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px),
+        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
+    }
+
+    .diagonal-left-diagonal-right {
+      background-image: repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px),
+        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
+    }
+
+    .vertical-horizontal-diagonal-right {
+      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
+        repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px),
+        repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px);
+    }
+
+    .vertical-horizontal-diagonal-left {
+      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
+        repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px),
+        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
+    }
+
+    .vertical-diagonal-right-diagonal-left {
+      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
+        repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px),
+        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
+    }
+
+    .horizontal-diagonal-right-diagonal-left {
+      background-image: repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px),
+        repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px),
+        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
+    }
+
+    .vertical-horizontal-diagonal-left-diagonal-right {
+      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
+        repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px),
+        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px),
+        repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px);
+    }
+  </style>
+
+<div class="number85">
+  <div class="sol vertical"></div>
+  <div class="sol horizontal"></div>
+  <div class="sol diagonal-right"></div>
+  <div class="sol diagonal-left"></div>
+
+  <div class="lewitt vertical-horizontal"></div>
+  <div class="lewitt vertical-diagonal-right"></div>
+  <div class="lewitt vertical-diagonal-left"></div>
+  <div class="lewitt horizontal-diagonal-right"></div>
+  <div class="lewitt horizontal-diagonal-left"></div>
+  <div class="lewitt diagonal-left-diagonal-right"></div>
+
+  <div class="wall vertical-horizontal-diagonal-right"></div>
+  <div class="wall vertical-horizontal-diagonal-left"></div>
+  <div class="wall vertical-diagonal-right-diagonal-left"></div>
+  <div class="wall horizontal-diagonal-right-diagonal-left"></div>
+
+  <div class="drawing vertical-horizontal-diagonal-left-diagonal-right"></div>
+
+</div>
