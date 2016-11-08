@@ -29,84 +29,59 @@
     .drawing {
       width: 100%;
     }
-
-    .vertical {
-      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px);
-    }
-
-    .horizontal {
-      background-image: repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px);
-    }
-
-    .diagonal-right {
-      background-image: repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px)
-    }
-
-    .diagonal-left {
-      background-image: repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
-    }
-
-    .vertical-horizontal {
-      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
-        repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px);
-    }
-
-    .vertical-diagonal-right {
-      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
-        repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px);
-    }
-
-    .vertical-diagonal-left {
-      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
-        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
-    }
-
-    .horizontal-diagonal-right {
-      background-image: repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px),
-        repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px);
-    }
-
-    .horizontal-diagonal-left {
-      background-image: repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px),
-        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
-    }
-
-    .diagonal-left-diagonal-right {
-      background-image: repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px),
-        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
-    }
-
-    .vertical-horizontal-diagonal-right {
-      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
-        repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px),
-        repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px);
-    }
-
-    .vertical-horizontal-diagonal-left {
-      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
-        repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px),
-        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
-    }
-
-    .vertical-diagonal-right-diagonal-left {
-      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
-        repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px),
-        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
-    }
-
-    .horizontal-diagonal-right-diagonal-left {
-      background-image: repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px),
-        repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px),
-        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px);
-    }
-
-    .vertical-horizontal-diagonal-left-diagonal-right {
-      background-image: repeating-linear-gradient(90deg, #FFFF00 0px, transparent 1px, transparent 5px, #FFFF00 6px),
-        repeating-linear-gradient(#00FF00 0px, transparent 1px, transparent 5px, #00FF00 6px),
-        repeating-linear-gradient(45deg, #0000FF 0px, transparent 1px, transparent 5px, #0000FF 6px),
-        repeating-linear-gradient(135deg, #FF0000 0px, transparent 1px, transparent 5px, #FF0000 6px);
-    }
   </style>
+
+  <script>
+    var valueTemplate = [
+      'repeating-linear-gradient(00deg',
+      ' #FFFFFF 0px',
+      ' transparent 1px',
+      ' transparent 5px',
+      ' #FFFFFF 6px)'
+    ].join(',');
+
+    var lineVariants = [
+      ['vertical', 90, 'FFFF00'],
+      ['horizontal', 0, '00FF00'],
+      ['diagonal-left', 45, '0000FF'],
+      ['diagonal-right', 135, 'FF0000']
+    ];
+
+    var mappings = [
+      [[0], [1], [2], [3]],
+      [[0, 1], [0, 3], [0, 2], [1, 3], [1, 2], [3, 2]],
+      [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]],
+      [[0, 1, 2, 3]]
+    ];
+
+    var css = '';
+    var property = 'background-image';
+    var index;
+    var selector;
+    var value;
+
+    for (var s = 0; s < mappings.length; s++) {
+      for(var o = 0; o < mappings[s].length; o++) {
+        selector = [];
+        value = [];
+        for(var l = 0; l < mappings[s][o].length; l++) {
+          index = mappings[s][o][l];
+          selector.push(lineVariants[index][0]);
+          value.push(
+            valueTemplate
+              .replace(/([0]{2})/, lineVariants[index][1])
+              .replace(/[F]{6}/g, lineVariants[index][2])
+          );
+        }
+        selector = '.' + selector.join('-');
+        value = property + ':' + value.join(',');
+        css += [selector, value].join('{') + '}';
+      }
+    }
+    var styleNode = document.createElement('style');
+    styleNode.innerText = css;
+    document.querySelector('head').appendChild(styleNode);
+  </script>
 
 <div class="number85">
   <div class="sol vertical"></div>
@@ -119,12 +94,12 @@
   <div class="lewitt vertical-diagonal-left"></div>
   <div class="lewitt horizontal-diagonal-right"></div>
   <div class="lewitt horizontal-diagonal-left"></div>
-  <div class="lewitt diagonal-left-diagonal-right"></div>
+  <div class="lewitt diagonal-right-diagonal-left"></div>
 
   <div class="wall vertical-horizontal-diagonal-right"></div>
   <div class="wall vertical-horizontal-diagonal-left"></div>
-  <div class="wall vertical-diagonal-right-diagonal-left"></div>
-  <div class="wall horizontal-diagonal-right-diagonal-left"></div>
+  <div class="wall vertical-diagonal-left-diagonal-right"></div>
+  <div class="wall horizontal-diagonal-left-diagonal-right"></div>
 
   <div class="drawing vertical-horizontal-diagonal-left-diagonal-right"></div>
 
