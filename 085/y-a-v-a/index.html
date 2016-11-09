@@ -1,0 +1,106 @@
+<!doctype html>
+  <meta charset="utf-8">
+  <title>y_a_v_a ❤︎ Sol LeWitt • #85</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+    body {
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .number85 {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      height: 100%;
+    }
+    .sol {
+      width: calc(100% / 4);
+    }
+    .lewitt {
+      width: calc(100% / 6);
+    }
+    .wall {
+      width: calc(100% / 4);
+    }
+    .drawing {
+      width: 100%;
+    }
+  </style>
+
+  <script>
+    var valueTemplate = [
+      'repeating-linear-gradient(00deg',
+      ' #FFFFFF 0px',
+      ' transparent 1px',
+      ' transparent 5px',
+      ' #FFFFFF 6px)'
+    ].join(',');
+
+    var lineVariants = [
+      ['vertical', 90, 'FFFF00'],
+      ['horizontal', 0, '00FF00'],
+      ['diagonal-left', 45, '0000FF'],
+      ['diagonal-right', 135, 'FF0000']
+    ];
+
+    var mappings = [
+      [[0], [1], [2], [3]],
+      [[0, 1], [0, 3], [0, 2], [1, 3], [1, 2], [3, 2]],
+      [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]],
+      [[0, 1, 2, 3]]
+    ];
+
+    var css = '';
+    var property = 'background-image';
+    var index;
+    var selector;
+    var value;
+
+    for (var s = 0; s < mappings.length; s++) {
+      for(var o = 0; o < mappings[s].length; o++) {
+        selector = [];
+        value = [];
+        for(var l = 0; l < mappings[s][o].length; l++) {
+          index = mappings[s][o][l];
+          selector.push(lineVariants[index][0]);
+          value.push(
+            valueTemplate
+              .replace(/([0]{2})/, lineVariants[index][1])
+              .replace(/[F]{6}/g, lineVariants[index][2])
+          );
+        }
+        selector = '.' + selector.join('-');
+        value = property + ':' + value.join(',');
+        css += [selector, value].join('{') + '}';
+      }
+    }
+    var styleNode = document.createElement('style');
+    styleNode.innerText = css;
+    document.querySelector('head').appendChild(styleNode);
+  </script>
+
+<div class="number85">
+  <div class="sol vertical"></div>
+  <div class="sol horizontal"></div>
+  <div class="sol diagonal-right"></div>
+  <div class="sol diagonal-left"></div>
+
+  <div class="lewitt vertical-horizontal"></div>
+  <div class="lewitt vertical-diagonal-right"></div>
+  <div class="lewitt vertical-diagonal-left"></div>
+  <div class="lewitt horizontal-diagonal-right"></div>
+  <div class="lewitt horizontal-diagonal-left"></div>
+  <div class="lewitt diagonal-right-diagonal-left"></div>
+
+  <div class="wall vertical-horizontal-diagonal-right"></div>
+  <div class="wall vertical-horizontal-diagonal-left"></div>
+  <div class="wall vertical-diagonal-left-diagonal-right"></div>
+  <div class="wall horizontal-diagonal-left-diagonal-right"></div>
+
+  <div class="drawing vertical-horizontal-diagonal-left-diagonal-right"></div>
+
+</div>
