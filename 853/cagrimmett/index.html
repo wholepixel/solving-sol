@@ -1,0 +1,162 @@
+<html>
+<head>
+	<title>Sol LeWitt 853</title>
+	<!-- Implemented by Chuck Grimmett. Learn more here: http://cagrimmett.com/sol-lewitt/2016/11/22/sol-lewitt-852-853.html -->
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+	<style type="text/css">
+		body {
+			margin: 0;
+			padding: 0;
+			border: 40px solid #111;
+			min-width: 600px;
+		}
+		#left {
+			width: calc(50% - 20px);
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			border-right: 20px solid #111;
+			background: #169A52;
+			display: inline-block;
+		}
+		#right {
+			width:calc(50% - 20px);
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			border-left: 20px solid #111;
+			background: #1174B8;
+			display: inline-block;			
+		}
+	</style>
+</head>
+<body>
+
+<div id="left"></div><div id="right"></div>
+
+<script>
+
+function sol853() {	
+var ww = window.innerWidth,
+	wh = window.innerHeight - 80,
+	halfwidth = ww/2 - 60;	
+
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function fillLeft() {
+	var data = new Array();
+		for (var point = 0; point < 3; point++) {
+			var x = getRandomArbitrary(halfwidth/10, halfwidth-halfwidth/10);
+			var y = getRandomArbitrary(wh/10, wh-wh/10);		
+				data.push({
+				x: x,
+				y: y
+			})
+		}
+		data.push({
+			x: halfwidth/2,
+			y: 0
+		});
+		data.push({
+			x: halfwidth/2,
+			y: wh
+		})
+	
+	return data;
+} 
+
+var fillLeft = fillLeft();
+console.log(fillLeft);
+console.log(fillLeft.sort(function(a,b) { return +a.y - +b.y; }));
+
+function fillRight() {
+	var data = new Array();
+		for (var point = 0; point < 3; point++) {
+			var x = getRandomArbitrary(halfwidth/10, halfwidth-halfwidth/10); // Keeps within the middle 80%
+			var y = getRandomArbitrary(wh/10, wh-wh/10);		
+				data.push({
+				x: x,
+				y: y
+			})
+		}
+		data.push({
+			x: 0,
+			y: wh/2
+		});
+		data.push({
+			x: halfwidth,
+			y: wh/2
+		})
+	
+	return data;
+} 
+
+var fillRight = fillRight();
+console.log(fillRight);
+console.log(fillRight.sort(function(a,b) { return +a.x - +b.x; }));
+
+
+                 
+var areaLeft = d3.area()
+	.x0(0)
+    .x1(function(d) { return d.x; })
+    .y(function(d) { return d.y; })
+    .curve(d3.curveBasis);
+	
+console.log(areaLeft);
+
+
+var chart = d3.select("#left").append("svg")
+	.attr("width", halfwidth)
+	.attr("height", wh)
+	.append("path")
+    .datum(fillLeft)
+    .attr("class", "areaLeft")
+    .attr("d", areaLeft)
+    .attr("fill","#AE1F26");	
+
+
+var areaRight = d3.area()
+    .x(function(d) { return d.x; })
+    //.y0(function(d) { return d.y + 100; })
+    .y0(wh)
+    .y1(function(d) { return d.y; })
+    .curve(d3.curveBasis);
+	
+console.log(areaRight);
+
+
+var chart = d3.select("#right").append("svg")
+	.attr("width", halfwidth)
+	.attr("height", wh)
+	.append("path")
+    .datum(fillRight)
+    .attr("class", "areaRight")
+    .attr("d", areaRight)
+    .attr("fill","#F5361D");	
+
+
+
+
+}
+
+ // run on load
+sol853();
+
+$(window).resize(function() {
+    if(this.resizeTO) clearTimeout(this.resizeTO);
+    this.resizeTO = setTimeout(function() {
+        $(this).trigger('resizeEnd');
+    }, 300);
+});
+
+//resize on resizeEnd function
+$(window).bind('resizeEnd', function() {
+	 d3.selectAll("svg").remove();
+	 sol853();
+});
+	
+</script>
