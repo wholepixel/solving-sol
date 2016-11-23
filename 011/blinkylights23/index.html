@@ -39,14 +39,13 @@ details {
     background: white;
 
 }
-summary::-webkit-details-marker {
-  display: none
+summary::-webkit-details-marker,
+summary::details-marker {
+    display: none;
 }
 summary {
+    cursor: pointer;
     outline: none;
-}
-summary:after {
-    background: white;
 }
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
@@ -57,7 +56,7 @@ summary:after {
             <svg id="figure"></svg>
         </div>
 
-        <details>
+        <details id="wallLabel">
             <summary>
                 <strong>Sol LeWitt</strong><br/>
                 <em>Wall Drawing #11</em>, 1969 
@@ -73,7 +72,7 @@ summary:after {
             <p style="font-size: 80%;">
                 Other interpretations of LeWitt's <em>Wall Drawing #11</em> seek symmetry
                 in patterns of grid-like repeated lines. This one instead embraces all four
-                distinct combinations of <em>"the four kinds of lines"</em>, and replaces the
+                distinct combinations of <em>"three of the four kinds of lines"</em>, and replaces the
                 license to add repitition (which creates a unified pattern out of the four quandrants)
                 with a license to add color (which distinguishes the four separate figures).
             </p>
@@ -82,6 +81,13 @@ summary:after {
 
 
         <script>
+
+
+var open = document.createElement('details');
+if ('boolean' !== typeof open.open) {
+    document.getElementById('wallLabel').setAttribute('style', 'display: none');
+}
+
 
 var svg = d3.select('svg#figure');
 
