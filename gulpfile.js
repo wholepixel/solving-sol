@@ -10,9 +10,17 @@ var gulp           = require('gulp'),
 
 //Set up simple server w/live reload
 gulp.task('serve', function() {
+
   server.use(livereload());
+
   server.use(express.static('./'));
+
+  //static server
   server.listen(serverport);
+
+  //live reload
+  lrserver.listen();
+
 });
 
 // Watch for changes on files. Ignore node_modules.
