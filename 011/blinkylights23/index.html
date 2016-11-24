@@ -1,0 +1,204 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <meta name="description"
+            content="A wall divided horizontally and vertically into four equal parts.
+                Within each part, three of the four kinds of lines are superimposed.">
+        <title>Sol LeWitt : Wall Drawing #11 (1969) : Interpreted by Paul Smith</title>
+        <style>
+
+body {
+    background: white;
+    font-family: 'Times New Roman', Times, serif;
+    color: black;
+    margin: 0;
+    padding: 0;
+}
+div#wall {
+    margin-top: 15vh;
+    margin-left: 15vw;
+    padding: 0px;
+    width: 70vw;
+    height: 70vh;
+    outline: 10px solid black;
+}
+svg#figure {
+    background: white;
+    height: 100%;
+    width: 100%;
+}
+details {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    margin: 0px;
+    padding: 15px;
+    outline: 1px solid #ccc;
+    color: #777;
+    background: white;
+
+}
+summary::-webkit-details-marker {
+    display: none;
+}
+summary {
+    cursor: pointer;
+    outline: none;
+}
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
+
+    </head>
+    <body>
+        <div id="wall">
+            <svg id="figure"></svg>
+        </div>
+
+        <details id="wallLabel">
+            <summary>
+                <strong>Sol LeWitt</strong><br/>
+                <em>Wall Drawing #11</em>, 1969 
+            </summary>
+            <p style="font-size: 150%">
+                "A wall divided horizontally and vertically into four equal parts.
+                Within each part, three of the four kinds of lines are superimposed."
+            </p>
+            <p>
+                <em>Implemented by</em> <strong>Paul Smith</strong>, 2016<br/>
+                <em style="font-size: 80%">HTML, CSS and JavaScript with D3.js</em>
+            </p>
+            <p style="font-size: 80%;">
+                Other interpretations of LeWitt's <em>Wall Drawing #11</em> seek symmetry
+                in patterns of grid-like repeated lines. This one instead embraces all four
+                distinct combinations of <em>"three of the four kinds of lines"</em>, and replaces the
+                license to add repitition (which creates a unified pattern out of the four quandrants)
+                with a license to add color (which distinguishes the four separate figures).
+            </p>
+        </details>
+
+
+
+        <script>
+
+
+var open = document.createElement('details');
+if ('boolean' !== typeof open.open) {
+    document.getElementById('wallLabel').setAttribute('style', 'display: none');
+}
+
+
+var svg = d3.select('svg#figure');
+
+
+
+// "A wall divided horizontally and vertically into four equal parts."
+
+// northwest
+var nw = svg.append('svg').attr('id', 'northwest')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', '50%')
+    .attr('height', '50%');
+
+// northeast
+var ne = svg.append('svg').attr('id', 'northwest')
+    .attr('x', '50%')
+    .attr('y', 0)
+    .attr('width', '50%')
+    .attr('height', '50%');
+
+// southwest
+var sw = svg.append('svg').attr('id', 'southwest')
+    .attr('x', 0)
+    .attr('y', '50%')
+    .attr('width', '50%')
+    .attr('height', '50%');
+
+// southeast
+var se = svg.append('svg').attr('id', 'southeast')
+    .attr('x', '50%')
+    .attr('y', '50%')
+    .attr('width', '50%')
+    .attr('height', '50%');
+
+
+
+// Apply one of the possible permutations to each of the sections
+sq1(nw);
+sq2(ne);
+sq3(se);
+sq4(sw);
+
+
+// I think this looks better, and is implied by, "A wall divided..."
+horizontal(svg, 'black', '10px');
+vertical(svg, 'black', '10px');
+
+
+
+// Four possible permutations for, "three of the four kinds of lines..."
+function sq1(g) {
+    horizontal(g, 'red');
+    vertical(g, 'red');
+    diagonal1(g, 'red');
+}
+function sq2(g) {
+    horizontal(g, 'green');
+    diagonal1(g, 'green');
+    diagonal2(g, 'green');
+}
+function sq3(g) {
+    horizontal(g, 'blue');
+    vertical(g, 'blue');
+    diagonal2(g, 'blue');
+}
+function sq4(g) {
+    vertical(g, 'gold');
+    diagonal1(g, 'gold');
+    diagonal2(g, 'gold');
+}
+
+
+
+// The four kinds of lines
+function horizontal(g, color, lineWeight='50px') {
+    g.append('line')
+        .attr('x1', '50%')
+        .attr('y1', 0)
+        .attr('x2', '50%')
+        .attr('y2', '100%')
+        .attr('stroke', color)
+        .attr('stroke-width', lineWeight);
+}
+function vertical(g, color, lineWeight='50px') {
+    g.append('line')
+        .attr('x1', 0)
+        .attr('y1', '50%')
+        .attr('x2', '100%')
+        .attr('y2', '50%')
+        .attr('stroke', color)
+        .attr('stroke-width', lineWeight);
+}
+function diagonal1(g, color, lineWeight='50px') {
+    g.append('line')
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', '100%')
+        .attr('y2', '100%')
+        .attr('stroke', color)
+        .attr('stroke-width', lineWeight);
+}
+function diagonal2(g, color, lineWeight='50px') {
+    g.append('line')
+        .attr('x1', 0)
+        .attr('y1', '100%')
+        .attr('x2', '100%')
+        .attr('y2', 0)
+        .attr('stroke', color)
+        .attr('stroke-width', lineWeight);
+}
+
+        </script>
+    </body>
+</html>
