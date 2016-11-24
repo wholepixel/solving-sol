@@ -1,0 +1,100 @@
+<html>
+<head>
+	<title>Sol LeWitt 852</title>
+	<!-- Implemented by Chuck Grimmett. Learn more here: http://cagrimmett.com/sol-lewitt/2016/11/22/sol-lewitt-852-853.html -->
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+	<style type="text/css">
+		body {
+			margin: 0;
+			padding: 0;
+			background: #453276;
+			/*border: 40px solid #111;*/
+		}
+		#chart {
+			margin: 0;
+			padding: 0;
+		}
+	</style>
+</head>
+<body>
+
+<div id="chart"></div>
+
+<script>
+
+function sol852() {	
+var ww = window.innerWidth,
+	wh = window.innerHeight;
+
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function lineData() {
+	var data = new Array();
+		for (var point = 0; point < 5; point++) {
+			var x = getRandomArbitrary(ww/10, ww-ww/10); // Constrains within the middle 80%
+			var y = getRandomArbitrary(wh/10, wh-wh/10);		
+				data.push({
+				x: x,
+				y: y
+			})
+		}
+		// Starting point upper left
+		data.push({
+			x: 0,
+			y: 0
+		});
+		// End point lower right
+		data.push({
+			x: ww,
+			y: wh
+		})
+	
+	return data;
+} 
+
+var lineData = lineData();
+console.log(lineData);
+console.log(lineData.sort(function(a,b) { return +a.x - +b.x; }));
+
+                 
+var area = d3.area()
+    .x(function(d) { return d.x; })
+    //.y0(function(d) { return d.y + 100; })
+    .y0(wh)
+    .y1(function(d) { return d.y; })
+    .curve(d3.curveBasis);
+	
+console.log(area);
+
+
+var chart = d3.select("#chart").append("svg")
+	.attr("width", ww)
+	.attr("height", wh)
+	.append("path")
+    .datum(lineData)
+    .attr("class", "area")
+    .attr("d", area)
+    .attr("fill","#FDD330");	
+
+}
+
+ // run on load
+sol852();
+
+$(window).resize(function() {
+    if(this.resizeTO) clearTimeout(this.resizeTO);
+    this.resizeTO = setTimeout(function() {
+        $(this).trigger('resizeEnd');
+    }, 300);
+});
+
+//resize on resizeEnd function
+$(window).bind('resizeEnd', function() {
+	 d3.selectAll("svg").remove();
+	 sol852();
+});
+	
+</script>
