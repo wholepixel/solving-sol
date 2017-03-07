@@ -1,0 +1,282 @@
+<!doctype html>
+  <meta charset="utf-8">
+  <title>Sol LeWitt Wall Drawing #237</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  html,body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  canvas {
+    height: 100%;
+    width: 100%;
+  }
+  </style>
+  <canvas></canvas>
+  <script>
+  
+  
+ /*
+Sol LeWitt 
+
+Wall drawing 237 The location of a trapezoid
+June 1974
+
+Black pencil and black crayon
+Courtesy of the estate of Sol LeWitt
+
+http://massmoca.org/sol-lewitt/
+http://massmoca.org/event/walldrawing237/
+http://massmoca.org/wp-content/uploads/2015/12/238-1.jpg
+
+
+Javascript by Steve Turbek  steve.turbek.com
+*/
+
+
+var work_description = ["A trapezoid whose top side is half as long as its bottom side ",
+"and whose left side is one and a half times as long as the top ",
+"side and is located where a line drawn from a point halfway ",
+"between a point halfway between the center of the wall and ",
+"the upper left corner and a point halfway between the midpoint ",
+"of the top side and the upper left corner to a point halfway ",
+"between the midpoint of the right side and the upper right ",
+"corner is crossed by two lines, the first of which is drawn from ",
+"a point halfway between the midpoint of the top side and a point ",
+"halfway between the midpoint of the top side and the upper left ",
+"corner to a point halfway between a point halfway between the ",
+"center of the wall and the midpoint of the bottom side and a point ",
+"halfway between the midpoint of the bottom side and the lower ",
+"left corner, the second line is drawn from a point halfway ",
+"between the midpoint of the top side and the upper right corner ",
+"to the center of the wall. the left side is drawn toward a point ",
+"halfway between a point halfway between the center of the wall ",
+"and the lower left corner and a point halfway between the ",
+"midpoint of the left side and the lower left corner."];
+
+var c = document.getElementsByTagName('canvas')[0];
+var ctx = c.getContext('2d');
+ 
+
+var height = ctx.canvas.height = ctx.canvas.clientHeight;
+var width = ctx.canvas.width = ctx.canvas.clientWidth;
+var halfHeight = Math.ceil(height / 2);
+var halfWidth = Math.ceil(width / 2);
+var lineMultiplier =   Math.ceil(width/5000);  //scales line width to screen width
+
+function draw (x1,y1,x2,y2, lineMultiplier = .1, lineColor = "#000000"){ 
+	ctx.save();
+	ctx.beginPath();
+	ctx.strokeStyle = lineColor;
+	ctx.lineWidth = lineMultiplier;
+	ctx.moveTo(x1,y1);
+	ctx.lineTo(x2,y2);
+	ctx.stroke();
+	ctx.closePath();
+	ctx.restore();
+}
+  
+  
+function drawThin(x1,y1,x2,y2){
+	draw (x1,y1,x2,y2, lineMultiplier , "#dddddd");
+}
+
+  
+function distance(x1,y1,x2,y2){
+	return Math.sqrt( Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2) );
+}
+
+function line_intersect(x1, y1, x2, y2, x3, y3, x4, y4) {  //http://stackoverflow.com/a/38977789  because math is hard
+    var ua, ub, denom = (y4 - y3)*(x2 - x1) - (x4 - x3)*(y2 - y1);
+    if (denom == 0) return null;
+    ua = ((x4 - x3)*(y1 - y3) - (y4 - y3)*(x1 - x3))/denom;
+    ub = ((x2 - x1)*(y1 - y3) - (y2 - y1)*(x1 - x3))/denom;
+    return {
+        x: x1 + ua*(x2 - x1),
+        y: y1 + ua*(y2 - y1),
+        seg1: ua >= 0 && ua <= 1,
+        seg2: ub >= 0 && ub <= 1
+    };
+}
+
+
+function returnAngleInRadiansBetweenPoints (x1,y1,x2,y2){
+  return Math.atan2( (y2 - y1), ( x2 - x1) );
+}
+
+function returnPointFromAngleAndDistance (x1, y1, angleInRadians, newPointDistance){    
+  return  {x: Math.cos(angleInRadians) * newPointDistance + x1, y: Math.sin(angleInRadians) * newPointDistance + y1};
+}
+
+
+//------------------------------------------------------------------------------------------------------------
+function number237() {
+
+	// clear screen on resize
+    ctx.clearRect(0, 0, c.width, c.height);
+
+
+
+/*
+A trapezoid whose top side 
+	is half as long as its bottom side 
+	and whose left side is one and a half times as long as the top side 
+	and is located where a line drawn from 
+
+a point (A) halfway between 
+	a point  halfway between 
+		the center of the wall and the upper left corner 
+*/
+drawThin ( 0,0 , halfWidth, halfHeight );
+/*
+	and a point halfway between 
+		the midpoint of the top side and the upper left corner 
+*/
+drawThin ( 0,0 , halfWidth, 0	 );
+
+drawThin ( ((halfWidth + 0)/2),  ((halfHeight +0)/2), ((halfWidth + 0)/2),  ( (0 +0)/2) );
+
+
+a_x =  ( ( (halfWidth + 0)/2) + ( (halfWidth + 0)/2) )  /2;
+a_y =  ( ( (halfHeight +0)/2) + ( (0 +0)/2) )/2;
+/*		
+to a point (B) halfway between 
+	the midpoint of the right side and the upper right corner 
+*/
+drawThin ( width ,halfHeight , width, 0 );
+
+b_x = ( (width + width)/2);
+b_y = ( ( halfHeight +0 )/2);
+
+drawThin (a_x, a_y, b_x, b_y);
+
+//get angle in radians
+topAngleInRadians = returnAngleInRadiansBetweenPoints (a_x, a_y, b_x, b_y);
+
+
+/*
+is crossed by two lines,
+
+ the first of which is drawn from 
+	a point (C) halfway between 
+		the midpoint of the top side and a point halfway between 
+			the midpoint of the top side and the upper left corner 
+*/
+
+
+c_x =  ( (halfWidth +  (halfWidth + 0)/2)  )  /2;
+c_y =  (  0 + (0+0)/2 )/2;
+
+
+/*
+to a point (D) halfway between 
+	a point halfway between 
+		the center of the wall and the midpoint of the bottom side 
+	and a point halfway between 
+		the midpoint of the bottom side and the lower left corner, 
+*/
+
+drawThin (halfWidth, halfHeight, halfWidth, height);
+
+d_x =  ( ((halfWidth + halfWidth)/2) +  (( halfWidth +0)/2)  )   /2;
+d_y = ( ((halfHeight + height)/2) + ((height + height)/2)  ) /2;
+
+drawThin (c_x, c_y, d_x, d_y);
+
+
+// get intersection point of top line and the c/d line, which defines its left start point
+
+var intersectionLeft = line_intersect(a_x, a_y, b_x, b_y, c_x, c_y, d_x, d_y);
+
+//draw a line to the intersection point to make sure we know we calculated it right
+//draw (0, 0, intersection.x, intersection.y);
+
+
+/*
+the second line is drawn from a point (E) halfway between 
+	(the midpoint of the top side and the upper right corner)
+to the center of the wall. (F)
+*/
+
+e_x =  (halfWidth + width)/2;   
+e_y = ( 0 + 0 )/2
+
+f_x = halfWidth;
+f_y = halfHeight;
+
+drawThin (e_x, e_y, f_x, f_y);
+
+var intersectionRight = line_intersect(a_x, a_y, b_x, b_y, e_x, e_y, f_x, f_y);
+
+
+//find the length of the top line
+var toplineLength = distance(intersectionLeft.x,intersectionLeft.y, intersectionRight.x, intersectionRight.y);
+
+/*
+the left side is drawn toward a point (G) halfway between 
+	a point halfway between the center of the wall and the lower left corner 
+and a point halfway between 
+	the midpoint of the left side and the lower left corner.
+*/
+
+g_x = ( ((halfWidth +0)/2)  + ((0 +0 )/2) )/2;
+g_y = ( ((halfHeight + height)/2)  + (halfHeight + height) )/2;
+
+//get angle in radians
+sideAngleInRadians = returnAngleInRadiansBetweenPoints (intersectionLeft.x ,intersectionLeft.y ,g_x , g_y);
+
+//end point
+sideEndPoint = returnPointFromAngleAndDistance (intersectionLeft.x ,intersectionLeft.y , sideAngleInRadians, toplineLength* 1.5);
+
+//get bottom right point
+bottomEndPoint = returnPointFromAngleAndDistance (sideEndPoint.x , sideEndPoint.y , topAngleInRadians, toplineLength* 2);
+
+
+//draw the trapezoid!
+
+
+	ctx.save();
+	ctx.beginPath();
+	ctx.strokeStyle = "#333333";
+	ctx.lineWidth = lineMultiplier * 5;
+	
+	//start top left corner
+	ctx.moveTo(intersectionLeft.x,intersectionLeft.y);
+	//move clockwise
+	ctx.lineTo(intersectionRight.x, intersectionRight.y);
+
+	//draw right side
+	ctx.lineTo(bottomEndPoint.x, bottomEndPoint.y);
+
+	// bottom
+	ctx.lineTo(sideEndPoint.x, sideEndPoint.y);
+
+	//draw side
+	ctx.lineTo(intersectionLeft.x,intersectionLeft.y);
+
+	ctx.closePath();
+	ctx.stroke();
+	ctx.restore();
+
+
+//draw wall text
+
+	var textSize = width/100;
+	ctx.save();
+	ctx.font = textSize + "px helvetica";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "center";
+	ctx.fillStyle = "#666666";
+
+	for (a=0; a< work_description.length; a++){
+		ctx.fillText(work_description[a], 5, 15 +(a*textSize));
+	}
+	ctx.restore();
+
+
+  }
+  window.onresize = number237;
+  number237();
+  </script>
