@@ -320,19 +320,6 @@ y: (parallelogram[3].y + (parallelogram[1].y - parallelogram[0].y))
 // console.log(lines);
 }
 
-
-var time;
-function draw() {
-    requestAnimationFrame(draw);
-    var now = new Date().getTime(),
-        dt = now - (time || now);
- 
-    time = now;
- 
-    // Drawing code goes here... for example updating an 'x' position:
-    this.x += 10 * dt; // Increase 'x' by 10 units per millisecond
-}
-
   window.onresize = number238;
   window.onload = number238;
 
