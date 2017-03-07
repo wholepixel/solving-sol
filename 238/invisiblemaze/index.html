@@ -262,9 +262,6 @@ parallelogram[0] = line_intersect(lines.line1.from.x, lines.line1.from.y, lines.
 
 parallelogram[1] = line_intersect(lines.line3.from.x, lines.line3.from.y, lines.line3.to.x, lines.line3.to.y, lines.line4.from.x, lines.line4.from.y, lines.line4.to.x, lines.line4.to.y)
 
-draw ( parallelogram[0].x, parallelogram[0].y, parallelogram[1].x, parallelogram[1].y );
-
-
 //THE LEFT SIDE IS DRAWN ON A LINE TO A POINT HALFWAY BETWEEN 
 		// THE POINT WHERE THE SECOND LINE OF THE FIRST SET OF LINES ENDS 
 		// AND A POINT (a) HALFWAY BETWEEN
@@ -280,8 +277,6 @@ parallelogram[3] = {
 x: (lines.line2.to.x + a.x)/2,
 y:(lines.line2.to.y + a.y)/2
 };
-
-draw ( parallelogram[0].x, parallelogram[0].y, parallelogram[3].x, parallelogram[3].y );
 
 
 //right bottom corner can be calculated
