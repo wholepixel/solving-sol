@@ -49,7 +49,7 @@ Javascript by Steve Turbek  steve.turbek.com
 
 var c = document.getElementsByTagName('canvas')[0];
 var ctx = c.getContext('2d');
- 
+
 
 var height = ctx.canvas.height = ctx.canvas.clientHeight;
 var width = ctx.canvas.width = ctx.canvas.clientWidth;
@@ -124,7 +124,7 @@ function returnPointFromAngleAndDistance (x1, y1, angleInRadians, newPointDistan
 
 
 //------------------------------------------------------------------------------------------------------------
-function number237_text() {  	//draw wall text
+function draw_wall_text() {
 
 var work_description = ["THE LOCATION OF A TRAPEZOID",
 "A TRAPEZOID WHOSE TOP SIDE IS HALF AS LONG AS ITS BOTTOM SIDE ",
@@ -310,6 +310,8 @@ and a point halfway between
 	the midpoint of the left side and the lower left corner.
 */
 
+
+
 var g_x = ( ((halfWidth +0)/2)  + ((0 +0 )/2) )/2;
 var g_y = ( ((halfHeight + height)/2)  + (halfHeight + height) )/2;
 
@@ -324,9 +326,37 @@ var topAngleInRadians = returnAngleInRadiansBetweenPoints (intersectionLeft.x, i
 //end point
 sideEndPoint = returnPointFromAngleAndDistance (intersectionLeft.x ,intersectionLeft.y , sideAngleInRadians, toplineLength* 1.5);
 
+//left side line
+lines.push({
+from: {   
+		x: intersectionLeft.x,
+		y: intersectionLeft.y
+
+	},
+	to: {   
+		x: sideEndPoint.x,
+		y: sideEndPoint.y
+	},
+	weight: 'thick'
+});
 
 //get bottom right point
 bottomRightPoint = returnPointFromAngleAndDistance (sideEndPoint.x , sideEndPoint.y , topAngleInRadians, toplineLength* 2);
+
+
+
+//bottom side line
+lines.push({
+from: {   
+		x: sideEndPoint.x,
+		y: sideEndPoint.y
+	},
+	to: {   
+		x: bottomRightPoint.x,
+		y: bottomRightPoint.y
+	},
+	weight: 'thick'
+});
 
 
 //right side line
@@ -342,38 +372,15 @@ from: {
 	weight: 'thick'
 });
 
-//bottom side line
-lines.push({
-from: {   
-		x: bottomRightPoint.x,
-		y: bottomRightPoint.y
-	},
-	to: {   
-		x: sideEndPoint.x,
-		y: sideEndPoint.y
-	},
-	weight: 'thick'
-});
-
-
-
-//left side line
-lines.push({
-from: {   
-		x: sideEndPoint.x,
-		y: sideEndPoint.y
-	},
-	to: {   
-		x: intersectionLeft.x,
-		y: intersectionLeft.y
-	},
-	weight: 'thick'
-});
 
 }
 
 
 function animate() {
+
+	if (lines.length == 0) number237(); //first time run
+
+
 	if ( (linesAnimateReference.index == -1) || ( linesAnimateReference.distance.full  - linesAnimateReference.distance.current < 0) ) {  
 		//first time set up OR if line has reached its TO
 		if (linesAnimateReference.index < lines.length -1) linesAnimateReference.index ++; 
@@ -390,37 +397,45 @@ function animate() {
 	time = now;	
 
 
-	//we're going to draw each line progressively, and NOT erase the canvas after each loop
-	//loop through the lines in "lines"
-	//for each line, increment between from and to draw until there
+	ctx.clearRect(0, 0, width, height);
 
-  //increment the line to the TO point
-  linesAnimateReference.distance.current +=1;
+  for (a=0; a<lines.length; a++){  //loop through the lines in "lines"
 
-	var angle =  returnAngleInRadiansBetweenPoints (lines[linesAnimateReference.index].from.x, lines[linesAnimateReference.index].from.y, lines[linesAnimateReference.index].to.x,lines[linesAnimateReference.index].to.y)
+  	if (a < linesAnimateReference.index) {  //lines that have completed their drawing, just draw them completely
+  		drawLine (	lines[a].from.x, 
+					lines[a].from.y, 
+					lines[a].to.x, 
+					lines[a].to.y, 
+					lineStyle.weight[lines[a].weight], 
+					lineStyle.lineColor[lines[a].weight]);
 
-	var tempTo = returnPointFromAngleAndDistance (lines[linesAnimateReference.index].from.x, lines[linesAnimateReference.index].from.y, angle, linesAnimateReference.distance.current);
 
-// console.log(tempTo);
+  	} else if (a > linesAnimateReference.index){ //lines not yet to be drawn
+  		continue;
 
-	drawLine (	lines[linesAnimateReference.index].from.x, 
-				lines[linesAnimateReference.index].from.y, 
-				tempTo.x, 
-				tempTo.y, 
-				lineStyle.weight[lines[linesAnimateReference.index].weight], 
-				lineStyle.lineColor[lines[linesAnimateReference.index].weight]);
+	} else {  //the current line being drawn
+	  //increment the line to the TO point
+	  linesAnimateReference.distance.current +=1;
 
+		var angle =  returnAngleInRadiansBetweenPoints (lines[linesAnimateReference.index].from.x, lines[linesAnimateReference.index].from.y, lines[linesAnimateReference.index].to.x,lines[linesAnimateReference.index].to.y)
+
+		var tempTo = returnPointFromAngleAndDistance (lines[linesAnimateReference.index].from.x, lines[linesAnimateReference.index].from.y, angle, linesAnimateReference.distance.current);
+
+
+		drawLine (	lines[linesAnimateReference.index].from.x, 
+					lines[linesAnimateReference.index].from.y, 
+					tempTo.x, 
+					tempTo.y, 
+					lineStyle.weight[lines[linesAnimateReference.index].weight], 
+					lineStyle.lineColor[lines[linesAnimateReference.index].weight]);
+
+	}
+
+	}
+	 draw_wall_text();
 }
 
-
-function setup(){
-	number237_text();
-	number237();
-	animate();
-}
-
-
-  window.onresize = setup;
-  window.onload = setup;
+  window.onresize = animate;
+  window.onload = animate;
 
   </script>
