@@ -1,0 +1,148 @@
+<html>
+  <head>
+    <meta>
+
+      <!--
+        Processing.js template for solving a Sol Lewitt instruction.
+
+        Note: you don't need to use Processing.js for Solving Sol. You can use any library you'd like,
+        or no library at all. The only requirement is that the solution runs in a modern browser.
+
+        If you have another library you like, please submit a template like this one for other folks to use.
+      -->
+
+      <title>Solving Sol</title>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.8/processing.min.js"></script>
+
+      <style type="text/css">
+
+        html, body {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          padding: 0;
+          margin: 0;
+        }
+
+      </style>
+    </meta>
+  </head>
+  <body>
+    <script type="application/processing" data-processing-target="pjs">
+ 
+      /*
+        ## Wall Drawing #88 (1971)
+
+        A 6-inch (15 cm) grid covering the wall. Within each square, not straight lines in either of four directions.
+        Only one direction in each square but as many as desired, and at least one line in each square.
+
+      */
+
+      color orange = color(240, 120, 32);
+      color teal = color(58, 123, 134);
+      color red = color(213, 64, 50);
+      color yellow = color(255, 209, 0);
+      color green = color(151, 190, 0);
+      color purple = color(79, 79, 141);
+
+      color getRandomColor() {
+        color[] colorArray = new color[6];
+        // colorArray[0] = orange;
+        colorArray[1] = teal;
+        colorArray[2] = red;
+        colorArray[3] = yellow;
+        colorArray[4] = green;
+        colorArray[5] = purple;
+        return colorArray[int(random(1, 5))]
+      }
+
+      int firstLineStartX = 0;
+      int firstLineEndX = 0;
+      int firstLineStartY = 0;
+      int firstLineEndY = 0;
+
+      void setup() {
+        // Size of rectangle on my wall
+        widthInInches = 33.375;
+        heightInInches = 35.3;
+        pixelsPerInch = 20;
+        widthInPixels = widthInInches * pixelsPerInch;
+        heightInPixels = heightInInches * pixelsPerInch;
+
+        // Color palette for my wall
+
+
+        size(widthInPixels, heightInPixels);
+        background(orange);
+
+        gridLength = 6 * pixelsPerInch;
+        gridStrokeWidth = 0.3 * pixelsPerInch;
+
+        lineStrokeWidth = 0.6 * pixelsPerInch;
+
+        for (int i = 0; i < 6; i++) {
+          for (int j = 0; j < 6; j++) {
+            startX = j * gridLength;
+            startY = i * gridLength;
+            endX = startX + gridLength;
+            endY = startY + gridLength;
+            drawGrid(startX, startY, endX, endY)
+          }
+        }
+      }
+
+      void drawGrid(int startX, int startY, int endX, int endY) {
+          strokeCap(PROJECT);
+          strokeWeight(gridStrokeWidth + 10);
+          
+          stroke(getRandomColor());
+          line(startX, startY, endX, startY);
+
+          stroke(getRandomColor());
+          line(startX, endY, endX, endY);
+
+          stroke(getRandomColor());
+          line(startX, startY, startX, endY);
+
+          stroke(getRandomColor());
+
+          line(endX, startY, endX, endY);
+
+          lineFromNonVertialOrHorizontalDirection(startX, startY, endX, endY);
+
+          strokeCap(SQUARE);
+          strokeWeight(lineStrokeWidth);
+          line(firstLineStartX, firstLineStartY, firstLineEndX, firstLineEndY);
+      }
+
+      void lineFromNonVertialOrHorizontalDirection(int startX, int startY, int endX, int endY) {
+          int slope = 0;
+          while (slope == 0) {
+            firstLineStartX = randomXInGrid(startX + gridStrokeWidth, endX - gridStrokeWidth);
+            firstLineEndX = randomXInGrid(startX + gridStrokeWidth, endX - gridStrokeWidth);
+            firstLineStartY = randomYInGrid(startY + gridStrokeWidth, endY - gridStrokeWidth);
+            firstLineEndY = randomYInGrid(startY + gridStrokeWidth, endY - gridStrokeWidth);
+
+            slope = (firstLineEndY - firstLineStartY) / (firstLineEndX - firstLineStartX);
+          }
+      }
+
+      int randomXInGrid(int startX, int endX) {
+        return int(random(startX, endX))
+      }
+
+      int randomYInGrid(int startY, int endY) {
+        return int(random(startY, endY))
+      }
+
+
+      void draw() {
+      }
+
+    </script>
+
+    <canvas id="pjs"></canvas>
+
+  </body>
+</html>
