@@ -31,55 +31,57 @@
 <script src="//d3js.org/d3.v4.min.js" charset="utf-8"></script>
 <!-- d3 code -->
 <script>
-var width = window.innerWidth;
-var height = window.innerHeight;
-var svg = d3.select('body')
-    .append('svg')
-    .attr('width', width)
-    .attr('width', height)
-var g = svg.append('g')
+(function() {
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    var svg = d3.select('body')
+        .append('svg')
+        .attr('width', width)
+        .attr('width', height)
+    var g = svg.append('g')
 
 
-// create 50 items that have x and y uniformly random
-var data = d3.range(50).map(function (n) {
-    return {
-        x: Math.floor(d3.randomUniform(1, width-10)()),
-        y: Math.floor(d3.randomUniform(1, height-10)()),
-        id: n
-    }
-})
+    // create 50 items that have x and y uniformly random
+    var data = d3.range(50).map(function (n) {
+        return {
+            x: Math.floor(d3.randomUniform(1, width-10)()),
+            y: Math.floor(d3.randomUniform(1, height-10)()),
+            id: n
+        }
+    })
 
-// want to use a colour pencil :)
-var sequentialScale = d3.scaleSequential()
-    .domain([0, 50])
-    .interpolator(d3.interpolateRainbow)
+    // want to use a colour pencil :)
+    var sequentialScale = d3.scaleSequential()
+        .domain([0, 50])
+        .interpolator(d3.interpolateRainbow)
 
-// append the 50 circles driven by the data
-g.selectAll('circle')
-    .data(data)
-    .enter()
-    .append('circle')
-    .attr('r', 2)
-    .attr('cx', function (d) { return d.x; })
-    .attr('cy', function (d) { return d.y; })
-    .style('fill', function (d, i) { return sequentialScale(i); }) 
-
-// loop 50 times (length of data)
-data.forEach(function (o, n) {
-    // append 50 lines driven by the data
-    g.selectAll('line.id-' + n)
+    // append the 50 circles driven by the data
+    g.selectAll('circle')
         .data(data)
         .enter()
-        .append('line')
-        .attr('class', 'id-' + n)
-        // append a line form a reference (point in data)
-        .attr('x1', data[n].x)
-        .attr('y1', data[n].y)
-        // connecting to all other points (all points in data)
-        .attr('x2', function (d) { return d.x; })
-        .attr('y2', function (d) { return d.y; })
-        .style('stroke', function (d, i) { return sequentialScale(i); }) 
-})
+        .append('circle')
+        .attr('r', 2)
+        .attr('cx', function (d) { return d.x; })
+        .attr('cy', function (d) { return d.y; })
+        .style('fill', function (d, i) { return sequentialScale(i); }) 
+
+    // loop 50 times (length of data)
+    data.forEach(function (o, n) {
+        // append 50 lines driven by the data
+        g.selectAll('line.id-' + n)
+            .data(data)
+            .enter()
+            .append('line')
+            .attr('class', 'id-' + n)
+            // append a line form a reference (point in data)
+            .attr('x1', data[n].x)
+            .attr('y1', data[n].y)
+            // connecting to all other points (all points in data)
+            .attr('x2', function (d) { return d.x; })
+            .attr('y2', function (d) { return d.y; })
+            .style('stroke', function (d, i) { return sequentialScale(i); }) 
+    })
+})();
 </script>
 
 
