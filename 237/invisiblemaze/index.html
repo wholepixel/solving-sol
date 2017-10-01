@@ -1,0 +1,442 @@
+<!doctype html>
+  <meta charset="utf-8">
+  <title>Sol LeWitt Wall Drawing #237</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Neucha">
+  <style>
+  html,body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Neucha', 'Brush Script MT', 'Arial',sans-serif;
+  }
+  canvas {
+    height: 100%;
+    width: 100%;
+  }
+
+	@import url(//fonts.googleapis.com/css?family=Neucha);
+
+	@font-face {
+		font-family: 'Neucha';
+		src: url('https://fonts.googleapis.com/css?family=Neucha');
+	}
+  </style>
+  <canvas></canvas>
+  <script>
+  
+  
+ /*
+Sol LeWitt 
+
+Wall drawing 237 The location of a trapezoid
+June 1974
+
+Black pencil and black crayon
+Courtesy of the estate of Sol LeWitt
+
+http://massmoca.org/sol-lewitt/
+http://massmoca.org/event/walldrawing237/
+http://massmoca.org/wp-content/uploads/2015/12/238-1.jpg
+
+
+Javascript by Steve Turbek  steve.turbek.com
+
+*/
+
+
+var c = document.getElementsByTagName('canvas')[0];
+var ctx = c.getContext('2d');
+
+
+var height = ctx.canvas.height = ctx.canvas.clientHeight;
+var width = ctx.canvas.width = ctx.canvas.clientWidth;
+var halfHeight = Math.ceil(height / 2);
+var halfWidth = Math.ceil(width / 2);
+
+var lineMultiplier =   Math.ceil(width/5000);  //scales line width to screen width
+var lines =[]; //an array of lines, composed of objects, of pairs of objects of points  [[{x:1,y:1},{x:100,y:100}], ....]
+var time;
+var fps = 60;
+var interval = 1000 / fps;
+
+var linesAnimateReference = {   //this stores the current line (index of lines) and position of the line we are animating
+index:-1,
+distance:{
+	full:-1,
+	current:-1}
+};
+
+var lineStyle = {
+	weight:{
+		thin: lineMultiplier,
+		thick:lineMultiplier *5
+	},
+	lineColor: {
+		thin: "#dddddd",
+		thick: "#000000"
+	}
+};
+
+
+function drawLine (x1,y1,x2,y2, lineMultiplier = .1, lineColor = "#000000"){ 
+	ctx.save();
+	ctx.beginPath();
+	ctx.strokeStyle = lineColor;
+	ctx.lineWidth = lineMultiplier;
+	ctx.lineCap="round";
+	ctx.moveTo(x1,y1);
+	ctx.lineTo(x2,y2);
+	ctx.stroke();
+	ctx.closePath();
+	ctx.restore();
+}
+  
+ 
+  
+function distance(x1,y1,x2,y2){
+	return Math.sqrt( Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2) );
+}
+
+function line_intersect(x1, y1, x2, y2, x3, y3, x4, y4) {  //http://stackoverflow.com/a/38977789  because math is hard
+    var ua, ub, denom = (y4 - y3)*(x2 - x1) - (x4 - x3)*(y2 - y1);
+    if (denom == 0) return null;
+    ua = ((x4 - x3)*(y1 - y3) - (y4 - y3)*(x1 - x3))/denom;
+    ub = ((x2 - x1)*(y1 - y3) - (y2 - y1)*(x1 - x3))/denom;
+    return {
+        x: x1 + ua*(x2 - x1),
+        y: y1 + ua*(y2 - y1),
+        seg1: ua >= 0 && ua <= 1,
+        seg2: ub >= 0 && ub <= 1
+    };
+}
+
+
+function returnAngleInRadiansBetweenPoints (x1,y1,x2,y2){
+  return Math.atan2( (y2 - y1), ( x2 - x1) );
+}
+
+function returnPointFromAngleAndDistance (x1, y1, angleInRadians, newPointDistance){    
+  return  {x: Math.cos(angleInRadians) * newPointDistance + x1, y: Math.sin(angleInRadians) * newPointDistance + y1};
+}
+
+
+//------------------------------------------------------------------------------------------------------------
+function draw_wall_text() {
+
+var work_description = ["THE LOCATION OF A TRAPEZOID",
+"A TRAPEZOID WHOSE TOP SIDE IS HALF AS LONG AS ITS BOTTOM SIDE ",
+"AND WHOSE LEFT SIDE IS ONE AND A HALF TIMES AS LONG AS THE TOP ",
+"SIDE AND IS LOCATED WHERE A LINE DRAWN FROM A POINT HALFWAY ",
+"BETWEEN A POINT HALFWAY BETWEEN THE CENTER OF THE WALL AND ",
+"THE UPPER LEFT CORNER AND A POINT HALFWAY BETWEEN THE MIDPOINT ",
+"OF THE TOP SIDE AND THE UPPER LEFT CORNER TO A POINT HALFWAY ",
+"BETWEEN THE MIDPOINT OF THE RIGHT SIDE AND THE UPPER RIGHT ",
+"CORNER IS CROSSED BY TWO LINES, THE FIRST OF WHICH IS DRAWN FROM ",
+"A POINT HALFWAY BETWEEN THE MIDPOINT OF THE TOP SIDE AND A POINT ",
+"HALFWAY BETWEEN THE MIDPOINT OF THE TOP SIDE AND THE UPPER LEFT ",
+"CORNER TO A POINT HALFWAY BETWEEN A POINT HALFWAY BETWEEN THE ",
+"CENTER OF THE WALL AND THE MIDPOINT OF THE BOTTOM SIDE AND A POINT ",
+"HALFWAY BETWEEN THE MIDPOINT OF THE BOTTOM SIDE AND THE LOWER ",
+"LEFT CORNER, THE SECOND LINE IS DRAWN FROM A POINT HALFWAY ",
+"BETWEEN THE MIDPOINT OF THE TOP SIDE AND THE UPPER RIGHT CORNER ",
+"TO THE CENTER OF THE WALL. THE LEFT SIDE IS DRAWN TOWARD A POINT ",
+"HALFWAY BETWEEN A POINT HALFWAY BETWEEN THE CENTER OF THE WALL ",
+"AND THE LOWER LEFT CORNER AND A POINT HALFWAY BETWEEN THE ",
+"MIDPOINT OF THE LEFT SIDE AND THE LOWER LEFT CORNER."];
+
+	var textSize = width/100;
+	if (textSize <8) textSize=8;
+	ctx.save();
+	ctx.font = textSize + "px Neucha";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "center";
+	ctx.fillStyle = "#666666";
+
+	for (a=0; a< work_description.length; a++){  //each line is a separate draw
+		ctx.fillText(work_description[a], 5, 15 +(a*textSize));
+	}
+	ctx.restore();
+
+}
+
+
+function number237() {  //upates the lines variable
+
+
+/*
+A trapezoid whose top side 
+	is half as long as its bottom side 
+	and whose left side is one and a half times as long as the top side 
+	and is located where a line drawn from 
+
+a point (A) halfway between 
+	a point  halfway between 
+		the center of the wall and the upper left corner 
+*/
+
+
+lines.push({
+from: { 
+		x: halfWidth ,
+		y: halfHeight},
+	to: { 
+		x: 0,
+		y: 0},
+	weight: 'thin'
+});
+
+/*
+	and a point halfway between 
+		the midpoint of the top side and the upper left corner 
+*/
+
+lines.push({
+from: { 
+		x: ((halfWidth + 0)/2) ,
+		y: ((halfHeight +0)/2)},
+	to: { 
+		x: ((halfWidth + 0)/2),
+		y: ( (0 +0)/2)},
+	weight: 'thin'
+});
+
+
+
+/*		
+to a point (B) halfway between 
+	the midpoint of the right side and the upper right corner 
+*/
+
+lines.push({
+from: { 
+		x: ( ( (halfWidth + 0)/2) + ( (halfWidth + 0)/2) )  /2,
+		y: ( ( (halfHeight +0)/2) + ( (0 +0)/2) )/2 },
+	to: { 
+		x: ( (width + width)/2),
+		y: ( ( halfHeight +0 )/2)
+	},
+	weight: 'thin'
+});
+
+
+/*
+is crossed by two lines,
+
+ the first of which is drawn from 
+	a point (C) halfway between 
+		the midpoint of the top side and a point halfway between 
+			the midpoint of the top side and the upper left corner 
+*/
+
+
+/*
+to a point (D) halfway between 
+	a point halfway between 
+		the center of the wall and the midpoint of the bottom side 
+	and a point halfway between 
+		the midpoint of the bottom side and the lower left corner, 
+*/
+
+
+lines.push({
+from: { 
+		x: halfWidth ,
+		y: halfHeight},
+	to: { 
+		x: halfWidth,
+		y: height},
+	weight: 'thin'
+});
+
+
+lines.push({
+from: {   //point C in comments
+		x: ( (halfWidth +  (halfWidth + 0)/2)  )  /2 ,
+		y: (  0 + (0+0)/2 )/2},
+	to: {  //point D in comments
+		x: ( ((halfWidth + halfWidth)/2) +  (( halfWidth +0)/2)  )   /2,
+		y: ( ((halfHeight + height)/2) + ((height + height)/2)  ) /2},
+	weight: 'thin'
+});
+
+
+
+/*
+the second line is drawn from a point (E) halfway between 
+	(the midpoint of the top side and the upper right corner)
+to the center of the wall. (F)
+*/
+
+lines.push({
+from: {   //point E in comments
+		x: (halfWidth + width)/2 ,
+		y: ( 0 + 0 )/2
+	},
+	to: {   //point F in comments
+		x: halfWidth,
+		y: halfHeight},
+	weight: 'thin'
+});
+
+// console.log(lines.length);
+
+// get intersection point of top line and the c/d line, which defines its left start point
+
+// var intersectionLeft = line_intersect(a_x, a_y, b_x, b_y, c_x, c_y, d_x, d_y);
+var intersectionLeft = line_intersect(lines[2].from.x, lines[2].from.y, lines[2].to.x, lines[2].to.y, lines[4].from.x, lines[4].from.y, lines[4].to.x, lines[4].to.y);
+
+var intersectionRight = line_intersect(lines[2].from.x, lines[2].from.y, lines[2].to.x, lines[2].to.y, lines[5].from.x, lines[5].from.y, lines[5].to.x, lines[5].to.y);
+
+
+lines.push({
+from: {   
+		x: intersectionLeft.x,
+		y: intersectionLeft.y
+	},
+	to: {   
+		x: intersectionRight.x,
+		y: intersectionRight.y
+	},
+	weight: 'thick'
+});
+
+
+/*
+the left side is drawn toward a point (G) halfway between 
+	a point halfway between the center of the wall and the lower left corner 
+and a point halfway between 
+	the midpoint of the left side and the lower left corner.
+*/
+
+
+
+var g_x = ( ((halfWidth +0)/2)  + ((0 +0 )/2) )/2;
+var g_y = ( ((halfHeight + height)/2)  + (halfHeight + height) )/2;
+
+//get angle in radians
+sideAngleInRadians = returnAngleInRadiansBetweenPoints (intersectionLeft.x ,intersectionLeft.y ,g_x , g_y);
+
+//find the length of the top line
+var toplineLength = distance(intersectionLeft.x,intersectionLeft.y, intersectionRight.x, intersectionRight.y);
+//get angle in radians
+var topAngleInRadians = returnAngleInRadiansBetweenPoints (intersectionLeft.x, intersectionLeft.y, intersectionRight.x, intersectionRight.y);
+
+//end point
+sideEndPoint = returnPointFromAngleAndDistance (intersectionLeft.x ,intersectionLeft.y , sideAngleInRadians, toplineLength* 1.5);
+
+//left side line
+lines.push({
+from: {   
+		x: intersectionLeft.x,
+		y: intersectionLeft.y
+
+	},
+	to: {   
+		x: sideEndPoint.x,
+		y: sideEndPoint.y
+	},
+	weight: 'thick'
+});
+
+//get bottom right point
+bottomRightPoint = returnPointFromAngleAndDistance (sideEndPoint.x , sideEndPoint.y , topAngleInRadians, toplineLength* 2);
+
+
+
+//bottom side line
+lines.push({
+from: {   
+		x: sideEndPoint.x,
+		y: sideEndPoint.y
+	},
+	to: {   
+		x: bottomRightPoint.x,
+		y: bottomRightPoint.y
+	},
+	weight: 'thick'
+});
+
+
+//right side line
+lines.push({
+from: {   
+		x: intersectionRight.x,
+		y: intersectionRight.y
+	},
+	to: {   
+		x: bottomRightPoint.x,
+		y: bottomRightPoint.y
+	},
+	weight: 'thick'
+});
+
+
+}
+
+
+function animate() {
+
+	if (lines.length == 0) number237(); //first time run
+
+
+	if ( (linesAnimateReference.index == -1) || ( linesAnimateReference.distance.full  - linesAnimateReference.distance.current < 0) ) {  
+		//first time set up OR if line has reached its TO
+		if (linesAnimateReference.index < lines.length -1) linesAnimateReference.index ++; 
+		else return; //escape last loop
+
+		linesAnimateReference.distance.current = 0;
+		linesAnimateReference.distance.full = distance(lines[linesAnimateReference.index].from.x, lines[linesAnimateReference.index].from.y, lines[linesAnimateReference.index].to.x,lines[linesAnimateReference.index].to.y);
+	} 
+
+	if (linesAnimateReference.index < lines.length)  requestAnimationFrame(animate);  //end animation if you have drawn all the lines
+
+	var now = new Date().getTime(),
+	dt = now - (time || now);
+	time = now;	
+
+
+	ctx.clearRect(0, 0, width, height);
+
+  for (a=0; a<lines.length; a++){  //loop through the lines in "lines"
+
+  	if (a < linesAnimateReference.index) {  //lines that have completed their drawing, just draw them completely
+  		drawLine (	lines[a].from.x, 
+					lines[a].from.y, 
+					lines[a].to.x, 
+					lines[a].to.y, 
+					lineStyle.weight[lines[a].weight], 
+					lineStyle.lineColor[lines[a].weight]);
+
+
+  	} else if (a > linesAnimateReference.index){ //lines not yet to be drawn
+  		continue;
+
+	} else {  //the current line being drawn
+	  //increment the line to the TO point
+	  linesAnimateReference.distance.current +=1;
+
+		var angle =  returnAngleInRadiansBetweenPoints (lines[linesAnimateReference.index].from.x, lines[linesAnimateReference.index].from.y, lines[linesAnimateReference.index].to.x,lines[linesAnimateReference.index].to.y)
+
+		var tempTo = returnPointFromAngleAndDistance (lines[linesAnimateReference.index].from.x, lines[linesAnimateReference.index].from.y, angle, linesAnimateReference.distance.current);
+
+
+		drawLine (	lines[linesAnimateReference.index].from.x, 
+					lines[linesAnimateReference.index].from.y, 
+					tempTo.x, 
+					tempTo.y, 
+					lineStyle.weight[lines[linesAnimateReference.index].weight], 
+					lineStyle.lineColor[lines[linesAnimateReference.index].weight]);
+
+	}
+
+	}
+	 draw_wall_text();
+}
+
+  window.onresize = animate;
+  window.onload = animate;
+
+  </script>

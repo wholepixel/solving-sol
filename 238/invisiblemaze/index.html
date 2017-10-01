@@ -1,0 +1,402 @@
+<!doctype html>
+  <meta charset="utf-8">
+  <title>Sol LeWitt Wall Drawing #238</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Neucha">
+  <style>
+  html,body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Neucha', 'Brush Script MT', 'Arial',sans-serif;
+  }
+  canvas {
+    height: 100%;
+    width: 100%;
+  }
+
+	@import url(//fonts.googleapis.com/css?family=Neucha);
+
+	@font-face {
+		font-family: 'Neucha';
+		src: url('https://fonts.googleapis.com/css?family=Neucha');
+	}
+  </style>
+  <canvas></canvas>
+  <script>
+  
+  
+/*
+WALL DRAWING 238
+The location of a parallelogram.
+June 1974
+Black pencil and black crayon
+LeWitt Collection, Chester, Connecticut
+
+http://massmoca.org/sol-lewitt/
+http://massmoca.org/event/walldrawing238/
+http://4bqtf234d34a2gxuu749ctvy.wpengine.netdna-cdn.com/wp-content/uploads/2015/12/sol_lewitt_237-1-1580x627.jpg
+
+Javascript by Steve Turbek  steve.turbek.com
+*/
+
+
+var c = document.getElementsByTagName('canvas')[0];
+var ctx = c.getContext('2d');
+
+
+var height = ctx.canvas.height = ctx.canvas.clientHeight;
+var width = ctx.canvas.width = ctx.canvas.clientWidth;
+var halfHeight = Math.ceil(height / 2);
+var halfWidth = Math.ceil(width / 2);
+
+var lineMultiplier =   Math.ceil(width/5000);  //scales line width to screen width
+var lines =[]; //an array of lines, composed of objects, of pairs of objects of points  [[{x:1,y:1},{x:100,y:100}], ....]
+var time;
+var fps = 60;
+var interval = 1000 / fps;
+
+var linesAnimateReference = {   //this stores the current line (index of lines) and position of the line we are animating
+index:-1,
+distance:{
+	full:-1,
+	current:-1}
+};
+
+var lineStyle = {
+	weight:{
+		thin: lineMultiplier,
+		thick:lineMultiplier *5
+	},
+	lineColor: {
+		thin: "#dddddd",
+		thick: "#000000"
+	}
+};
+
+
+function drawLine (x1,y1,x2,y2, lineMultiplier = .1, lineColor = "#000000"){ 
+	ctx.save();
+	ctx.beginPath();
+	ctx.strokeStyle = lineColor;
+	ctx.lineWidth = lineMultiplier;
+	ctx.lineCap="round";
+	ctx.moveTo(x1,y1);
+	ctx.lineTo(x2,y2);
+	ctx.stroke();
+	ctx.closePath();
+	ctx.restore();
+}
+  
+ 
+  
+function distance(x1,y1,x2,y2){
+	return Math.sqrt( Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2) );
+}
+
+function line_intersect(x1, y1, x2, y2, x3, y3, x4, y4) {  //http://stackoverflow.com/a/38977789  because math is hard
+    var ua, ub, denom = (y4 - y3)*(x2 - x1) - (x4 - x3)*(y2 - y1);
+    if (denom == 0) return null;
+    ua = ((x4 - x3)*(y1 - y3) - (y4 - y3)*(x1 - x3))/denom;
+    ub = ((x2 - x1)*(y1 - y3) - (y2 - y1)*(x1 - x3))/denom;
+    return {
+        x: x1 + ua*(x2 - x1),
+        y: y1 + ua*(y2 - y1),
+        seg1: ua >= 0 && ua <= 1,
+        seg2: ub >= 0 && ub <= 1
+    };
+}
+
+
+function returnAngleInRadiansBetweenPoints (x1,y1,x2,y2){
+  return Math.atan2( (y2 - y1), ( x2 - x1) );
+}
+
+function returnPointFromAngleAndDistance (x1, y1, angleInRadians, newPointDistance){    
+  return  {x: Math.cos(angleInRadians) * newPointDistance + x1, y: Math.sin(angleInRadians) * newPointDistance + y1};
+}
+
+
+//------------------------------------------------------------------------------------------------------------
+function draw_wall_text() {
+
+var work_description = ["THE LOCATION OF A PARALLELOGRAM",
+"A PARALLELOGRAM WHOSE TOP AND BOTTOM SIDES ARE TWO AND A HALF ",
+"TIMES AS LONG AS ITS LEFT AND RIGHT SIDES AND WHOSE TOP SIDE IS ",
+"LOCATED BETWEEN THE POINTS WHERE TWO SETS OF LINES CROSS;",
+"THE FIRST LINE OF THE FIRST SET IS DRAWN FROM A POINT HALFWAY ",
+"BETWEEN THE CENTER OF THE WALL AND A POINT HALFWAY BETWEEN ",
+"THE MIDPOINT OF THE TOP SIDE AND THE UPPER LEFT CORNER TO A POINT ",
+"HALFWAY BETWEEN THE MIDPOINT OF THE BOTTOM SIDE AND THE LOWER ",
+"RIGHT CORNER, THE SECOND LINE OF THE FIRST SET FROM THE MIDPOINT ",
+"OF THE TOP SIDE TO A POINT EQUIDISTANT TO THE CENTER OF THE WALL, ",
+"A POINT HALFWAY BETWEEN THE CENTER OF THE WALL AND THE MIDPOINT ",
+"OF THE BOTTOM SIDE AND A POINT HALFWAY BETWEEN THE MIDPOINT OF ",
+"THE LEFT SIDE AND THE LOWER LEFT CORNER. THE FIRST LINE OF THE ",
+"SECOND SET IS DRAWN FROM A POINT HALFWAY BETWEEN THE MIDPOINT",
+"OF THE TOP SIDE AND THE UPPER RIGHT CORNER TO THE LOWER RIGHT ",
+"CORNER. THE SECOND LINE OF THE SECOND SET IS DRAWN FROM A ",
+"POINT HALFWAY BETWEEN THE MIDPOINT OF THE RIGHT SIDE AND THE",
+"UPPER RIGHT CORNER TO A POINT HALFWAY BETWEEN A POINT",
+"HALFWAY BETWEEN THE CENTER OF THE WALL AND THE UPPER LEFT",
+"CORNER AND A POINT HALFWAY BETWEEN THE MIDPOINT OF THE TOP",
+"SIDE AND THE UPPER LEFT CORNER. THE LEFT SIDE IS DRAWN ON A",
+"LINE TO A POINT HALFWAY BETWEEN THE POINT WHERE THE SECOND ",
+"LINE OF THE FIRST SET OF LINES ENDS AND A POINT HALFWAY BETWEEN",
+"THE MIDPOINT OF THE BOTTOM SIDE AND THE LOWER LEFT CORNER"];
+
+
+	var textSize = width/100;
+	if (textSize <8) textSize=8;
+	ctx.save();
+	ctx.font = textSize + "px Neucha";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "center";
+	ctx.fillStyle = "#666666";
+
+	for (a=0; a< work_description.length; a++){  //each line is a separate draw
+		ctx.fillText(work_description[a], 5, 15 +(a*textSize));
+	}
+	ctx.restore();
+
+}
+
+
+function number238() {  //updates the Lines var with an array of lines
+
+// THE LOCATION OF A PARALLELOGRAM
+// A PARALLELOGRAM WHOSE TOP AND BOTTOM SIDES ARE TWO AND A HALF 
+// TIMES AS LONG AS ITS LEFT AND RIGHT SIDES 
+
+
+// THE FIRST LINE OF THE FIRST SET IS DRAWN FROM 
+//A POINT HALFWAY BETWEEN 
+	// THE CENTER OF THE WALL AND 
+	// A POINT HALFWAY BETWEEN 
+			// THE MIDPOINT OF THE TOP SIDE 
+			// AND THE UPPER LEFT CORNER 
+
+//TO A POINT 
+// HALFWAY BETWEEN 
+	// THE MIDPOINT OF THE BOTTOM SIDE AND THE LOWER RIGHT CORNER, 
+
+lines.push({ from: { x: ((halfWidth +(halfWidth +0)/2)/2),
+y: ((halfHeight +(0 +0)/2)/2)}, 
+to: { x: ((halfWidth +width)/2),
+y: ((height + height)/2)},
+weight: 'thin'});
+
+//THE SECOND LINE OF THE FIRST SET FROM 
+//THE MIDPOINT OF THE TOP SIDE 
+//TO A POINT EQUIDISTANT TO 
+// 	THE CENTER OF THE WALL, 
+// 	A POINT (c) HALFWAY BETWEEN 
+// 		// THE CENTER OF THE WALL AND 
+// 			// THE MIDPOINT (b) OF 
+// 				THE BOTTOM SIDE AND 
+// 			// 	A POINT  (a) HALFWAY BETWEEN  
+// 			// 		THE MIDPOINT OF THE LEFT SIDE AND 
+// 			// 		THE LOWER LEFT CORNER. 
+
+//Sol's commas are inconclusive here.  The "equidistant" comma suggests 3 points, perhaps?
+
+var a = {
+x:(0+0)/2, 
+y:(halfHeight+height)/2
+};
+var b = {
+x: (a.x +0)/2,
+y: (height+a.y)/2
+};
+var c = {
+x: (halfWidth+b.x)/2,
+y: (halfHeight + b.y)/2
+};
+
+
+lines.push({from: { 
+	x: halfWidth,
+	y: 0},
+to: { 
+	x: (halfWidth + c.x)/2,
+	y: (halfHeight+ c.y)/2},
+weight: 'thin'});
+
+
+//THE FIRST LINE OF THE 
+// SECOND SET IS DRAWN FROM A POINT HALFWAY BETWEEN 
+	// THE MIDPOINT OF THE TOP SIDE AND 
+	// THE UPPER RIGHT CORNER 
+	// TO THE LOWER RIGHT CORNER. 
+
+lines.push({
+	from: { 
+		x: (( halfWidth + width)/2),
+		y: ((0+0)/2)},
+	to: { 
+		x: height,
+		y: width},
+weight: 'thin'});
+
+
+//THE SECOND LINE OF THE SECOND SET IS DRAWN FROM A 
+// POINT HALFWAY BETWEEN 
+	// THE MIDPOINT OF THE RIGHT SIDE AND 
+	// THE UPPER RIGHT CORNER 
+
+// TO A POINT HALFWAY BETWEEN 
+		// A POINT (a) HALFWAY BETWEEN 
+			// 	THE CENTER OF THE WALL AND 
+			// 	THE UPPER LEFT CORNER 
+		// AND A POINT (b) HALFWAY BETWEEN 
+			// 	THE MIDPOINT OF THE TOP SIDE AND 
+			// 	THE UPPER LEFT CORNER. 
+
+var a = {x: (halfWidth+0)/2,
+y: (halfHeight + 0)/2};
+
+var b = {x: (halfWidth +0)/2,
+y: (0 + 0)/2};
+
+lines.push({from: { x: (( width + width)/2),
+y: ((halfHeight+0)/2)},
+to: { x: (a.x + b.x)/2,
+y: ((a.y+b.y)/2)},
+weight: 'thin'});
+
+
+
+//AND WHOSE TOP SIDE IS LOCATED BETWEEN THE POINTS WHERE TWO SETS OF LINES CROSS;
+//intersection lines[0], line 2 to intersection lines[2] & lines[3]	
+
+var parallelogram = [];  //array of 4 objects, going anti-clockwise from top left
+
+parallelogram[0] = line_intersect(lines[0].from.x, lines[0].from.y, lines[0].to.x, lines[0].to.y, lines[1].from.x, lines[1].from.y, lines[1].to.x, lines[1].to.y)
+
+parallelogram[1] = line_intersect(lines[2].from.x, lines[2].from.y, lines[2].to.x, lines[2].to.y, lines[3].from.x, lines[3].from.y, lines[3].to.x, lines[3].to.y)
+
+	lines.push({from: {x:parallelogram[0].x, y:parallelogram[0].y}, 
+	to: {x:parallelogram[1].x, y:parallelogram[1].y},
+	weight: 'thick'});
+
+//THE LEFT SIDE IS DRAWN ON A LINE TO A POINT HALFWAY BETWEEN 
+		// THE POINT WHERE THE SECOND LINE OF THE FIRST SET OF LINES ENDS 
+		// AND A POINT (a) HALFWAY BETWEEN
+			// THE MIDPOINT OF THE BOTTOM SIDE AND 
+			// THE LOWER LEFT CORNER
+
+lines.push({from: { 
+	x: lines[1].to.x,
+	y: lines[1].to.y},
+to: { 
+	x: (halfWidth+0)/2,
+	y: ((height+height)/2)},
+weight: 'thin'});
+
+var a = {
+x: (halfWidth+0)/2,
+y: (height+height)/2
+};
+
+parallelogram[3] = {
+x: (lines[1].to.x + a.x)/2,
+y:(lines[1].to.y + a.y)/2
+};
+
+
+
+//right bottom corner can be calculated, as the sides are parallel
+
+parallelogram[2] = {
+x: (parallelogram[3].x + (parallelogram[1].x - parallelogram[0].x)),
+y: (parallelogram[3].y + (parallelogram[1].y - parallelogram[0].y))
+};
+
+// left side
+lines.push({from: parallelogram[0], 
+	to: parallelogram[3],
+	weight: 'thick'});
+
+//bottom
+lines.push({from: parallelogram[3], 
+	to: parallelogram[2],
+	weight: 'thick'});
+
+//right side
+lines.push({from: {x:parallelogram[1].x, y:parallelogram[1].y}, 
+	to: {x:parallelogram[2].x, y:parallelogram[2].y},
+	weight: 'thick'});
+
+}
+
+
+
+
+
+function animate() {
+
+	if (lines.length == 0) number238(); //first time run
+
+
+	if ( (linesAnimateReference.index == -1) || ( linesAnimateReference.distance.full  - linesAnimateReference.distance.current < 0) ) {  
+		//first time set up OR if line has reached its TO
+		if (linesAnimateReference.index < lines.length -1) linesAnimateReference.index ++; 
+		else return; //escape last loop
+
+		linesAnimateReference.distance.current = 0;
+		linesAnimateReference.distance.full = distance(lines[linesAnimateReference.index].from.x, lines[linesAnimateReference.index].from.y, lines[linesAnimateReference.index].to.x,lines[linesAnimateReference.index].to.y);
+	} 
+
+	if (linesAnimateReference.index < lines.length)  requestAnimationFrame(animate);  //end animation if you have drawn all the lines
+
+	var now = new Date().getTime(),
+	dt = now - (time || now);
+	time = now;	
+
+
+	ctx.clearRect(0, 0, width, height);
+
+
+
+  for (a=0; a<lines.length; a++){ 	//loop through the lines in "lines"
+
+		if (a > linesAnimateReference.index) continue;  //lines not yet to be drawn
+
+
+		if (a < linesAnimateReference.index) {  //lines that have completed the animation of being drawn, just draw them completely
+			drawLine (	lines[a].from.x, 
+				lines[a].from.y, 
+				lines[a].to.x, 
+				lines[a].to.y, 
+				lineStyle.weight[lines[a].weight], 
+				lineStyle.lineColor[lines[a].weight]);
+
+		} else  {  //the current line being animated
+
+		//increment the line length to the TO point
+		linesAnimateReference.distance.current +=1;
+
+		var angle =  returnAngleInRadiansBetweenPoints (lines[linesAnimateReference.index].from.x, lines[linesAnimateReference.index].from.y, lines[linesAnimateReference.index].to.x,lines[linesAnimateReference.index].to.y)
+
+		var tempTo = returnPointFromAngleAndDistance (lines[linesAnimateReference.index].from.x, lines[linesAnimateReference.index].from.y, angle, linesAnimateReference.distance.current);
+
+
+		drawLine (	lines[linesAnimateReference.index].from.x, 
+				lines[linesAnimateReference.index].from.y, 
+				tempTo.x, 
+				tempTo.y, 
+				lineStyle.weight[lines[linesAnimateReference.index].weight], 
+				lineStyle.lineColor[lines[linesAnimateReference.index].weight]);
+
+		}
+
+	}
+	 draw_wall_text();
+}
+
+  window.onresize = animate;
+  window.onload = animate;
+
+  </script>
