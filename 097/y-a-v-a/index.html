@@ -1,0 +1,117 @@
+<!doctype html>
+  <meta charset="utf-8">
+  <title>y_a_v_a ❤︎ Sol LeWitt • #097</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  html,body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  canvas {
+    width: 100%;
+    height: 100%;
+  }
+  </style>
+  <link rel="shortcut icon" href="favicon.png">
+  <canvas></canvas>
+  <script src="MersenneTwister.js"></script>
+  <script src="PerlinNoise.js"></script>
+  <script>
+    function number097() {
+      const c = document.querySelector('canvas');
+      const ctx = c.getContext('2d');
+      // "Within an 80 inch (200cm) square,"
+      // I decided to use the whole viewport
+      const width = ctx.canvas.width = ctx.canvas.clientWidth;
+      const height = ctx.canvas.height = ctx.canvas.clientHeight;
+      const halfWidth = width / 2;
+      // Drawing 10,000 lines is really heavy for a browser
+      // also, it almost completely fills the screen.
+      // try it with 2,000 or 2e3 for a nice(r) result
+      const iterations = 1e4;
+
+      // clear screen on resize
+      ctx.clearRect(0, 0, c.width, c.height);
+
+      // initialize
+      const seed = Date.now() >> 0;
+      const mersenneTwister = new MersenneTwister(seed);
+      const TWO_PI = Math.PI * 2;
+      mersenneTwister.init_genrand(seed);
+
+      function getRadius(multiplier) {
+        return Math.round(mersenneTwister.genrand_res53() * multiplier) + 20;
+      }
+
+      function getAngle() {
+        return mersenneTwister.genrand_res53() * TWO_PI;
+      }
+
+      function getY() {
+        return Math.round(mersenneTwister.genrand_res53() * height);
+      }
+
+      function getX(rightSide) {
+        let leftThreshold = rightSide ? halfWidth : 0;
+        return Math.round(mersenneTwister.genrand_res53() * halfWidth) + leftThreshold;
+      }
+
+      function getDirection() {
+        return Math.round(mersenneTwister.genrand_res53()) === 0 ? -1 : 1;
+      }
+
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = .9;
+
+      // "10,000 straight lines."
+      for(let i = 0; i < iterations; i++) {
+        const angle = getAngle();
+        const radius = getRadius(140);
+        const x1 = getX(false);
+        const y1 = getY();
+        const x2 = Math.min(Math.max(Math.round(x1 + radius * Math.cos(angle)), 0), halfWidth);
+        const y2 = Math.min(Math.max(Math.round(y1 + radius * Math.sin(angle)), 0), height);
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = '#444';
+      ctx.lineWidth = .1;
+
+      // "Next to it is an 80 inch (200 cm) square with 10,000 not straight lines."
+      for(let i = 0; i < iterations; i++) {
+        const radius = getRadius(80);
+        const x1 = getX(true);
+        const y1 = getY();
+
+        const directionX = getDirection();
+        const directionY = getDirection();
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        let inc = 0.0;
+        const P = new PerlinNoise();
+        const Q = new PerlinNoise();
+
+        for(let j = 1; j < radius; j += 2) {
+          let y2 = (Math.abs(P.noise2d(inc + (0.00212 * j), inc - (0.00423 * j))) * 100) + y1 + (j * directionY);
+          let x2 = (Math.abs(Q.noise2d(inc - (0.00522 * j), inc + (0.00412 * j))) * 100) + x1 + (j * directionX);
+
+          if (x2 <= halfWidth) {
+            continue;
+          }
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+          inc += 0.01;
+        }
+      }
+    }
+
+    window.onresize = number097;
+
+    number097();
+  </script>
