@@ -28,11 +28,17 @@
             left: 0;
             right: 0;
           }
-          #band-1 {
-            background: hotpink;
-            -webkit-clip-path: polygon(100% 0, 0 19%, 0 39%);
-            clip-path: polygon(100% 0, 0 19%, 0 39%);
+          #first-band-bg {
+            background: deeppink;
+            -webkit-clip-path: polygon(100% 0, 0 100%, 0 39%);
+            clip-path: polygon(100% 0, 0 100%, 0 39%);
           }
+          #second-band-bg {
+            background: orange;
+            -webkit-clip-path: polygon(100% 0, 94% 100%, 0 100%);
+            clip-path: polygon(100% 0, 94% 100%, 0 100%);
+          }
+          #band-1 { background: hotpink; }
           #band-2 { background: lightskyblue; }
           #band-3 { background: blue; }
           #band-4 { background: greenyellow; }
@@ -54,34 +60,36 @@
           #band-11 { background: springgreen; }
         </style>
     </head>
+
     <body>
       <div class="wall">
-        <div id="band-1" class="band"></div>
+        <div id="first-band-bg" class="band"></div>
+        <div id="second-band-bg" class="band"></div>
+        <div id="band-1" class="band first-set"></div>
         <div id="band-2" class="band first-set"></div>
         <div id="band-3" class="band first-set"></div>
         <div id="band-4" class="band first-set"></div>
         <div id="band-5" class="band first-set"></div>
         <div id="band-6" class="band"></div>
-
-
-        <div id="band-7" class="band"></div>
+        <div id="band-7" class="band second-set"></div>
         <div id="band-8" class="band second-set"></div>
         <div id="band-9" class="band second-set"></div>
         <div id="band-10" class="band second-set"></div>
         <div id="band-11" class="band second-set"></div>
       </div>
     </body>
+
     <script type="text/javascript">
       function generateBand() {
         var firstSet = document.getElementsByClassName('first-set');
         for (var i=0; i<firstSet.length; i++) {
-          const randomNumber = Math.floor(Math.random() * 62) + 39;
+          var randomNumber = Math.floor(Math.random() * 70) + 10;
           firstSet[i].style.clipPath = `polygon(100% 0, 0 39%, 0 ${randomNumber}%)`
         }
 
         var secondSet = document.getElementsByClassName('second-set');
         for (var i=0; i<secondSet.length; i++) {
-          const randomNumber = Math.floor(Math.random() * 90) + 1;
+          var randomNumber = Math.floor(Math.random() * 90) + 5;
           secondSet[i].style.clipPath = `polygon(100% 0, 0 100%, ${randomNumber}% 100%)`
         }
       }
