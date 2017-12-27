@@ -81,15 +81,18 @@
 
     <script type="text/javascript">
       function generateBand() {
-        var firstSet = document.getElementsByClassName('first-set');
+        var firstSet = document.querySelectorAll(".first-set");
         for (var i=0; i<firstSet.length; i++) {
           var randomNumber = Math.floor(Math.random() * 70) + 10;
+          firstSet[i].setAttribute("style", `-webkit-clip-path: polygon(100% 0, 0 39%, 0 ${randomNumber}%)`);
           firstSet[i].style.clipPath = `polygon(100% 0, 0 39%, 0 ${randomNumber}%)`
         }
 
-        var secondSet = document.getElementsByClassName('second-set');
+        var secondSet = document.querySelectorAll(".second-set");
         for (var i=0; i<secondSet.length; i++) {
           var randomNumber = Math.floor(Math.random() * 90) + 5;
+          secondSet[i].setAttribute("style", `-webkit-clip-path: polygon(100% 0, 0 100%, ${randomNumber}% 100%)`);
+
           secondSet[i].style.clipPath = `polygon(100% 0, 0 100%, ${randomNumber}% 100%)`
         }
       }
