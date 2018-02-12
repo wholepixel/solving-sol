@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sol Lewitt - Drawing 959 - Uneven bands from the upper right corner.</title>
+        <style type="text/css">
+          html {
+            box-sizing: border-box;
+          }
+          *, *:before, *:after {
+            box-sizing: inherit;
+          }
+          body {
+            background: #ffffff;
+            height: 100vh;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+          }
+          .wall {
+            width: 100%;
+            height: 100vh;
+          }
+          .band {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+          }
+          #first-band-bg {
+            background: mediumpurple;
+            -webkit-clip-path: polygon(100% 0, 0 100%, 0 39%);
+            clip-path: polygon(100% 0, 0 100%, 0 39%);
+          }
+
+          #band-1 { background: hotpink; }
+          #band-2 { background: lightskyblue; }
+          #band-3 { background: blue; }
+          #band-4 { background: greenyellow; }
+          #band-5 { background: gold; }
+          #band-6 { background: purple; }
+          #band-7 { background: yellowgreen; }
+          #band-8 { background: crimson; }
+          #band-9 { background: mediumseagreen; }
+          #band-10 { background: orangered; }
+          #band-11 { background: springgreen; }
+        </style>
+    </head>
+
+    <body>
+      <div class="wall">
+        <div id="first-band-bg" class="band"></div>
+
+        <div id="band-1" class="band first-set"></div>
+        <div id="band-2" class="band first-set"></div>
+        <div id="band-3" class="band first-set"></div>
+        <div id="band-4" class="band first-set"></div>
+        <div id="band-5" class="band first-set"></div>
+        <div id="band-6" class="band first-set"></div>
+        <div id="band-7" class="band second-set"></div>
+        <div id="band-8" class="band second-set"></div>
+        <div id="band-9" class="band second-set"></div>
+        <div id="band-10" class="band second-set"></div>
+        <div id="band-11" class="band second-set"></div>
+      </div>
+    </body>
+
+    <script type="text/javascript">
+      function generateBand() {
+        var firstSet = document.querySelectorAll(".first-set");
+        for (var i=0; i<firstSet.length; i++) {
+          var randomNumber = Math.floor(Math.random() * 70) + 10;
+          firstSet[i].setAttribute("style", `-webkit-clip-path: polygon(100% 0, 0 39%, 0 ${randomNumber}%)`);
+          firstSet[i].style.clipPath = `polygon(100% 0, 0 39%, 0 ${randomNumber}%)`
+        }
+
+        var secondSet = document.querySelectorAll(".second-set");
+        for (var i=0; i<secondSet.length; i++) {
+          var randomNumber = Math.floor(Math.random() * 70) + 10;
+          secondSet[i].setAttribute("style", `-webkit-clip-path: polygon(100% 0, 0 100%, ${randomNumber}% 100%)`);
+          secondSet[i].style.clipPath = `polygon(100% 0, 0 100%, ${randomNumber}% 100%)`
+        }
+      }
+
+      generateBand();
+    </script>
+</html>
