@@ -1,0 +1,99 @@
+<html>
+
+<head>
+    <title>Solving Sol #392</title>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js"></script>
+	<style type="text/css">
+	        html,
+	        body {
+	            width: 100%;
+	            height: 100%;
+	            overflow: hidden;
+	            padding: 0;
+	            margin: 0;
+	        }
+	        #paper {
+	            display: -webkit-box;
+	            display: -moz-box;
+	            display: -ms-flexbox;
+	            display: -webkit-flex;
+	            display: flex;
+	            align-items: center;
+	            justify-content: center;
+	            margin: auto;
+	        }
+	    </style>
+</head>
+<body>
+<canvas id="paper"></canvas>
+
+<script>
+    /**
+    Solving Sol #392
+    A 12" (30 cm) grid covering the black wall. Within each 12" (30 cm) square, a vertical, horizontal, diagonal right or diagonal left line bisecting the square. All squares are filled. (The direction of the line in each square is determined by the drafter)
+    **/
+    window.onload = () => {
+      draw();
+    };
+    window.onresize = () => {
+      draw();
+    };
+    const draw = () => {
+      const canvas = document.getElementById("paper");
+      let canvasSize = Math.min(
+        canvas.parentElement.clientHeight,
+        canvas.parentElement.clientWidth
+      );
+      canvas.height = canvasSize;
+      canvas.width = canvasSize;
+      paper.setup(canvas);
+      const maxDimension = Math.min(canvas.height, canvas.width);
+      canvas.width = maxDimension;
+      canvas.height = maxDimension;
+      const bisectionStartPoints = [
+        "topLeft",
+        "topCenter",
+        "topRight",
+        "rightCenter"
+      ];
+      const bisectionEndPoints = [
+        "bottomRight",
+        "bottomCenter",
+        "bottomLeft",
+        "leftCenter"
+      ];
+      for (let i = 0; i <= 12; i++) {
+        let x = i * (maxDimension / 12);
+     
+        let gridLineX = new paper.Path();
+        gridLineX.strokeColor = "black";
+        gridLineX.add(new paper.Point(0, i * (maxDimension / 12)));
+        gridLineX.add(new paper.Point(maxDimension, i * (maxDimension / 12)));
+        
+        let gridLineY = new paper.Path();
+        gridLineY.strokeColor = "black";
+        gridLineY.add(new paper.Point(i * (maxDimension / 12), 0));
+        gridLineY.add(new paper.Point(i * (maxDimension / 12), maxDimension));
+        
+        for (let j = 0; j < 12; j++) {
+          let y = j * (maxDimension / 12);
+          let topLeft = new paper.Point(x, y);
+          let rectSize = new paper.Size(maxDimension / 12, maxDimension / 12);
+          let rectObj = new paper.Rectangle(topLeft, rectSize);
+          let rectangle = new paper.Path.Rectangle(rectObj);
+          let rand = Math.floor(Math.random() * 4);
+          let bisectStart = rectObj[bisectionStartPoints[rand]];
+          let bisectEnd = rectObj[bisectionEndPoints[rand]];
+          let bisectionLine = new paper.Path();
+          bisectionLine.strokeColor = "black";
+          bisectionLine.add(new paper.Point(bisectStart._x, bisectStart._y));
+          bisectionLine.add(new paper.Point(bisectEnd._x, bisectEnd._y));
+          rectangle.remove()
+        }
+      }
+      paper.view.draw();
+    };
+    
+</script>
+</body>
+</html>
