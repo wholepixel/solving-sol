@@ -1,0 +1,152 @@
+<!doctype html>
+<title>y-a-v-a.org ❤ sol lewitt • wall drawing #349</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .wall {
+    height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .white {
+    background: white;
+    width: 40vw;
+  }
+
+  .blue {
+    background: blue;
+    width: 60vw;
+  }
+
+  .red {
+    background: red;
+    width: 60vw;
+  }
+
+  .yellow {
+    background: yellow;
+    width: 40vw;
+  }
+
+  .figure {
+    background: black;
+    flex-shrink: 0;
+  }
+
+  .square {
+    height: 12vw;
+    width: 12vw;
+  }
+
+  .circle {
+    width: 12vw;
+    height: 12vw;
+    border-radius: 50%;
+  }
+
+  .triangle {
+    width: 0;
+    height: 0;
+    border-left: 6vw solid transparent;
+    border-right: 6vw solid transparent;
+    border-bottom: 12vw solid black;
+    background: transparent;
+  }
+
+  .rectangle {
+    height: 12vw;
+    width: 6vw;
+    margin: 0 3vw;
+  }
+
+  .right-triangle {
+    width: 0;
+    height: 0;
+    border-bottom: 12vw solid black;
+    border-right: 12vw solid transparent;
+    background: transparent;
+  }
+
+  .trapezoid {
+    border-bottom: 12vw solid black;
+    border-left: 4vw solid transparent;
+    border-right: 4vw solid transparent;
+    height: 0;
+    width: 4vw;
+    background: transparent;
+  }
+
+  .parallelogram {
+    width: 8vw;
+    height: 12vw;
+    transform: skew(-20deg);
+  }
+
+  .diamond {
+    width: 8.5vw;
+    height: 8.5vw;
+    transform: rotate(45deg);
+    margin: 0 1.75vh;
+  }
+
+  .cross {
+    width: 7vw;
+    height: 12vw;
+    position: relative;
+    margin: 0 2.5vw;
+  }
+
+  .cross:after {
+    width: 7vw;
+    height: 12vw;
+    transform: rotate(90deg);
+    content: "";
+    position: absolute;
+    background: black;
+  }
+
+  .x {
+    width: 5vw;
+    height: 14vw;
+    transform: rotate(45deg);
+    position: relative;
+    margin: 0 4.5vw;
+  }
+
+  .x:after {
+    content: "";
+    position: absolute;
+    background: black;
+    width: 5vw;
+    height: 14vw;
+    transform: rotate(-90deg);
+  }
+</style>
+
+<body>
+<div class="white wall">
+  <div class="rectangle figure"></div>
+  <div class="right-triangle figure"></div>
+</div>
+<div class="blue wall">
+  <div class="x figure"></div>
+  <div class="cross figure"></div>
+  <div class="diamond figure"></div>
+</div>
+<div class="red wall">
+  <div class="square figure"></div>
+  <div class="circle figure"></div>
+  <div class="triangle figure"></div>
+</div>
+<div class="yellow wall">
+  <div class="trapezoid figure"></div>
+  <div class="parallelogram figure"></div>
+</div>
+</body>

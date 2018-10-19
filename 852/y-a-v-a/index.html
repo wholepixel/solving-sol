@@ -1,0 +1,135 @@
+<html>
+<title>wall drawing #852 • _y_a_v_a_ ❤︎ sol lewitt</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #wall {
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    max-width: calc(100% - 40px);
+    max-height: calc(100% - 40px);
+    margin: 20px;
+  }
+</style>
+<!-- A wall ... -->
+<div id="wall">
+  <svg id="sol" width="100%" height="100%">
+  </svg>
+</div>
+<script>
+function createControlPoint(x, y, color) {
+  var c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  c.setAttribute('cx', x);
+  c.setAttribute('cy', y);
+  c.setAttribute('r', 4);
+  c.setAttribute('fill', color || 'red');
+
+  document.getElementById('sol').appendChild(c);
+}
+
+function getDistance(x1, y1, x, y) {
+  var rootCorner = Math.atan(y / x) * (180 / Math.PI);
+  var pointCorner = Math.atan(y1 / x1) * (180 / Math.PI);
+  var hyp = Math.sqrt(Math.pow(x1, 2) + Math.pow(y1, 2));
+
+  var restCorner = rootCorner - pointCorner;
+  var dist = Math.cos(restCorner / Math.PI) * hyp;
+  return dist;
+}
+
+function walldrawing852() {
+  var debugMode = false;
+  var debugs = [];
+
+  var sol = document.getElementById('sol');
+  var svgSize = sol.getBoundingClientRect();
+
+  // ... divided from the upper left ...
+  var x0 = 0;
+  var y0 = 0;
+  // ... to the lower right ...
+  var x = svgSize.width;
+  var y = svgSize.height;
+
+  var deltaX = x - x0;
+  var deltaY = y - y0;
+
+  var inc = 8;
+  var points = [];
+
+  var intervalX = deltaX / inc;
+  var intervalY = deltaY / inc;
+  var x1;
+  var y1;
+  var coord;
+
+  for (var i = 0; i < inc; i++) {
+    x1 = x0 + (Math.random() * intervalX) + (intervalX * i);
+    y1 = y0 + (Math.random() * intervalY) + (intervalY * i);
+
+    coord = [Math.min(intervalX * (i + 1), Math.round(x1)), Math.min(intervalY * (i + 1), Math.round(y1))];
+
+    points.push(coord);
+    debugs.push([coord, 'blue']);
+  }
+
+  var firstControlPoint = points.shift();
+  var attributeValues = [];
+  var set = [];
+
+  for (var i = 0; i < points.length; i += 2) {
+    if (points[i + 1]) {
+      set = [points[i].join(' '), points[i + 1].join(' ')].join(',') + ' S ';
+    } else {
+      set = [points[i].join(' '), [x, y].join(' ')].join(',');
+    }
+    attributeValues.push(set);
+  }
+
+  // ... by a curvy line; ...
+  var attributeValue2 = 'M' + x0 + ' ' + y0;
+  attributeValue2 += ' C ' + firstControlPoint[0] + ' ' + firstControlPoint[1] + ', ';
+  attributeValue2 += attributeValues.join('');
+  attributeValue2 += ' L' + x0 + ' ' + y + ' ' + x0 + ' ' + y0 + ' Z';
+
+  // ... left: glossy yellow; ...
+  var pathElement2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  pathElement2.setAttribute('id', 'walldrawing\#852');
+  pathElement2.setAttribute('d', attributeValue2);
+  pathElement2.setAttribute('stroke', 'transparent');
+  pathElement2.setAttribute('fill', 'yellow');
+
+  // ... right: glossy purple.
+  var attributeValue1 = 'M' + x0 + ' ' + y0;
+  attributeValue1 += ' L' + x + ' ' + y0 + ' L' + x + ' ' + y;
+  attributeValue1 += ' L' + x0 + ' ' + y + ' Z';
+  var pathElement1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  pathElement1.setAttribute('id', 'lewitt');
+  pathElement1.setAttribute('d', attributeValue1);
+  pathElement1.setAttribute('stroke', 'transparent');
+  pathElement1.setAttribute('fill', 'purple');
+
+  sol.appendChild(pathElement1);
+
+  sol.appendChild(pathElement2);
+
+  if (debugMode) {
+    debugs.forEach(function(element) {
+      createControlPoint(element[0][0], element[0][1], element[1]);
+    });
+  }
+};
+
+walldrawing852();
+
+window.onresize = walldrawing852;
+
+</script>
+</html>
