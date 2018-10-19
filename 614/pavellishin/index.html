@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>pavellishin - Sol LeWitt - #164</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+    html,body {
+        background: #fff;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    </style>
+  </head>
+
+  <body>
+    <canvas></canvas>
+
+    <script>
+    function rand(min, max) { // both inclusive
+      return Math.floor(Math.random() * ((max + 1) - min) + min);
+    }
+
+    function draw() {
+      var w = window,
+          d = document,
+          e = d.documentElement,
+          g = d.getElementsByTagName('body')[0],
+          width = w.innerWidth || e.clientWidth || g.clientWidth,
+          height = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+      var c = document.getElementsByTagName('canvas')[0];
+      var ctx = c.getContext('2d');
+
+      ctx.canvas.width = width;
+      ctx.canvas.height = height;
+
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 3;
+      ctx.fillStyle = '#fff';
+
+      for(var i=0; i<1000; i++) {
+        const startx = rand(-100, width + 100);
+        const starty = rand(-100, height + 100);
+        const rec_width = rand(width * 0.1, width * 0.2);
+        const rec_height = rand(height * 0.1, width * 0.2);
+
+        ctx.beginPath();
+        ctx.fillRect(startx, starty, rec_width, rec_height);
+
+        ctx.moveTo(startx, starty);
+        ctx.lineTo(startx + rec_width, starty);
+        ctx.lineTo(startx + rec_width, starty + rec_height);
+        ctx.lineTo(startx, starty + rec_height);
+        ctx.lineTo(startx, starty);
+        ctx.stroke();
+      }
+    }
+
+    window.onresize = draw;
+
+    document.addEventListener('DOMContentLoaded', draw);
+    </script>
+  </body>
+</html>
