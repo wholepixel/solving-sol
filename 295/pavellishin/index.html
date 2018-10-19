@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>pavellishin - Sol LeWitt - #164</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+    html,body {
+        background: #000;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    </style>
+  </head>
+
+  <body>
+    <canvas></canvas>
+
+    <script>
+    function rand(min, max) { // both inclusive
+      return Math.floor(Math.random() * ((max + 1) - min) + min);
+    }
+
+    function draw() {
+      var w = window,
+          d = document,
+          e = d.documentElement,
+          g = d.getElementsByTagName('body')[0],
+          width = w.innerWidth || e.clientWidth || g.clientWidth,
+          height = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+      var c = document.getElementsByTagName('canvas')[0];
+      var ctx = c.getContext('2d');
+
+      ctx.canvas.width = width;
+      ctx.canvas.height = height;
+
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+
+      // Six figures
+      for(var i=0; i<6; i++) {
+        ctx.beginPath();
+        const startx = rand(0, width);
+        const starty = rand(0, height);
+
+        if (rand(0,1) == 0) {
+          // circle
+          ctx.arc(startx,  // x
+                  starty, // y
+                  rand(0, rand(width, height)), // radius
+                  0, Math.PI * 2, // start and end angle
+                  false); // counter-clockwise?
+        } else {
+          // polygon, between 2 and 4 points
+          var points = rand(2, 4)
+          ctx.moveTo(startx, starty);
+          for(var point = 0; point < points; point++) {
+            ctx.lineTo(rand(0, width), rand(0, height));
+          }
+          ctx.lineTo(startx, starty);
+        }
+
+        ctx.stroke();
+      }
+
+
+    }
+
+    window.onresize = draw;
+
+    document.addEventListener('DOMContentLoaded', draw);
+    </script>
+  </body>
+</html>
