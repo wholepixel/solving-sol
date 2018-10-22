@@ -32,18 +32,16 @@ function draw() {
   // fillSquareWithLines(topLeft + new Point(0, height), height, directionNE);
   fillSquareWithLines(topLeft + new Point(0, height), height, directionSW);
 
-
   // South east
   fillSquareWithLines(topLeft + new Point(height, height), height, directionNW);
   fillSquareWithLines(topLeft + new Point(height, height), height, directionNE);
   fillSquareWithLines(topLeft + new Point(height, height), height, directionSW);
   // fillSquareWithLines(topLeft + new Point(height, height), height, directionSE);
-
 }
 
 function band(start, end, width) {
   var direction = end - start;
-  var orthogonal = new Point(direction.y, - direction.x).normalize();
+  var orthogonal = new Point(direction.y, -direction.x).normalize();
   var bandPath = new Path();
   bandPath.add(start + (orthogonal * width) / 2);
   bandPath.add(end + (orthogonal * width) / 2);
@@ -62,8 +60,8 @@ function fillSquareWithLines(
   var size = new Size(height, height);
   var square = new Rectangle(corner, size);
 
-  var diagonalSize = Math.sqrt(2) * height;
-  var orthogonal = new Point(direction.y, - direction.x).normalize();
+  var diagonalSize = Math.sqrt(2) * height * 2;
+  var orthogonal = new Point(direction.y, -direction.x).normalize();
   var center = corner + height / 2;
 
   var squarePath = new Path.Rectangle(square);
@@ -71,19 +69,20 @@ function fillSquareWithLines(
   var spacing = 20; //px
   var i = 0;
 
-  function drawBand(i) {
-    var lineCenter = center + orthogonal * i * spacing;
+  function drawBand(offset) {
+    var lineCenter = center + orthogonal * offset;
     var lineStart = lineCenter - direction.normalize(diagonalSize / 2);
     var lineEnd = lineCenter + direction.normalize(diagonalSize / 2);
 
-    var bandPath = band(lineStart, lineEnd, 5);
+    var bandPath = band(lineStart, lineEnd, 10);
     var segmentPath = bandPath.intersect(squarePath);
     segmentPath.fillColor = "blue";
   }
 
-  while (i * spacing <= diagonalSize / 2) {
-    drawBand(i)
-    drawBand(-i);
+  do {
+    var offset = i * Math.sqrt(i) * spacing;
+    drawBand(offset);
+    drawBand(-offset);
     i++;
-  }
+  } while (offset <= diagonalSize / 2);
 }
