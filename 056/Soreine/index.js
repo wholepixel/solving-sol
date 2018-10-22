@@ -15,18 +15,30 @@ function draw() {
   var height = Math.min(view.size.width, view.size.height) / phi / 2;
 
   var topLeft = view.center - height;
+  var directionNW = new Point(-1, -1);
+  var directionNE = new Point(-1, -2);
+  var directionSW = new Point(-2, -1);
+  var directionSE = new Point(1, -1);
 
   // North west
-  fillSquareWithLines(topLeft + new Point(0, 0), height, new Point(-1, -1));
+  fillSquareWithLines(topLeft + new Point(0, 0), height, directionNW);
 
   // North east
-  fillSquareWithLines(topLeft + new Point(height, 0), height, new Point(-1, -2));
+  fillSquareWithLines(topLeft + new Point(height, 0), height, directionNW);
+  fillSquareWithLines(topLeft + new Point(height, 0), height, directionNE);
 
   // South west
-  fillSquareWithLines(topLeft + new Point(0, height), height, new Point(-2, -1));
+  fillSquareWithLines(topLeft + new Point(0, height), height, directionNW);
+  fillSquareWithLines(topLeft + new Point(0, height), height, directionNE);
+  fillSquareWithLines(topLeft + new Point(0, height), height, directionSW);
+
 
   // South east
-  fillSquareWithLines(topLeft + new Point(height, height), height, new Point(1, -1));
+  fillSquareWithLines(topLeft + new Point(height, height), height, directionNW);
+  fillSquareWithLines(topLeft + new Point(height, height), height, directionNE);
+  fillSquareWithLines(topLeft + new Point(height, height), height, directionSW);
+  fillSquareWithLines(topLeft + new Point(height, height), height, directionSE);
+
 }
 
 function band(start, end, width) {
@@ -53,21 +65,25 @@ function fillSquareWithLines(
   var diagonalSize = Math.sqrt(2) * height;
   var orthogonal = new Point(direction.y, - direction.x).normalize();
   var center = corner + height / 2;
-  var start = center - orthogonal.normalize(diagonalSize / 2);
 
   var squarePath = new Path.Rectangle(square);
 
-  var spacing = 6; //px
+  var spacing = 25; //px
   var i = 0;
 
-  while (i * spacing <= diagonalSize) {
-    var lineCenter = start + orthogonal * i * spacing;
+  function drawBand(i) {
+    var lineCenter = center + orthogonal * i * spacing;
     var lineStart = lineCenter - direction.normalize(diagonalSize / 2);
     var lineEnd = lineCenter + direction.normalize(diagonalSize / 2);
 
-    var bandPath = band(lineStart, lineEnd, 2);
+    var bandPath = band(lineStart, lineEnd, 5);
     var segmentPath = bandPath.intersect(squarePath);
     segmentPath.fillColor = "blue";
+  }
+
+  while (i * spacing <= diagonalSize / 2) {
+    drawBand(i)
+    drawBand(-i);
     i++;
   }
 }
