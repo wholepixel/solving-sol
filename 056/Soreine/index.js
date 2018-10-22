@@ -29,7 +29,7 @@ function draw() {
 
   // South west
   fillSquareWithLines(topLeft + new Point(0, height), height, directionNW);
-  fillSquareWithLines(topLeft + new Point(0, height), height, directionNE);
+  // fillSquareWithLines(topLeft + new Point(0, height), height, directionNE);
   fillSquareWithLines(topLeft + new Point(0, height), height, directionSW);
 
 
@@ -37,7 +37,7 @@ function draw() {
   fillSquareWithLines(topLeft + new Point(height, height), height, directionNW);
   fillSquareWithLines(topLeft + new Point(height, height), height, directionNE);
   fillSquareWithLines(topLeft + new Point(height, height), height, directionSW);
-  fillSquareWithLines(topLeft + new Point(height, height), height, directionSE);
+  // fillSquareWithLines(topLeft + new Point(height, height), height, directionSE);
 
 }
 
@@ -68,7 +68,7 @@ function fillSquareWithLines(
 
   var squarePath = new Path.Rectangle(square);
 
-  var spacing = 25; //px
+  var spacing = 20; //px
   var i = 0;
 
   function drawBand(i) {
