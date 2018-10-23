@@ -11,32 +11,40 @@ function onResize(event) {
 function draw() {
   project.clear();
 
+  // background
+  new Path.Rectangle(view.bounds).fillColor = "#FAFCEF";
+
   var phi = (1 + Math.sqrt(5)) / 2;
   var height = Math.min(view.size.width, view.size.height) / phi / 2;
 
-  var topLeft = view.center - height;
+  var directionSW = new Point(-1, 0);
   var directionNW = new Point(-1, -1);
-  var directionNE = new Point(-1, -2);
-  var directionSW = new Point(-2, -1);
-  var directionSE = new Point(1, -1);
+  var directionNE = new Point(-1, -3);
+  var directionSE = new Point(0, -1);
 
-  // North west
-  fillSquareWithLines(topLeft + new Point(0, 0), height, directionNW);
-
-  // North east
-  fillSquareWithLines(topLeft + new Point(height, 0), height, directionNW);
-  fillSquareWithLines(topLeft + new Point(height, 0), height, directionNE);
+  var topLeft = view.center - height;
+  var pointSW = topLeft + new Point(0, height);
+  var pointNW = topLeft + new Point(0, 0);
+  var pointNE = topLeft + new Point(height, 0);
+  var pointSE = topLeft + new Point(height, height);
 
   // South west
-  fillSquareWithLines(topLeft + new Point(0, height), height, directionNW);
-  // fillSquareWithLines(topLeft + new Point(0, height), height, directionNE);
-  fillSquareWithLines(topLeft + new Point(0, height), height, directionSW);
+  fillSquareWithLines(pointSW, height, directionSW);
+
+  // North west
+  fillSquareWithLines(pointNW, height, directionSW);
+  fillSquareWithLines(pointNW, height, directionNW);
+
+  // North east
+  fillSquareWithLines(pointNE, height, directionSW);
+  fillSquareWithLines(pointNE, height, directionNW);
+  fillSquareWithLines(pointNE, height, directionNE);
 
   // South east
-  fillSquareWithLines(topLeft + new Point(height, height), height, directionNW);
-  fillSquareWithLines(topLeft + new Point(height, height), height, directionNE);
-  fillSquareWithLines(topLeft + new Point(height, height), height, directionSW);
-  // fillSquareWithLines(topLeft + new Point(height, height), height, directionSE);
+  fillSquareWithLines(pointSE, height, directionNW);
+  fillSquareWithLines(pointSE, height, directionNE);
+  fillSquareWithLines(pointSE, height, directionSW);
+  fillSquareWithLines(pointSE, height, directionSE);
 }
 
 function band(start, end, width) {
@@ -66,7 +74,7 @@ function fillSquareWithLines(
 
   var squarePath = new Path.Rectangle(square);
 
-  var spacing = 20; //px
+  var spacing = 35; //px
   var i = 0;
 
   function drawBand(offset) {
@@ -76,11 +84,11 @@ function fillSquareWithLines(
 
     var bandPath = band(lineStart, lineEnd, 10);
     var segmentPath = bandPath.intersect(squarePath);
-    segmentPath.fillColor = "blue";
+    segmentPath.fillColor = "#4297C9";
   }
 
   do {
-    var offset = i * Math.sqrt(i) * spacing;
+    var offset = i * spacing;
     drawBand(offset);
     drawBand(-offset);
     i++;
