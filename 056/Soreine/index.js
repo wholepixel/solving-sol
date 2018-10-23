@@ -8,19 +8,22 @@ function onResize(event) {
   draw();
 }
 
+var backgroundColor = "#FAFCEF";
+var drawColor = "#4297C9";
+
 function draw() {
   project.clear();
 
   // background
-  new Path.Rectangle(view.bounds).fillColor = "#FAFCEF";
+  new Path.Rectangle(view.bounds).fillColor = backgroundColor;
 
   var phi = (1 + Math.sqrt(5)) / 2;
   var height = Math.min(view.size.width, view.size.height) / phi / 2;
 
-  var directionSW = new Point(-1, 0);
-  var directionNW = new Point(-1, -1);
-  var directionNE = new Point(-1, -3);
-  var directionSE = new Point(0, -1);
+  var directionSW = new Point(-1, -0.2);
+  var directionNW = new Point(-1, -0.5);
+  var directionNE = new Point(-1, -1);
+  var directionSE = new Point(-1, -1.5);
 
   var topLeft = view.center - height;
   var pointSW = topLeft + new Point(0, height);
@@ -41,9 +44,9 @@ function draw() {
   fillSquareWithLines(pointNE, height, directionNE);
 
   // South east
+  fillSquareWithLines(pointSE, height, directionSW);
   fillSquareWithLines(pointSE, height, directionNW);
   fillSquareWithLines(pointSE, height, directionNE);
-  fillSquareWithLines(pointSE, height, directionSW);
   fillSquareWithLines(pointSE, height, directionSE);
 }
 
@@ -72,9 +75,12 @@ function fillSquareWithLines(
   var orthogonal = new Point(direction.y, -direction.x).normalize();
   var center = corner + height / 2;
 
+  var strokeWidth = 2;
   var squarePath = new Path.Rectangle(square);
+  squarePath.strokeWidth = strokeWidth;
+  squarePath.strokeColor = drawColor;
 
-  var spacing = 35; //px
+  var spacing = 12; //px
   var i = 0;
 
   function drawBand(offset) {
@@ -82,9 +88,9 @@ function fillSquareWithLines(
     var lineStart = lineCenter - direction.normalize(diagonalSize / 2);
     var lineEnd = lineCenter + direction.normalize(diagonalSize / 2);
 
-    var bandPath = band(lineStart, lineEnd, 10);
+    var bandPath = band(lineStart, lineEnd, strokeWidth);
     var segmentPath = bandPath.intersect(squarePath);
-    segmentPath.fillColor = "#4297C9";
+    segmentPath.fillColor = drawColor;
   }
 
   do {
