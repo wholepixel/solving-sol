@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+    html, body {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+    svg {
+      position: absolute;
+      background: white;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <svg></svg>
+</body>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script type="text/javascript">
+  const svg = d3.select('svg')
+  const width = +svg.style('width').replace('px', '')
+  const height = +svg.style('height').replace('px', '')
+  const center = {
+    x: width/2,
+    y: height/2
+  }
+
+  // circle
+  const radius = Math.min(width, height) / (2 * Math.sqrt(2))
+  svg.selectAll('circle')
+    .data([{
+      cx: center.x,
+      cy: center.y,
+      r: radius
+    }])
+    .enter()
+    .append('circle')
+    .attr('cx', c => c.cx)
+    .attr('cy', c => c.cy)
+    .attr('r', c => c.r)
+    .attr('fill', 'whitesmoke')
+
+  // straight lines
+  const slines = []
+  for (var i=0; i<10000; ++i) {
+    const dir = Math.random() * (2 * Math.PI)
+
+    let x = 1, y = 1;
+    while (x*x + y*y > 1) {
+      x = 2 * Math.random() - 1
+      y = 2 * Math.random() - 1
+    }
+
+    x *= radius
+    y *= radius
+
+    slines.push({
+      x: x,
+      y: y,
+      dir: dir
+    })
+  }
+
+  svg.selectAll('line')
+    .data(slines)
+    .enter()
+    .append('line')
+    .attr('x1', line => center.x + line.x)
+    .attr('y1', line => center.y + line.y)
+    .attr('x2', line => center.x + line.x + 3 * Math.cos(line.dir))
+    .attr('y2', line => center.y + line.y + 3 * Math.sin(line.dir))
+    .attr('stroke', '#333')
+
+  // non straight lines
+  const nslines = []
+  for (var i=0; i<10000; ++i) {
+    const dir = Math.random() * (2 * Math.PI)
+
+    let x = 1, y = 1;
+    while (x*x + y*y > 1) {
+      x = 2 * Math.random() - 1
+      y = 2 * Math.random() - 1
+    }
+
+    x *= radius
+    y *= radius
+
+    nslines.push({
+      x: x,
+      y: y,
+      dir: dir
+    })
+  }
+
+  svg.selectAll('path')
+    .data(nslines)
+    .enter()
+    .append('path')
+    .attr('d', line => {
+      let commands = [
+        'M ' + (center.x + line.x) + ',' + (center.y + line.y),
+        (Math.random() > .5 ? 'l 0,3' : 'l 3,0'),
+        (Math.random() > .5 ? 'l 0,3' : 'l 3,0')
+      ]
+
+      return commands.join('\n')
+    })
+    .attr('fill', 'none')
+    .attr('stroke', '#333')
+</script>
+</html>
