@@ -11,6 +11,8 @@ function onResize(event) {
 
 var COLORS = ["#F0F3BD", "#02C39A", "#00A896", "#028090",  "#05668D"]
 
+COLORS = ['#9c89b8', '#f0a6ca', '#efc3e6', '#f0e6ef', '#b8bedd']
+
 var canvasBg = COLORS[0];
 var squareBg = canvasBg;
 var lineColor = "#05668D";
@@ -83,7 +85,7 @@ function fillSquareWithLines(
 ) {
   // The ratio between line width and line spacing
   var ratio = 1 / 5;
-  var lineCount = 10;
+  var lineCount = 20;
   var strokeWidth = (ratio * height) / lineCount;
   var spacing = ((1 - ratio) * height) / lineCount; //px
 
