@@ -49,18 +49,18 @@ function draw() {
   fillSquareWithLines(pointSW, height, directionSW, color1);
 
   // North west
-  fillSquareWithLines(pointNW, height, directionSW, color2);
+  fillSquareWithLines(pointNW, height, directionSW, color1);
   fillSquareWithLines(pointNW, height, directionNW, color2);
 
   // North east
-  fillSquareWithLines(pointNE, height, directionSW, color3);
-  fillSquareWithLines(pointNE, height, directionNW, color3);
+  fillSquareWithLines(pointNE, height, directionSW, color1);
+  fillSquareWithLines(pointNE, height, directionNW, color2);
   fillSquareWithLines(pointNE, height, directionNE, color3);
 
   // South east
-  fillSquareWithLines(pointSE, height, directionSW, color4);
-  fillSquareWithLines(pointSE, height, directionNW, color4);
-  fillSquareWithLines(pointSE, height, directionNE, color4);
+  fillSquareWithLines(pointSE, height, directionSW, color1);
+  fillSquareWithLines(pointSE, height, directionNW, color2);
+  fillSquareWithLines(pointSE, height, directionNE, color3);
   fillSquareWithLines(pointSE, height, directionSE, color4);
 }
 
