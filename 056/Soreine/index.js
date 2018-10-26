@@ -8,14 +8,12 @@ function onResize(event) {
   draw();
 }
 
-var canvasBg = "#F0F3BD";
+
+var COLORS = ["#F0F3BD", "#02C39A", "#00A896", "#028090",  "#05668D"]
+
+var canvasBg = COLORS[0];
 var squareBg = canvasBg;
 var lineColor = "#05668D";
-
-var color1 = "#02C39A";
-var color2 = "#00A896";
-var color3 = "#028090";
-var color4 = "#05668D";
 
 function direction(angle) {
   return new Point(Math.cos(angle), Math.sin(angle));
@@ -46,22 +44,22 @@ function draw() {
   wholeSquare.fillColor = squareBg;
 
   // South west
-  fillSquareWithLines(pointSW, height, directionSW, color1);
+  fillSquareWithLines(pointSW, height, directionSW, COLORS[1]);
 
   // North west
-  fillSquareWithLines(pointNW, height, directionSW, color1);
-  fillSquareWithLines(pointNW, height, directionNW, color2);
+  fillSquareWithLines(pointNW, height, directionSW, COLORS[1]);
+  fillSquareWithLines(pointNW, height, directionNW, COLORS[2]);
 
   // North east
-  fillSquareWithLines(pointNE, height, directionSW, color1);
-  fillSquareWithLines(pointNE, height, directionNW, color2);
-  fillSquareWithLines(pointNE, height, directionNE, color3);
+  fillSquareWithLines(pointNE, height, directionSW, COLORS[1]);
+  fillSquareWithLines(pointNE, height, directionNW, COLORS[2]);
+  fillSquareWithLines(pointNE, height, directionNE, COLORS[3]);
 
   // South east
-  fillSquareWithLines(pointSE, height, directionSW, color1);
-  fillSquareWithLines(pointSE, height, directionNW, color2);
-  fillSquareWithLines(pointSE, height, directionNE, color3);
-  fillSquareWithLines(pointSE, height, directionSE, color4);
+  fillSquareWithLines(pointSE, height, directionSW, COLORS[1]);
+  fillSquareWithLines(pointSE, height, directionNW, COLORS[2]);
+  fillSquareWithLines(pointSE, height, directionNE, COLORS[3]);
+  fillSquareWithLines(pointSE, height, directionSE, COLORS[4]);
 }
 
 function band(start, end, width) {
