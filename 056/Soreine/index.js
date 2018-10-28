@@ -111,8 +111,6 @@ function fillSquareWithLines(
   var center = corner + height / 2;
 
   var squarePath = new Path.Rectangle(square);
-  squarePath.strokeWidth = strokeWidth;
-  squarePath.strokeColor = color;
 
   // Draw one strip at given offset orthogonally to the direction of lines
   function drawStrip(offset) {
@@ -132,4 +130,9 @@ function fillSquareWithLines(
     drawStrip(-offset);
     i++;
   } while (offset <= diagonalLength / 2);
+
+  // Draw the square contour
+  var contour = new Path.Rectangle(square);
+  contour.strokeWidth = strokeWidth;
+  contour.strokeColor = COLORS[1];
 }
