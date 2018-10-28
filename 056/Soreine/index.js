@@ -8,10 +8,20 @@ function onResize(event) {
   draw();
 }
 
-
-var COLORS = ["#F0F3BD", "#02C39A", "#00A896", "#028090",  "#05668D"]
-
-COLORS = ['#9c89b8', '#f0a6ca', '#efc3e6', '#f0e6ef', '#b8bedd']
+// https://coolors.co/f0f3bd-02c39a-00a896-028090-05668d
+var PALETTE1 = [
+  "#F0F3BD",
+  "#02C39A",
+  "#00A896",
+  "#028090",
+  "#05668D"
+].reverse();
+var PALETTE2 = ["#9c89b8", "#f0a6ca", "#efc3e6", "#f0e6ef", "#b8bedd"];
+// https://coolors.co/b80c09-0b4f6c-01baef-fbfbff-040f16
+var PALETTE3 = "ffffea-d8d8d8-ffed66-ff5e5b-00cecb".split("-").map(function(c) {
+  return "#" + c;
+});
+var COLORS = PALETTE3;
 
 var canvasBg = COLORS[0];
 var squareBg = canvasBg;
@@ -84,8 +94,8 @@ function fillSquareWithLines(
   color
 ) {
   // The ratio between line width and line spacing
-  var ratio = 1 / 5;
-  var lineCount = 20;
+  var ratio = 1 / 3;
+  var lineCount = 12;
   var strokeWidth = (ratio * height) / lineCount;
   var spacing = ((1 - ratio) * height) / lineCount; //px
 
