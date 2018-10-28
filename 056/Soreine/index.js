@@ -8,24 +8,13 @@ function onResize(event) {
   draw();
 }
 
-// https://coolors.co/f0f3bd-02c39a-00a896-028090-05668d
-var PALETTE1 = [
-  "#F0F3BD",
-  "#02C39A",
-  "#00A896",
-  "#028090",
-  "#05668D"
-].reverse();
-var PALETTE2 = ["#9c89b8", "#f0a6ca", "#efc3e6", "#f0e6ef", "#b8bedd"];
-// https://coolors.co/b80c09-0b4f6c-01baef-fbfbff-040f16
-var PALETTE3 = "fff39d-264653-2a9d8f-f4a261-ff5e5b".split("-").map(function(c) {
+// https://coolors.co/fffbe4-264653-2a9d8f-f4a261-ff5e5b
+var COLORS = "fffbe4-264653-2a9d8f-f4a261-ff5e5b".split("-").map(function(c) {
   return "#" + c;
 });
-var COLORS = PALETTE3;
 
 var canvasBg = COLORS[0];
 var squareBg = canvasBg;
-var lineColor = "#05668D";
 
 function direction(angle) {
   return new Point(Math.cos(angle), Math.sin(angle));
@@ -37,14 +26,18 @@ function draw() {
   // background
   new Path.Rectangle(view.bounds).fillColor = canvasBg;
 
+  // Use golden ratio because art.
   var phi = (1 + Math.sqrt(5)) / 2;
+  // Size of a small square
   var height = Math.min(view.size.width, view.size.height) / phi / 2;
 
+  // Direction of lines for each square
   var directionSW = direction(Math.PI / 12);
   var directionNW = direction((2 * Math.PI) / 12);
   var directionNE = direction((3 * Math.PI) / 12);
   var directionSE = direction((4 * Math.PI) / 12);
 
+  // Anchor of each square
   var topLeft = view.center - height;
   var pointSW = topLeft + new Point(0, height);
   var pointNW = topLeft + new Point(0, 0);
@@ -55,38 +48,45 @@ function draw() {
   var wholeSquare = new Path.Rectangle(new Rectangle(topLeft, height * 2));
   wholeSquare.fillColor = squareBg;
 
-  // South west
+  // South West square
   fillSquareWithLines(pointSW, height, directionSW, COLORS[1]);
 
-  // North west
+  // North West square
   fillSquareWithLines(pointNW, height, directionSW, COLORS[1]);
   fillSquareWithLines(pointNW, height, directionNW, COLORS[2]);
 
-  // North east
+  // North East square
   fillSquareWithLines(pointNE, height, directionSW, COLORS[1]);
   fillSquareWithLines(pointNE, height, directionNW, COLORS[2]);
   fillSquareWithLines(pointNE, height, directionNE, COLORS[3]);
 
-  // South east
+  // South East square
   fillSquareWithLines(pointSE, height, directionSW, COLORS[1]);
   fillSquareWithLines(pointSE, height, directionNW, COLORS[2]);
   fillSquareWithLines(pointSE, height, directionNE, COLORS[3]);
   fillSquareWithLines(pointSE, height, directionSE, COLORS[4]);
 }
 
-function band(start, end, width) {
+/**
+ * Draw a line of given width (a strip) so that it can be used
+ * in boolean operations with to other shapes.
+ */
+function strip(start, end, width) {
   var direction = end - start;
   var orthogonal = new Point(direction.y, -direction.x).normalize();
-  var bandPath = new Path();
-  bandPath.add(start + (orthogonal * width) / 2);
-  bandPath.add(end + (orthogonal * width) / 2);
-  bandPath.add(end - (orthogonal * width) / 2);
-  bandPath.add(start - (orthogonal * width) / 2);
-  bandPath.closed = true;
+  var stripPath = new Path();
+  stripPath.add(start + (orthogonal * width) / 2);
+  stripPath.add(end + (orthogonal * width) / 2);
+  stripPath.add(end - (orthogonal * width) / 2);
+  stripPath.add(start - (orthogonal * width) / 2);
+  stripPath.closed = true;
 
-  return bandPath;
+  return stripPath;
 }
 
+/**
+ * Draw a square and fill it with lines in given direction and given color.
+ */
 function fillSquareWithLines(
   corner, // Point
   height, // Number
@@ -94,38 +94,42 @@ function fillSquareWithLines(
   color
 ) {
   // The ratio between line width and line spacing
-  var ratio = 1 / 3;
-  var lineCount = 12;
-  var strokeWidth = (ratio * height) / lineCount;
-  var spacing = ((1 - ratio) * height) / lineCount; //px
+  var RATIO = 1 / 3;
+  var LINE_COUNT = 12;
+  // Width of lines
+  var strokeWidth = (RATIO * height) / LINE_COUNT;
+  // Spacing between lines
+  var spacing = ((1 - RATIO) * height) / LINE_COUNT;
 
-  var size = new Size(height, height);
-  var square = new Rectangle(corner, size);
+  var square = new Rectangle(corner, new Size(height, height));
 
-  var diagonalSize = Math.sqrt(2) * height * 2;
+  // Use length of diagonal as upper bound when filling the square with lines.
+  var diagonalLength = Math.sqrt(2) * height * 2;
+  // Orthogonal to the line direction
   var orthogonal = new Point(direction.y, -direction.x).normalize();
+  // Center of the square
   var center = corner + height / 2;
 
   var squarePath = new Path.Rectangle(square);
   squarePath.strokeWidth = strokeWidth;
   squarePath.strokeColor = color;
 
-  var i = 0;
-
-  function drawBand(offset) {
+  // Draw one strip at given offset orthogonally to the direction of lines
+  function drawStrip(offset) {
     var lineCenter = center + orthogonal * offset;
-    var lineStart = lineCenter - direction.normalize(diagonalSize / 2);
-    var lineEnd = lineCenter + direction.normalize(diagonalSize / 2);
+    var lineStart = lineCenter - direction.normalize(diagonalLength / 2);
+    var lineEnd = lineCenter + direction.normalize(diagonalLength / 2);
 
-    var bandPath = band(lineStart, lineEnd, strokeWidth);
-    var segmentPath = bandPath.intersect(squarePath);
+    var stripPath = strip(lineStart, lineEnd, strokeWidth);
+    var segmentPath = stripPath.intersect(squarePath);
     segmentPath.fillColor = color;
   }
 
+  var i = 0;
   do {
     var offset = i * (spacing + strokeWidth);
-    drawBand(offset);
-    drawBand(-offset);
+    drawStrip(offset);
+    drawStrip(-offset);
     i++;
-  } while (offset <= diagonalSize / 2);
+  } while (offset <= diagonalLength / 2);
 }
