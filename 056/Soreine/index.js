@@ -18,7 +18,7 @@ var PALETTE1 = [
 ].reverse();
 var PALETTE2 = ["#9c89b8", "#f0a6ca", "#efc3e6", "#f0e6ef", "#b8bedd"];
 // https://coolors.co/b80c09-0b4f6c-01baef-fbfbff-040f16
-var PALETTE3 = "ffffea-d8d8d8-ffed66-ff5e5b-00cecb".split("-").map(function(c) {
+var PALETTE3 = "fff39d-264653-2a9d8f-f4a261-ff5e5b".split("-").map(function(c) {
   return "#" + c;
 });
 var COLORS = PALETTE3;
