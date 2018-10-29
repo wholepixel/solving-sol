@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Solving Sol #630</title>
+  <script type="text/javascript">
+    window.onload = render
+    window.onresize = render
+
+    function render () {
+      const topBandCount = 10
+      const bandWidth = window.innerHeight / 20
+      // Calculate bottom band count based on pixel width of top bands
+      const bottomBandCount = Math.ceil(window.innerWidth / bandWidth)
+
+      const top = document.querySelector('.top')
+      const bottom = document.querySelector('.bottom')
+      
+      // Remove existing bands (if window resized)
+      while (top.firstChild) {
+        top.removeChild(top.firstChild)
+      }
+      while (bottom.firstChild) {
+        bottom.removeChild(bottom.firstChild)
+      }
+
+      // Add bands
+      for (let i = 0; i < topBandCount; i++) {
+        addBandToSection(top)
+      }
+      for (let i = 0; i < bottomBandCount; i++) {
+        addBandToSection(bottom)
+      }
+
+      function addBandToSection (section) {
+        const band = document.createElement('div')
+        band.classList.add('band')
+        section.appendChild(band)
+      }
+    }
+  </script>
+</head>
+<body>
+  <style>
+    body, html {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    .band {
+      background: #000;
+    }
+    .band:nth-child(odd) {
+      background: #fff;
+    }
+    .top, .bottom {
+      display: flex;
+      height: 50%;
+    }
+    .top {
+      flex-direction: column;
+    }
+    .top .band {
+      flex: 1;
+    }
+    .bottom {
+      overflow: hidden;
+    }
+    .bottom .band {
+      /* 1/20 = 5% */
+      width: 5vh;
+      min-width: 5vh;
+    }
+  </style>
+  <section class="top"></section>
+  <section class="bottom"></section>
+</body>
+</html>
+
