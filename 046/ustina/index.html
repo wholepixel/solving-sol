@@ -33,15 +33,20 @@
       void setup() {
         size(window.innerWidth, window.innerHeight);
         background(250);
+        noFill();
         stroke(10,200,50,200);
         strokeCap(SQUARE);
+        strokeJoin(MITER);
         strokeWeight(3);
         for (int x = 0; x < window.innerWidth; x = x+12) {
           int y = random(2,window.innerHeight);
-          line( x, 0, x, y);
-          line(x, y, x+7, y+7);
-          line(x+7, y+7, x, y+14);
-          line(x, y+14, x, window.innerHeight);
+          beginShape();
+          vertex(x, 0);
+          vertex(x, y);
+          vertex(x+7, y+7);
+          vertex(x, y+14);
+          vertex(x, window.innerHeight);
+          endShape();
         }
       }
 
