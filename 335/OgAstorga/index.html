@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+    html, body {
+      background: #eaeaea;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+    svg {
+      position: absolute;
+      background: #333;
+      box-shadow: 0 2px 3px rgb(0,0,0,0.7);
+      height: calc(50% - 15px);
+      width: calc(50% - 15px);
+    }
+
+    svg.tl {
+      top: 10px;
+      left: 10px;
+    }
+
+    svg.tr {
+      top: 10px;
+      right: 10px;
+    }
+
+    svg.bl {
+      bottom: 10px;
+      left: 10px;
+    }
+
+    svg.br {
+      bottom: 10px;
+      right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <svg class="tl"></svg>
+  <svg class="tr"></svg>
+  <svg class="bl"></svg>
+  <svg class="br"></svg>
+</body>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script type="text/javascript">
+  build(d3.select('svg.tl'))
+  build(d3.select('svg.tr'))
+  build(d3.select('svg.bl'))
+  build(d3.select('svg.br'))
+
+  function polgen(sides, radius) {
+    const theta = 2 * Math.PI / sides
+
+    const points = []
+    for (let i=0; i<sides; ++i) {
+      const angle = i * theta
+
+      points.push({
+        x: radius * Math.cos(angle),
+        y: radius * Math.sin(angle)
+      })
+    }
+
+    return points.map(p => [p.x, p.y].join(',')).join(' ')
+  }
+
+  function build(svg) {
+    const width = +svg.style('width').replace('px', '')
+    const height = +svg.style('height').replace('px', '')
+    const center = {
+      x: width/2,
+      y: height/2
+    }
+
+    // circle
+    const radius = Math.min(width, height) / (2 * Math.sqrt(2))
+
+    // straight lines
+    const slines = []
+    for (var i=0; i<50; ++i) {
+      slines.push(i)
+    }
+
+    svg.selectAll('line')
+      .data(slines)
+      .enter()
+      .append('line')
+      .attr('x1', d => (100 * d / slines.length) + '%')
+      .attr('y1', '0%')
+      .attr('x2', d => (100 * d / slines.length) + '%')
+      .attr('y2', '100%')
+      .attr('stroke', '#f0f0f0')
+
+    const data = []
+    for (let i=0; i<8; ++i) {
+      data.push(Math.round(Math.random() * 3) + 3)
+    }
+
+    svg.selectAll('polygon')
+      .data(data)
+      .enter()
+      .append('polygon')
+      .attr('points', d => polgen(d, 20 - d))
+      .attr('fill', 'white')
+      .attr('transform', (d, i) => {
+        const x = center.x + 70 * Math.cos(i * Math.PI / 4)
+        const y = center.y + 70 * Math.sin(i * Math.PI / 4)
+
+        const translate = 'translate(' + x + ',' + y + ')'
+
+        const rotate = 'rotate(' + (360 * Math.PI * Math.random()) + ', 0, 0)'
+
+        return translate + rotate
+      })
+  }
+</script>
+</html>
