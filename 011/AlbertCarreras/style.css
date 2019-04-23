@@ -1,0 +1,20 @@
+body { 
+    margin: 0; 
+  }
+  
+  #Q { 
+    position: absolute;
+    bottom: 5px; 
+    right: 5px; 
+    color: blue; 
+    background-color: white; 
+    font-size: 24px; 
+  }
+  
+  #A { 
+    position: absolute; 
+    bottom: 5px; 
+    right: 5px; 
+    background-color: white; 
+  }
+  
