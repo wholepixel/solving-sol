@@ -1,0 +1,186 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>alessbell ~~ Sol LeWitt #85</title>
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+      :root {
+        /* colors */
+        --purple: #a330ff;
+        --pink: #fa4974;
+        --green: #46b700;
+        --orange: #ff853e;
+
+        /* widths */
+        --line-width: 6px;
+        --line-width--transparent: 4px;
+        --width-quarter: calc(100% / 4);
+        --width-sixth: calc(100% / 6);
+
+        /* patterns! */
+        /* row 1 - single line */
+        --purple-lines: repeating-linear-gradient(
+          45deg,
+          var(--purple) 0px,
+          transparent 1px,
+          transparent var(--line-width--transparent),
+          var(--purple) var(--line-width)
+        );
+        --pink-lines: repeating-linear-gradient(
+          90deg,
+          var(--pink) 0px,
+          transparent 1px,
+          transparent var(--line-width--transparent),
+          var(--pink) var(--line-width)
+        );
+        --green-lines: repeating-linear-gradient(
+          135deg,
+          var(--green) 0px,
+          transparent 1px,
+          transparent var(--line-width--transparent),
+          var(--green) var(--line-width)
+        );
+        --orange-lines: repeating-linear-gradient(
+          180deg,
+          var(--orange) 0px,
+          transparent 1px,
+          transparent var(--line-width--transparent),
+          var(--orange) var(--line-width)
+        );
+
+        /* row 2 - two color combinations */
+        --purple-pink: var(--pink-lines), var(--purple-lines);
+        --purple-green: var(--purple-lines), var(--green-lines);
+        --purple-orange: var(--purple-lines), var(--orange-lines);
+        --pink-green: var(--pink-lines), var(--green-lines);
+        --pink-orange: var(--pink-lines), var(--orange-lines);
+        --green-orange: var(--green-lines), var(--orange-lines);
+
+        /* row 3 - three color combinations */
+        --purple-pink-green: var(--purple-pink), var(--green-lines);
+        --purple-pink-orange: var(--purple-pink), var(--orange-lines);
+        --purple-green-orange: var(--purple-green), var(--orange-lines);
+        --pink-green-orange: var(--pink-green), var(--orange-lines);
+
+        /* row 4 - all four */
+        --purple-pink-green-orange: var(--purple-pink-green),
+          var(--orange-lines);
+      }
+
+      /* set row heights */
+      .row1,
+      .row2,
+      .row3,
+      .row4 {
+        display: flex;
+        height: var(--width-quarter);
+      }
+      .row1--box1,
+      .row1--box2,
+      .row1--box3,
+      .row1--box4,
+      .row3--box1,
+      .row3--box2,
+      .row3--box3,
+      .row3--box4 {
+        width: var(--width-quarter);
+      }
+      .row2--box1,
+      .row2--box2,
+      .row2--box3,
+      .row2--box4,
+      .row2--box5,
+      .row2--box6 {
+        width: var(--width-sixth);
+      }
+
+      /* row1 */
+      .row1--box1 {
+        background-image: var(--purple-lines);
+      }
+      .row1--box2 {
+        background-image: var(--pink-lines);
+      }
+      .row1--box3 {
+        background-image: var(--green-lines);
+      }
+      .row1--box4 {
+        background-image: var(--orange-lines);
+      }
+
+      /* row2 */
+      .row2--box1 {
+        background-image: var(--purple-pink);
+      }
+      .row2--box2 {
+        background-image: var(--purple-green);
+      }
+      .row2--box3 {
+        background-image: var(--purple-orange);
+      }
+      .row2--box4 {
+        background-image: var(--pink-green);
+      }
+      .row2--box5 {
+        background-image: var(--pink-orange);
+      }
+      .row2--box6 {
+        background-image: var(--green-orange);
+      }
+
+      /* row3 */
+      .row3--box1 {
+        background-image: var(--purple-pink-green);
+      }
+      .row3--box2 {
+        background-image: var(--purple-pink-orange);
+      }
+      .row3--box3 {
+        background-image: var(--purple-green-orange);
+      }
+      .row3--box4 {
+        background-image: var(--pink-green-orange);
+      }
+
+      /* row4 */
+      .row4 {
+        background-image: var(--purple-pink-green-orange);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- A wall is divided into four horizontal parts.
+      In the top row are four equal divisions, each with lines in a different direction.
+      In the second row, six double combinations; in the third row, four triple combinations;
+      in the bottom row, all four combinations superimposed.
+    -->
+    <div class="row1">
+      <div class="row1--box1"></div>
+      <div class="row1--box2"></div>
+      <div class="row1--box3"></div>
+      <div class="row1--box4"></div>
+    </div>
+    <div class="row2">
+      <div class="row2--box1"></div>
+      <div class="row2--box2"></div>
+      <div class="row2--box3"></div>
+      <div class="row2--box4"></div>
+      <div class="row2--box5"></div>
+      <div class="row2--box6"></div>
+    </div>
+    <div class="row3">
+      <div class="row3--box1"></div>
+      <div class="row3--box2"></div>
+      <div class="row3--box3"></div>
+      <div class="row3--box4"></div>
+    </div>
+    <div class="row4"></div>
+  </body>
+</html>
