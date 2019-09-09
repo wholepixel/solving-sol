@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js"></script>
+    <meta charset="utf-8" />
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        stroke(0, 200, 200);
+        strokeWeight(3);
+        noFill(); 
+      }
+      function draw() {
+        background(87,35,100);
+        var p1 = 10;
+        var p2 = 5;
+        var p3 = 130;
+        var p4 = 15;
+
+        var x;
+        for (x = 0; x < width; x=x+p4) {
+          var y = random(0, height);
+          beginShape();
+          vertex(x, 0); 
+          vertex(x, y);
+          vertex(x+p1, y+p2);
+          vertex(x, y+p3);
+          vertex(x, height);
+          endShape();
+        }
+        noLoop();
+      }
+    </script>
+  </body>
+</html>
