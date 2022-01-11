@@ -13,11 +13,11 @@ The instructions are simple and subtly open to interpretation. They're also good
 
 
 ### Submitting a Solution (Pull Request)
-To execute an instruction, please fork this repository and create a folder with your github user name within the folder of the instruction you're solving. (i.e. /118/github_user). 
+To execute an instruction, please fork this repository and create a folder with your github user name within the folder of the instruction you're solving. (i.e. /118/github_user).
 
 The file should be executable in a modern web browser. Where possible, please load library scripts externally ([cdn.js](http://cdnjs.com/) is a good place to look.)
 
-When you're done, add your solution to the JSON file `solutions.json` so we can easily generate the gallery of examples. If possible, include a screenshot of the result in the comment in the PR (but don't commit the screenshot). 
+When you're done, add your solution to the JSON file `solutions.json` so we can easily generate the gallery of examples. If possible, include a screenshot of the result in the comment in the PR (but don't commit the screenshot).
 
 ```
 "In an interview, LeWitt was once asked, "How would you feel
@@ -41,14 +41,14 @@ On a wall surface, any continuous stretch of wall, using a hard pencil, place fi
 ### Resources for executing an instruction:
 - [Paper.js](http://paperjs.org)
 - [Easel.js](http://www.createjs.com/Docs/EaselJS/modules/EaselJS.html)
-- [Processing.js](http://processingjs.org/)
+- [P5.js](https://p5js.org/)
 - Forkable JSFiddle template with Paper.js: [http://jsfiddle.net/B79vY/](http://jsfiddle.net/B79vY/)
 
 ### Learn more about Sol Lewitt:
 - [Radical Art](http://radicalart.info/concept/LeWitt/)
 - [Mass MOCA](http://www.massmoca.org/lewitt/)
 - [Dia Art](http://www.diaart.org/exhibitions/main/3)
- 
+
 
 ### Other Solutions
 
