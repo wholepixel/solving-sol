@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <title>Solving Sol</title>
+   <meta>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+    
+	<style type="text/css" href="style.css">
+	html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+	</style>
+	</meta>
+    <meta charset="utf-8" />
+
+  </head>
+  <body>
+    <script>
+	
+	/* Solving Sol #56 
+	A square is divided horizontally and vertically into four equal parts, each with lines in four directions superimposed progressively. 
+	*/
+	s1=2;
+	
+function setup() {
+  createCanvas(windowWidth,windowHeight)
+
+x=width;
+y=height;
+  
+}
+
+function draw() {
+  background(220);
+  strokeWeight(s1);
+  line(x/2,0,x/2,y);
+  line(0,y/2,x,y/2);
+  
+  downLines();
+  horiLine();
+  diagR();
+  diagL();
+}
+function diagR(){
+  line(x/2,y/2,x,y)
+  line(x/2,y*21/22,x*12/22,y)
+  line(x/2,y*20/22,x*13/22,y)
+  line(x/2,y*19/22,x*14/22,y)
+  line(x/2,y*18/22,x*15/22,y)
+  line(x/2,y*17/22,x*16/22,y)
+  line(x/2,y*16/22,x*17/22,y)
+  line(x/2,y*15/22,x*18/22,y)
+line(x/2,y*14/22,x*19/22,y)
+  line(x/2,y*13/22,x*20/22,y)
+  line(x/2,y*12/22,x*21/22,y)
+ 
+
+  line(x*12/22,y/2,x,y*21/22)
+  line(x*13/22,y/2,x,y*20/22)
+  line(x*14/22,y/2,x,y*19/22)
+  line(x*15/22,y/2,x,y*18/22)
+  line(x*16/22,y/2,x,y*17/22)
+  line(x*17/22,y/2,x,y*16/22)
+  line(x*18/22,y/2,x,y*15/22)
+  line(x*19/22,y/2,x,y*14/22)
+  line(x*20/22,y/2,x,y*13/22)
+  line(x*21/22,y/2,x,y*12/22)
+  
+}
+
+function diagL(){
+line(x/2,y/2,0,y);
+  line(x*1/22,y/2,0,y*12/22)
+  line(x*2/22,y/2,0,y*13/22)
+  line(x*3/22,y/2,0,y*14/22)
+  line(x*4/22,y/2,0,y*15/22)
+  line(x*5/22,y/2,0,y*16/22)
+  line(x*6/22,y/2,0,y*17/22)
+  line(x*7/22,y/2,0,y*18/22)
+  line(x*8/22,y/2,0,y*19/22)
+  line(x*9/22,y/2,0,y*20/22)
+  line(x*10/22,y/2,0,y*21/22)
+  
+  line(x/2,y*12/22,x*1/22,y)
+  line(x/2,y*13/22,x*2/22,y)
+  line(x/2,y*14/22,x*3/22,y)
+  line(x/2,y*15/22,x*4/22,y)
+  line(x/2,y*16/22,x*5/22,y)
+  line(x/2,y*17/22,x*6/22,y)
+  line(x/2,y*18/22,x*7/22,y)
+  line(x/2,y*19/22,x*8/22,y)
+  line(x/2,y*20/22,x*9/22,y)
+  line(x/2,y*21/22,x*10/22,y)
+}
+
+function downLines(){
+  line(x*1/22,0,  x*1/22,y)
+  line(x*2/22,0,  x*2/22,y)
+  line(x*3/22,0,  x*3/22,y)
+  line(x*4/22,0,  x*4/22,y)
+  line(x*5/22,0,  x*5/22,y)
+  line(x*6/22,0,  x*6/22,y)
+  line(x*7/22,0,  x*7/22,y)
+  line(x*8/22,0,  x*8/22,y)
+  line(x*9/22,0,  x*9/22,y)
+  line(x*10/22,0,  x*10/22,y)
+line(x*11/22,0,  x*11/22,y)
+  line(x*12/22,0,  x*12/22,y)
+  line(x*13/22,0,  x*13/22,y)
+  line(x*14/22,0,  x*14/22,y)
+  line(x*15/22,0,  x*15/22,y)
+  line(x*16/22,0,  x*16/22,y)
+  line(x*17/22,0,  x*17/22,y)
+  line(x*18/22,0,  x*18/22,y)
+    line(x*19/22,0,  x*19/22,y)
+    line(x*20/22,0,  x*20/22,y)
+  line(x*21/22,0,  x*21/22,y)
+}
+
+function horiLine(){
+line(x/2,y*1/22,x,y*1/22)
+  line(x/2,y*2/22,x,y*2/22)
+  line(x/2,y*3/22,x,y*3/22)
+  line(x/2,y*4/22,x,y*4/22)
+  line(x/2,y*5/22,x,y*5/22)
+  line(x/2,y*6/22,x,y*6/22)
+  line(x/2,y*7/22,x,y*7/22)
+  line(x/2,y*8/22,x,y*8/22)
+  line(x/2,y*9/22,x,y*9/22)
+  line(x/2,y*10/22,x,y*10/22)
+  line(x/2,y*11/22,x,y*11/22)
+  line(0,y*12/22,x,y*12/22)
+  line(0,y*13/22,x,y*13/22)
+  line(0,y*14/22,x,y*14/22)
+  line(0,y*15/22,x,y*15/22)
+  line(0,y*16/22,x,y*16/22)
+  line(0,y*17/22,x,y*17/22)
+  line(0,y*18/22,x,y*18/22)
+  line(0,y*19/22,x,y*19/22)
+  line(0,y*20/22,x,y*20/22)
+  line(0,y*21/22,x,y*21/22)
+
+}
+
+	</script>
+  </body>
+</html>
