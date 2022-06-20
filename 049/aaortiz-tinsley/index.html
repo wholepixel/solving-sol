@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.1/lib/p5.js"></script>
+    <meta charset="utf-8" />
+    <title>Sol Lewitt #49</title>
+  </head>
+  <body>
+    <main>
+        <script>
+            /* 
+    A project to implement Sol LeWitt's Wall Drawing instructions in JavaScript with the p5 library.
+    Wall Drawing #49 (1970) -- A wall divided equally into fifteen parts, each with a different line direction and color, and all combinations.
+    */
+    
+    var charcoal;
+    var blu;
+    var kelly;
+    var fire;
+    var apple;
+    
+    function setup() {
+      createCanvas(400, 400);
+      charcoal = color('#131313');
+      blu = color(56, 73, 166);
+      kelly = color(107, 191, 120);
+      fire = color(242, 105, 56);
+      apple = color(191, 4, 4);
+    }
+    
+    function draw() {
+      background('#f3f3f3');
+      noFill();
+      
+      strokeWeight(1.3);
+      stroke(blu);
+      rOne();
+      
+      strokeWeight(1);
+      stroke(kelly);
+      rTwo()
+     
+      strokeWeight(1);
+      stroke(apple);
+      rThree();
+      
+      strokeWeight(0.8);
+      stroke(fire);
+      rFour()
+    
+      strokeWeight(1);
+      stroke(blu);
+      rFive();
+      
+      strokeWeight(0.8);
+      stroke(kelly);
+      rSix();
+      
+      strokeWeight(0.8);
+      stroke(apple);  
+      rSeven()
+    
+      strokeWeight(0.7);
+      stroke(fire); 
+      rEight()
+      
+      strokeWeight(0.7);
+      stroke(blu); 
+      rNine();
+      
+      strokeWeight(0.7);
+      stroke(kelly); 
+      rTen()
+      
+      strokeWeight(0.7);
+      stroke(apple); 
+      rEleven()
+    
+      strokeWeight(0.7);
+      stroke(fire); 
+      rTwelve()
+    
+      strokeWeight(0.7);
+      stroke(blu); 
+      rThirteen()
+      
+    
+      strokeWeight(0.7);
+      stroke(kelly);   
+      rFourteen();
+    
+      strokeWeight(0.8);
+      stroke(apple);  
+      rFiveteen();
+      
+      strokeWeight(0.35);
+      stroke(charcoal);
+      // BORDER COLUMNS
+      // Draws a rectangle with each loop, stops after 15
+      for(var x = 0; x < 15; x++) {
+        for(var y = 0; y < 1; y++) {
+        //posX * width of rects; posY; width of rects; height of rects
+          rect(x * 27, y, 27, windowHeight);
+        }
+      }
+    }
+    
+    
+    // ** FUNCTIONS PER BORDER COLUMN **
+    
+    // VERTICLE LINES | COLUMN #1
+    function rOne () {
+      for(let oneX = 2.5; oneX < 25; oneX += 5) {
+        line(oneX, 0, oneX, windowHeight);
+      }
+    }
+    
+    // HORIZONTAL LINES | COLUMN #2
+    function rTwo() {
+      for(let twoX = 28; twoX < 50; twoX++) {
+        for(twoY = 0; twoY < windowHeight; twoY += 8) {
+          line(twoX, twoY, twoX + 5, twoY);
+        }
+      }
+    }
+    
+    // DIAGNAL LINES | COLUMN #3
+    function rThree() {
+      for(let threeX = 55; threeX < 78; threeX += 5) {
+        for(threeY = 0; threeY < windowHeight; threeY += 5) {
+          line(threeX + 5, threeY, threeX, threeY + 5);
+        }
+      }
+    }
+    
+    // DIAGNAL LINES | COLUMN #4
+    function rFour() {
+      for(let fourX = 82; fourX < 104; fourX += 5) {
+        for(fourY = 0; fourY < windowHeight; fourY += 5) {
+          line(fourX, fourY, fourX + 5, fourY + 5);
+        }
+      }
+    }
+    
+    // "CRACKED" LINES | COLUMN #5
+    function rFive() {
+      // Verticle Lines Left -- 1 
+      for(let five2X = 113; five2X < 132; five2X += 5) {
+        line(five2X, 0, five2X, 95);
+      }
+      // Verticle Lines Right -- 1
+      for(let five3X = 116; five3X < 132; five3X += 5.5) {
+        line(five3X, 96, five3X, 228);
+      }
+      // Verticle Lines Left -- 3
+      for(let five2X = 113; five2X < 132; five2X += 5) {
+        line(five2X, 228, five2X, 400);
+      }  
+      // Horizontal Lines -- 1
+      for(let fiveX = 109; fiveX < 132; fiveX += 5) {
+        for(fiveY = 0; fiveY < windowHeight; fiveY += 32) {
+          line(fiveX, fiveY, fiveX + 5, fiveY);
+        }
+      }
+      // Horizontal Lines -- 2
+      for(let five4X = 109; five4X < 132; five4X += 5) {
+        for(five4Y = 0; five4Y < windowHeight; five4Y += 76) {
+          line(five4X, five4Y, five4X + 5, five4Y);
+        }
+      }  
+    }
+    
+    // OVERLAPPED WITH DIAGNAL LINES | COLUMN #6
+    function rSix() {
+      // Verticle Lines
+      for(let sixX = 139.6; sixX < 154; sixX += 6) {
+        line(sixX + 5, 0, sixX, windowHeight);
+      }
+      
+      // Diagnal Lines
+     for(let six2X = 136; six2X < 159; six2X += 5) {
+        for(sixY = 0; sixY < windowHeight; sixY += 5) {
+          line(six2X + 5, sixY, six2X, sixY + 5);
+        }
+      }
+    }
+    
+    // DIAGNAL + VERTICLE LINES | COLUMN #7
+    function rSeven() {
+      // Verticle Lines -- top
+      for(let sevenX = 163; sevenX < 186; sevenX += 5) {
+        line(sevenX + 5, 50, sevenX + 5, 115);
+      }
+      // Verticle Lines -- bottom
+      for(let sevenX = 163; sevenX < 186; sevenX += 5) {
+        line(sevenX, 231, sevenX, 350);
+      }
+      // Diagnal Lines -- top
+     for(let seven2X = 163; seven2X < 186; seven2X += 5) {
+        for(sevenY = 0; sevenY < 50; sevenY += 5) {
+          line(seven2X, sevenY, seven2X + 5, sevenY + 5);
+        }
+      }
+      // Diagnal Lines -- middle
+     for(let seven2X = 163; seven2X < 186; seven2X += 5) {
+        for(sevenY = 115; sevenY < 230; sevenY += 5) {
+          line(seven2X, sevenY, seven2X + 5, sevenY + 5);
+        }
+      }
+      // Diagnal Lines -- bottom
+      for(let seven2X = 163; seven2X < 186; seven2X += 5) {
+        for(sevenY = 350; sevenY < 400; sevenY += 5) {
+          line(seven2X, sevenY, seven2X + 5, sevenY + 5);
+        }
+      }
+    }
+    
+    
+    // HORIZONTAL + DIAGNAL LINES | COLUMN #8
+    function rEight() {
+      // Horizontal Lines -- top
+      for(let eightX = 190; eightX < 211; eightX++) {
+        for(eightY = 0; eightY < windowHeight; eightY += 8) {
+          line(eightX, eightY, eightX + 5, eightY);
+        }
+      } 
+      // Horizontal Lines -- bottom
+      for(let eight2X = 190; eight2X < 211; eight2X++) {
+        for(eight2Y = 340; eight2Y < windowHeight; eight2Y += 8) {
+          line(eight2X, eight2Y, eight2X + 5, eight2Y);
+        }
+      }
+      // Diagnal Lines -- middle
+     for(let eight3X = 190; eight3X < 215; eight3X += 5) {
+        for(eight3Y = 81; eight3Y < 269.99; eight3Y += 5) {
+          line(eight3X + 5, eight3Y, eight3X, eight3Y + 5);
+        }
+      }
+    }
+    
+    // DIAGNAL + HORIZONTAL LINES | COLUMN #9
+    function rNine() {
+      // Horizontal Lines -- top
+      for(let nineX = 216; nineX < 239; nineX++) {
+        for(nineY = 210; nineY < windowHeight; nineY += 8) {
+          line(nineX, nineY, nineX + 5, nineY);
+        }
+      } 
+      // Horizontal Lines -- bottom
+      for(let nine2X = 216; nine2X < 239; nine2X++) {
+        for(nine2Y = 300; nine2Y < windowHeight; nine2Y += 8) {
+          line(nine2X, nine2Y, nine2X + 5, nine2Y);
+        }
+      }
+      // Diagnal Lines 
+     for(let nine3X = 216; nine3X < 239; nine3X += 5) {
+        for(nine3Y = 0; nine3Y < 210; nine3Y += 5) {
+          line(nine3X + 5, nine3Y, nine3X, nine3Y + 5);
+        }
+      }
+    }
+    
+    // CRISSCROSS LINES | COLUMN #10
+    function rTen() {
+      // Diagnal Lines to Right
+      for(let tenX = 244; tenX < 267; tenX += 5) {
+        for(tenY = 0; tenY < windowHeight; tenY += 5) {
+          line(tenX + 5, tenY, tenX, tenY + 5);
+        }
+      }
+      // Diagnal Lines to Left
+      for(let ten2X = 244; ten2X < 267; ten2X += 5) {
+        for(ten2Y = 0; ten2Y < windowHeight; ten2Y += 5) {
+          line(ten2X, ten2Y, ten2X + 5, ten2Y + 5);
+        }
+      }
+    }
+    
+    // PATCHY CRISSCROSS LINES + HORIZONTAL | COLUMN #11
+    function rEleven() {
+      // Verticle Lines 
+      for(let elevenX = 275; elevenX < 286; elevenX += 5) {
+        line(elevenX, 0, elevenX, windowHeight);
+      }
+      // Horizontal Lines
+      for(let eleven2X = 285; eleven2X < 292; eleven2X++) {
+        for(elevenY = 0; elevenY < windowHeight; elevenY += 22) {
+          line(eleven2X, elevenY, eleven2X + 5, elevenY);
+        }
+      }
+      // Diagnal Lines to Right -- top
+      for(let eleven3X = 275; eleven3X < 285; eleven3X += 5) {
+        for(eleven2Y = 41; eleven2Y < 151; eleven2Y += 10) {
+          line(eleven3X + 5, eleven2Y, eleven3X, eleven2Y + 10);
+        }
+      }
+      // Diagnal Lines to Right -- bottom
+      for(let eleven4X = 285; eleven4X < 295; eleven4X += 5) {
+        for(eleven3Y = 241; eleven3Y < 351; eleven3Y += 5) {
+          line(eleven4X + 5, eleven3Y, eleven4X, eleven3Y + 5);
+        }
+      }
+    }
+    
+    // CRISSCROSS "TRAINTRACK" LINES | COLUMN #12
+    function rTwelve() {
+      // Verticle Lines 
+      for(let twelveX = 303; twelveX < 320; twelveX +=8) {
+        line(twelveX, 0, twelveX, windowHeight);
+      }
+      // Horizontal Lines
+      for(let twelve2X = 307; twelve2X < 320; twelve2X+=2) {
+        for(twelveY = 0; twelveY < windowHeight; twelveY += 5) {
+          line(twelve2X, twelveY, twelve2X + 5, twelveY);
+        }
+      }
+      // Diagnal Lines to Right
+      for(let twelve3X = 298; twelve3X < 307; twelve3X += 5) {
+        for(twelveY = 0; twelveY < 400; twelveY += 10) {
+          line(twelve3X, twelveY, twelve3X + 5, twelveY + 10);
+        }
+      }
+    }
+    
+    // BAR LINES + DIAGNAL LINES | COLUMN #13
+    function rThirteen() {
+      // Verticle Lines -- top
+      for(let thirteenX = 331; thirteenX < 351; thirteenX +=5) {
+        line(thirteenX - 1, 0, thirteenX, 80);
+      }
+      
+      // Verticle Lines -- bottom
+      for(let thirteenX = 331; thirteenX < 351; thirteenX +=5) {
+        line(thirteenX - 1, 300, thirteenX, windowHeight);
+      } 
+      
+      // Diagnal Lines to Right -- top
+      for(let thirteen2X = 326; thirteen2X < 351; thirteen2X += 5) {
+        for(thirteenY = 80; thirteenY < 180; thirteenY += 5) {
+          line(thirteen2X - 1, thirteenY + 6, thirteen2X + 5, thirteenY);
+        }
+      }
+      
+      // Diagnal Lines to Left -- bottom
+      for(let thirteen3X = 326; thirteen3X < 351; thirteen3X += 5) {
+        for(thirteen2Y = 180; thirteen2Y < 300; thirteen2Y += 5) {
+          line(thirteen3X - 1, thirteen2Y, thirteen3X + 5, thirteen2Y + 6);
+        }
+      }
+    }
+    
+    // CRISSCROSS, DIAGNAL, AND HORIZONTAL LINES | COLUMN #14
+    function rFourteen() {
+      // Diagnal Lines to Right
+      for(let fourteenX = 351; fourteenX < 376; fourteenX += 5) {
+        for(fourteenY = 0; fourteenY < 82; fourteenY += 5) {
+          line(fourteenX + 5, fourteenY, fourteenX, fourteenY + 5);
+        }
+      }
+      // Diagnal Lines to Left
+      for(let fourteen2X = 351; fourteen2X < 376; fourteen2X += 5) {
+        for(fourteen2Y = 0; fourteen2Y < windowHeight; fourteen2Y += 5) {
+          line(fourteen2X, fourteen2Y, fourteen2X + 5, fourteen2Y + 5);
+        }
+      }
+      // Horizontal Lines
+      for(let fourteen3X = 351; fourteen3X < 374; fourteen3X++) {
+        for(fourteen3Y = 100; fourteen3Y < windowHeight; fourteen3Y += 15) {
+          line(fourteen3X, fourteen3Y, fourteen3X + 5, fourteen3Y);
+        }
+      }
+      // Horizontal Lines -- bottom
+      for(let fourteen4X = 351; fourteen4X < 374; fourteen4X++) {
+        for(fourteen4Y = 205; fourteen4Y < windowHeight; fourteen4Y += 10) {
+          line(fourteen4X, fourteen4Y, fourteen4X + 5, fourteen4Y);
+        }
+      }
+    }
+    
+    // ALL FOUR STYLES OF LINES | COLUMN #15
+    function rFiveteen() {
+      // Verticle Lines
+      for(let fiveteenX = 383; fiveteenX < 400; fiveteenX +=7) {
+        line(fiveteenX, 205, fiveteenX, 400);
+      }
+      /* Diagnal Lines to Right -- top
+      for(let fiveteen2X = 379; fiveteen2X < 400; fiveteen2X += 5) {
+        for(fiveteenY = 0; fiveteenY < 82; fiveteenY += 5) {
+          line(fiveteen2X + 5, fiveteenY, fiveteen2X, fiveteenY + 5);
+        } 
+      }*/
+      // Diagnal Lines to Right -- bottom
+      for(let fiveteen2X = 379; fiveteen2X < 400; fiveteen2X += 5) {
+        for(fiveteenY = 330; fiveteenY < 400; fiveteenY += 5) {
+          line(fiveteen2X + 5, fiveteenY, fiveteen2X, fiveteenY + 5);
+        }
+      }
+      // Diagnal Lines to Left
+      for(let fiveteen3X = 379; fiveteen3X < 400; fiveteen3X += 5) {
+        for(fiveteen2Y = 0; fiveteen2Y < 205; fiveteen2Y += 5) {
+          line(fiveteen3X, fiveteen2Y, fiveteen3X + 5, fiveteen2Y + 5);
+        }
+      }
+       // Horizontal Lines
+      for(let fiveteen4X = 379; fiveteen4X < 400; fiveteen4X+=5) {
+        for(fiveteen3Y = 205; fiveteen3Y < windowHeight; fiveteen3Y += 62) {
+          line(fiveteen4X, fiveteen3Y, fiveteen4X + 5, fiveteen3Y);
+        }
+      } 
+    }
+        </script>
+    </main>
+  </body>
+</html>
