@@ -1,0 +1,183 @@
+<html>
+  <head>
+    <meta>
+
+      <title>Solving Sol</title>
+      <!-- Load latest acron version first -->
+      <script type="text/javascript" src="https://unpkg.com/acorn"></script>
+      <!-- Then load Paper.js -->
+      <script type="text/javascript" src="https://unpkg.com/paper"></script>
+      <!-- <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js" ></script> -->
+      <style type="text/css">
+
+        html, body {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          padding: 0;
+          margin: 0;
+        }
+
+        canvas[resize] {
+            width: 100%;
+            height: 100%;
+        }
+
+      </style>
+    </meta>
+  </head>
+  <body>
+    <script canvas='solving-sol' type='text/paperscript'>
+
+      /*
+
+        PASTE SOL INSTRUCTIONS HERE i.e...
+
+        Solving Sol #16
+        Bands of lines 12 inches (30 cm) wide, in three directions
+        (vertical, horizontal, diagonal right) intersecting.
+
+      */
+
+      function onResize() {
+        // Handle resizes
+        // Paper.js will call this handler automatically on resize.
+
+        //this plus the removeChildren() at the start of init is very hacky but works
+        init()
+      }
+
+
+      function init() {
+        //this is a very
+        project.activeLayer.removeChildren()
+        console.log(view)
+        
+        let lineSpacing = 20
+        let strokeWidth = 2
+
+        function getColor(){ 
+          return "hsl(" + 360 * Math.random() + ',' +
+                    (25 + 70 * Math.random()) + '%,' + 
+                    (85 + 10 * Math.random()) + '%)'
+        }
+    
+        var leftTri = new Path();
+        leftTri.strokeColor = 'black';
+        leftTri.add(new Point(0, 0)); 
+        leftTri.add(new Point(view.size.width/2, view.size.height/2)); 
+        leftTri.add(new Point(0, view.size.height));
+        // path.add(new Point(view.size.width, 0));
+        leftTri.fillColor = "blue"
+        leftTri.closed = true
+    
+    
+        var upperTri = new Path();
+        upperTri.strokeColor = 'black';
+        upperTri.add(new Point(0, 0)); 
+        upperTri.add(new Point(view.size.width/2, view.size.height/2)); 
+        upperTri.add(new Point(view.size.width, 0));
+        // path.add(new Point(view.size.width, 0));
+        upperTri.fillColor = "white"
+        upperTri.closed = true
+    
+        var rightTri = new Path();
+        rightTri.strokeColor = 'black';
+        rightTri.add(new Point(view.size.width, 0)); 
+        rightTri.add(new Point(view.size.width/2, view.size.height/2)); 
+        rightTri.add(new Point(view.size.width, view.size.height));
+        // path.add(new Point(view.size.width, 0));
+        rightTri.fillColor = "black"
+        rightTri.closed = true
+    
+        var bottomTri = new Path();
+        bottomTri.strokeColor = 'yellow';
+        bottomTri.add(new Point(0, view.size.height)); 
+        bottomTri.add(new Point(view.size.width/2, view.size.height/2)); 
+        bottomTri.add(new Point(view.size.width, view.size.height));
+        // path.add(new Point(view.size.width, 0));
+        bottomTri.fillColor = "yellow"
+        bottomTri.closed = true
+    
+        function makeHorizontalLines (spacing, color) {
+            let returnArr = []
+            for (let i = 0; i <= view.size.height; i+= lineSpacing) {
+                let newLine = new Path() 
+                newLine.strokeColor = color;
+                newLine.strokeWidth = strokeWidth;
+                newLine.add(new Point(0, i));
+                newLine.add(new Point(view.size.width, i));
+                returnArr.push(newLine)
+            }
+            return returnArr
+        }
+    
+        function makeVerticalLines (spacing, color) {
+            let returnArr = []
+            for (let i = 0; i <= view.size.width; i+= lineSpacing) {
+                let newLine = new Path() 
+                newLine.strokeColor = color;
+                newLine.strokeWidth = strokeWidth;
+                newLine.add(new Point(i, 0));
+                newLine.add(new Point(i, view.size.height));
+                returnArr.push(newLine)
+            }
+            return returnArr
+        }
+    
+        function makeUpwardDiagonals (spacing, color) {
+            let ratioOfWidthToHeight = view.size.width / view.size.height
+            let returnArr = []
+            for (let i = 0; i <= view.size.height*2; i+= lineSpacing) {
+                let newLine = new Path() 
+                newLine.strokeColor = color;
+                newLine.strokeWidth = strokeWidth;
+                newLine.add(new Point(0, i));
+                newLine.add(new Point(i * ratioOfWidthToHeight, 0));
+                returnArr.push(newLine)
+            }
+            return returnArr
+        }
+    
+        function makeDownwardDiagonals (spacing, color) {
+            console.log("in downward")
+            let ratioOfWidthToHeight = view.size.width / view.size.height
+            let returnArr = []
+            for (let i = 0; i <= view.size.height*2; i+= lineSpacing) {
+                let newLine = new Path() 
+                newLine.strokeColor = 'green';
+                newLine.strokeWidth = strokeWidth;
+                newLine.add(new Point(0, view.size.height-i));
+                newLine.add(new Point(i * ratioOfWidthToHeight, view.size.height));
+                returnArr.push(newLine)
+            }
+            return returnArr
+        }
+    
+        //takes a triangle path object, which direction it lies on, and an array of colors
+        function fillTriangleWithColors (triangle, verticalOrHorizontal, colors) {
+            if (!colors) {
+                colors = new Array(3).fill().map(getColor)
+            }
+            let cardinalArr = verticalOrHorizontal === "vertical" ? makeVerticalLines(lineSpacing, colors[0]) : makeHorizontalLines(lineSpacing, colors[0])
+            var newGroup = new Group(triangle, ...cardinalArr, ...makeUpwardDiagonals(lineSpacing, colors[1]), ...makeDownwardDiagonals(lineSpacing, colors[2]))
+            newGroup.clipped = true
+        }
+    
+        fillTriangleWithColors(upperTri, "horizontal", ["red", "blue", "green"])
+        fillTriangleWithColors(bottomTri, "horizontal", ["purple", "orange", "teal"])
+        fillTriangleWithColors(leftTri, "vertical", ["coral", "brown", "sawdust"])
+        fillTriangleWithColors(rightTri, "vertical", ["fuschia", "pink", "yellow"])
+      }
+
+      // This will fire when Paper.js is ready
+      init();
+
+    </script>
+
+    <canvas id='solving-sol' resize>
+      <!-- Paperscript will draw the graphics here -->
+    </canvas>
+
+  </body>
+</html>
