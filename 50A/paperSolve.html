@@ -61,7 +61,18 @@
                     (25 + 70 * Math.random()) + '%,' + 
                     (85 + 10 * Math.random()) + '%)'
         }
-    
+        let line1 = new Path();
+        line1.strokeColor = 'black'
+        line1.add(new Point(0,0));
+        line1.add(new Point(view.size.width, view.size.height))
+
+
+        let line2= new Path();
+        line2.strokeColor = 'black'
+        line2.add(new Point(0, view.size.height));
+        line2.add(new Point(view.size.width, 0))
+
+
         var leftTri = new Path();
         leftTri.strokeColor = 'black';
         leftTri.add(new Point(0, 0)); 
