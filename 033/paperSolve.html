@@ -1,0 +1,217 @@
+<html>
+  <head>
+    <meta>
+
+      <title>Solving Sol</title>
+      <!-- Load latest acron version first -->
+      <script type="text/javascript" src="https://unpkg.com/acorn"></script>
+      <!-- Then load Paper.js -->
+      <script type="text/javascript" src="https://unpkg.com/paper"></script>
+      <!-- <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js" ></script> -->
+      <style type="text/css">
+
+        html, body {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: floralwhite;
+        }
+
+        canvas[resize] {
+            width: 100%;
+            height: 100%;
+        }
+
+      </style>
+    </meta>
+  </head>
+  <body>
+    <script canvas='solving-sol' type='text/paperscript'>
+
+      /*
+
+        PASTE SOL INSTRUCTIONS HERE i.e...
+
+        Solving Sol #33
+
+        A one-inch (2.5cm) grid covering a square. 
+        Within each of the one-inch (2.5cm) squares: 
+        1: Vertical black lines; 
+        2: Horizontal yellow lines; 
+        3: Diagonal right red lines; 
+        or 4: Diagonal left blue lines. 
+        As many lines as desired, but at least one line in each square.
+
+        Reference: https://umfa.utah.edu/sites/default/files/2019-01/Students%20Needed_UMFA%20Sol%20LeWitt%20Wall%20Drawing.pdf
+
+      */
+
+      function onResize() {
+        // Handle resizes
+        // Paper.js will call this handler automatically on resize.
+
+        //this plus the removeChildren() at the start of init is very hacky but works
+        init()
+      }
+
+
+      function init() {
+        //this is a very
+        project.activeLayer.removeChildren()
+                
+        // A one-inch (2.5cm) grid covering a square. 
+        // Within each of the one-inch (2.5cm) squares: 
+        // 1: Vertical black lines; 
+        // 2: Horizontal yellow lines; 
+        // 3: Diagonal right red lines; 
+        // or 4: Diagonal left blue lines. 
+        // As many lines as desired, but at least one line in each square.
+        
+        let inchInPx = 96
+        
+        function getRandomInt(max) {
+          return Math.floor(Math.random() * max) + 1;
+        }
+        
+        function drawMovingLine(startingXY, endingXY, color, time) {
+            console.log("in moving line", startingXY, endingXY)
+            var path = new Path.Line({
+                from: [startingXY[0], startingXY[1]],
+                to: [startingXY[0], startingXY[1]],
+                strokeColor: color,
+                strokeWidth : 4
+            });
+            
+            console.log(path.segments[1])
+            
+            path.tween({
+                'segments[1].point': {x: endingXY[0], y: endingXY[1] },
+            }, time);
+        }
+        
+        function drawDiagonalLeftBlueLine (square, time) {
+            console.log("this is square .segments", square.segments, [square.segments[0].point.x, square.segments[0].point.y], [square.segments[3].point.x, square.segments[3].point.y])
+            let coords = [[square.segments[1].point.x, square.segments[1].point.y], [square.segments[3].point.x, square.segments[3].point.y]]
+            if (getRandomInt(2)<2) drawMovingLine(coords[0], coords[1], "blue", time)
+            else drawMovingLine(coords[1], coords[0], "blue", time)
+        }
+        
+        function drawDiagonalRightRedLine (square, time) {
+            console.log("in draw diag right")
+            let coords = [[square.segments[0].point.x, square.segments[0].point.y], [square.segments[2].point.x, square.segments[2].point.y]]
+            if (getRandomInt(2)<2) drawMovingLine(coords[0], coords[1], "red", time)
+            else drawMovingLine(coords[1], coords[0], "red", time)
+        }
+        
+        function drawVerticalBlackLine (square, time) {
+            let horizontalX = (square.segments[1].point.x + square.segments[2].point.x)/2
+            let coords = [[
+                horizontalX, 
+                square.segments[1].point.y], 
+                [horizontalX, 
+                square.segments[3].point.y]]
+            if (getRandomInt(2)<2) drawMovingLine(coords[0], coords[1], "#black", time)
+            else drawMovingLine(coords[1], coords[0], "black", time)
+        }
+        
+        function drawHorizontalYellowLine (square, time) {
+            let verticalY = (square.segments[0].point.y + square.segments[1].point.y) / 2
+            let coords = [[
+                    square.segments[0].point.x, 
+                    verticalY], 
+                    [square.segments[3].point.x, 
+                    verticalY]]
+            console.log("vertY", verticalY)
+            // this could be a ternary but more readable this way
+            if (getRandomInt(2)<2) drawMovingLine(coords[0], coords[1], "#FDDA0D", time)    
+            else drawMovingLine(coords[1], coords[0], "#FDDA0D", time)
+        
+            
+        }
+        
+        function drawSquare(upperLeftXY, lowerRightXY, color, time) {
+            var rectangle = new Rectangle(new Point(...upperLeftXY), new Point(...lowerRightXY));
+            var path = new Path.Rectangle(rectangle);
+            path.strokeColor = color;
+            path.strokeWidth = 2
+            
+            return path
+            // return {time, square : path}
+        }
+        
+        function drawLines(square) {
+                // console.log("this is time", this.time)
+                let time = 1000
+                let lineMade = false
+                while (!lineMade) {
+                    console.log("in while", getRandomInt(4))
+                    console.log("HELLOOOOOOOOOOOOO")
+                    if (getRandomInt(4) === 1) {
+                        drawVerticalBlackLine(square, time)
+                        lineMade = true
+                    }
+                    if (getRandomInt(4) === 2) {
+                        drawHorizontalYellowLine(square, time)
+                        lineMade = true
+                    }
+                    if (getRandomInt(4) === 3) {
+                        drawDiagonalRightRedLine(square, time)
+                        lineMade = true
+                    }
+                    if (getRandomInt(4) === 4) {
+                        drawDiagonalLeftBlueLine(square, time)
+                        lineMade = true
+                    }
+                }
+            }
+        
+
+
+        let smallerDimension = Math.min(view.size.width, view.size.height)
+        let numHorizontalFit = Math.floor(view.size.width / inchInPx)
+        let numVerticalFit = Math.floor(view.size.height / inchInPx)
+        console.log(numVerticalFit, numHorizontalFit)
+        let horizontalPadding = 0
+        let verticalPadding = 0
+        if (numVerticalFit < numHorizontalFit) {
+          console.log("less vert space")
+          horizontalPadding = (view.size.width - (numVerticalFit * inchInPx)) / 2
+          verticalPadding = (view.size.height % inchInPx) / 2
+        } else {
+          
+          console.log("less horiz space")
+          horizontalPadding = (view.size.width % inchInPx) / 2
+          verticalPadding = (view.size.height  - (numHorizontalFit * inchInPx)) / 2
+        }
+        //i is x, j is y
+        //row loop
+        console.log("width", view.size.width, "height", view.size.height)
+        
+        let delay = 0;
+        for (let j = 0; j + inchInPx < smallerDimension; j += inchInPx) {
+          for (let i = 0; i + inchInPx < smallerDimension; i+= inchInPx) {
+                setTimeout(function() {
+                  let newSquare = drawSquare([i + horizontalPadding,j + verticalPadding], [i + inchInPx + horizontalPadding, j+inchInPx + verticalPadding], "black");
+                  drawLines(newSquare);
+              }, delay);
+              delay += 123;
+            }
+        }
+      }
+
+      // This will fire when Paper.js is ready
+      init();
+
+    </script>
+
+    <canvas id='solving-sol' resize>
+      <!-- Paperscript will draw the graphics here -->
+    </canvas>
+
+  </body>
+</html>
