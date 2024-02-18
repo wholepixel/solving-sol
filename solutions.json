@@ -77,6 +77,13 @@
         "entry" : "index.html"
       }
     ],
+  "050A" :
+    [
+      {
+        "author" : "wttdotm",
+        "entry" : "index.html"
+      }
+    ],
   "051" :
     [
       {
@@ -187,6 +194,10 @@
     ],
   "146" :
     [
+      {
+        "author" : "wttdotm",
+        "entry" : "index.html"
+      },
       {
         "author" : "OgAstorga",
         "entry" : "index.html"
