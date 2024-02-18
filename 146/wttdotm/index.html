@@ -1,0 +1,417 @@
+<html>
+  <head>
+    <meta>
+
+      <title>Solving Sol</title>
+      <!-- Load latest acron version first -->
+      <script type="text/javascript" src="https://unpkg.com/acorn"></script>
+      <!-- Then load Paper.js -->
+      <script type="text/javascript" src="https://unpkg.com/paper"></script>
+      <!-- <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js" ></script> -->
+      <style type="text/css">
+
+        html, body {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          padding: 0;
+          margin: 0;
+          background-color: black;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        canvas[resize] {
+            width: 90%;
+            height: 90%;
+            background-color: black;
+        }
+
+      </style>
+    </meta>
+  </head>
+  <body>
+    <canvas id='solving-sol' resize>
+        <!-- Paperscript will draw the graphics here -->
+      </canvas>
+  
+    <script canvas='solving-sol' type='text/paperscript'>
+
+      /*
+
+        PASTE SOL INSTRUCTIONS HERE i.e...
+
+        Solving Sol #50A
+
+        A wall divided into four parts by lines drawn corner to corner. 
+        Each section with three different colors made of parallel lines superimposed. 
+        Color pencil.
+
+        Reference: https://www.themodern.org/sites/default/files/being_there_art_assignment_4_final.pdf
+
+      */
+
+      function onResize() {
+        // Handle resizes
+        // Paper.js will call this handler automatically on resize.
+
+        //this plus the removeChildren() at the start of init is very hacky but works
+        //init()
+      }
+
+
+      function init() {
+        //this is a very
+        project.activeLayer.removeChildren()
+        console.log(view)
+       
+
+        // Wall Drawing #146
+        // All two-part combinations of blue arcs from corners and sides, 
+        // and blue straight, not straight, and broken lines.
+
+        console.log("abvove")
+        // lets define our basic size and dimensions
+        let isHorizontal = view.size.width > view.size.height ? true : false
+
+        //1 frame is 1/100s
+        let inchInPx   
+        let dimensions 
+        let yOffset
+      
+
+        // there are only so many ways to make 96: 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 96
+        // loop thru them and see what the widest one you can use productively is
+        let factors = [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 96]
+
+        for (let i = 0; i < factors.length; i++) {
+            console.log("in for")
+            let x = factors[i]
+            let y = 96 / x
+            let squareSide = (view.size.width) / x
+            console.log(x, y)
+            console.log(`vW: ${view.size.width} vH: ${view.size.height}`)
+            console.log(`sS: ${squareSide} yH: ${y * squareSide}`)
+            if (squareSide * y < view.size.height) {
+                console.log("new xy:", x, y)
+                inchInPx = squareSide
+                dimensions = {x, y}
+                yOffset = ( view.size.height - (inchInPx * y)) / 2
+                break
+            }
+        }
+
+
+
+
+        let time = 0
+        let lineColor = "lightskyblue"
+        
+        
+        let arcs = ["UL", "UU", "UR", "RR", "BR", "BB", "BL", "LL"]
+
+
+        let lines = ["vertical", "horizontal", "upDiag", "downDiag"]
+        let lineTypes = ["straight", "wavy", "broken"]
+
+
+        
+        class Square {
+            constructor(lineDirection, lineType, arcCenter, id) {
+                this.line = {
+                    direction : lineDirection, //vertical, horizontal, upDiag, downDiag
+                    type : lineType // 
+                }
+                this.arc = { center : arcCenter, letterCenter : arcCenter }
+                this.id = id
+                this.upperLeftCorner = []
+                this.lineConnectionPoints = []
+                this.arcConnectionPoints = []
+                this.allConnectionPoints = []
+                this.order = 0
+
+                //this is setInterval bs that I should probably clean up
+                this.wavy = null
+                this.startTime = null
+                this.diagPath = null
+                this.int100Counter = 0
+                this.arcInt100Counter = 0
+                this.arcPath = null
+                this.arcFromPoint = null
+                this.arcCenterPoint = null
+                this.arcThrough = null
+                this.arcTo = null
+            }
+
+            resetAndRepeat(lineDirection, lineType, arcCenter) {
+                this.line.direction = lineDirection,
+                this.line.type = lineType
+                this.arc.center = arcCenter
+                this.setConnectionPoints()
+                this.arcPath.remove()
+                this.diagPath.remove()
+                this.wavy.remove()
+                this.drawSquare()
+            }
+            
+            setUpperLeftCorner(x, y) {
+                this.upperLeftCorner = [x, y + yOffset]
+            }
+
+            setId (num) {
+                this.id = num
+            }
+
+            setOrder(num) {
+                this.order = num
+            }
+
+            setConnectionPoints() {
+                this.arcConnectionPoints = findArcConnectionPoints(this.upperLeftCorner, this.arc.center)
+                this.lineConnectionPoints = findLineConnectionPoints(this.upperLeftCorner, this.line.direction)
+                this.allConnectionPoints = [...this.arcConnectionPoints, ...this.lineConnectionPoints]
+                //we shouldnt be reassigning this but oh well
+                this.arc.center = findArcCenter(this.upperLeftCorner, this.arc.center)
+            }
+
+            drawSquare() {
+                var rectangle = new Rectangle(new Point(this.upperLeftCorner), new Point(this.upperLeftCorner[0] + inchInPx, this.upperLeftCorner[1] + inchInPx));
+                var path = new Path.Rectangle(rectangle);
+                path.strokeColor = lineColor;
+                path.strokeWidth = 2
+                path.visible = false
+
+                //Make Lines
+                if (this.line.type == "wavy") {
+                    this.makeSineWaveNew()
+                } else {
+                    drawMovingLine(this.lineConnectionPoints[0], this.lineConnectionPoints[1], lineColor, 1000, this.line.type === "broken")
+                }
+
+                //make arcs
+                this.makeArc()
+            }
+
+            makeSineWaveNew () {
+                //make initial path
+                this.wavy = new Path()
+                this.wavy.strokeWidth = 2
+                this.wavy.strokeColor = lineColor
+                let done 
+                let diagPath
+                let startTime = Date.now()
+                let counter = 0
+                //we need to have this update every 0.01s not every 0.001s
+                let sineInterval = setInterval(() => {
+                    this.intervalSine()
+                    counter++
+                    if (counter >= 100) {
+                        clearInterval(sineInterval);
+                    }
+                }, 10)
+            }
+
+            intervalSine () {
+                    let normalizedCounter = this.int100Counter * (inchInPx / 100);
+                    
+                    if (this.line.direction === "horizontal" && normalizedCounter < inchInPx) {
+                        this.wavy.add(new Point(normalizedCounter  + this.lineConnectionPoints[0][0], (Math.sin(normalizedCounter/4)*4+this.lineConnectionPoints[0][1])));
+                    } else if (this.line.direction === "vertical" && normalizedCounter < inchInPx) {
+                        this.wavy.add(new Point((Math.sin(normalizedCounter/4)*4+this.lineConnectionPoints[0][0]), normalizedCounter + this.lineConnectionPoints[0][1]));
+                    } else if (this.line.direction === "upDiag" && normalizedCounter < inchInPx) {
+                        //we're gonna achieve this by rotating a wave that sits on the bottom
+                        if (this.diagPath) this.diagPath.remove()
+                        this.wavy.visible = false
+                        // look at the index of lineConnecitonPoints, I think this is mainly bc it goes upper coordinate first, which means to have the bottom left as a starting ponits you have start with the second (1th) index
+                        this.wavy.add(new Point((normalizedCounter)*Math.sqrt(2)+this.lineConnectionPoints[1][0], (Math.sin(normalizedCounter/4)*4+this.lineConnectionPoints[1][1])));
+                        this.diagPath = this.wavy.clone()
+                        this.diagPath.visible = true
+                        this.diagPath.rotate(-45, new Point(...this.lineConnectionPoints[1]))
+                    } else if (this.line.direction === "downDiag" && normalizedCounter < inchInPx) {
+                        if (this.diagPath) this.diagPath.remove()
+                        this.wavy.visible = false
+                        this.wavy.add(new Point(normalizedCounter*Math.sqrt(2) + this.lineConnectionPoints[0][0], (Math.sin(normalizedCounter/4)*4+this.lineConnectionPoints[0][1])));
+                        this.diagPath = this.wavy.clone()
+                        this.diagPath.visible = true
+                        //this.diagPath.strokeWidth = 4
+                        //this.diagPath.strokeColor = lineColor
+                        this.diagPath.rotate(45, new Point(...this.lineConnectionPoints))
+                    }
+                    this.int100Counter++
+            }
+
+            makeArc () {
+
+                //this happens bc we are always going clockwise
+                //if (this.arc.letterCenter === "UU" || this.arc.letterCenter === "UR" || this.arc.letterCenter === "RR" || this.arc.letterCenter === "BR") {
+                    //this.arcConnectionPoints = [this.arcConnectionPoints[1], this.arcConnectionPoints[0]]
+                //}
+
+
+                this.arcFromPoint = new Point(...this.arcConnectionPoints[0]);
+                this.arcCenterPoint = new Point(...this.arc.center);
+
+                let counter = 0
+                //we need to have this update every 0.01s not every 0.001s
+                let arcInterval = setInterval(() => {
+                    this.intervalArc()
+                    counter++
+                    if (counter >= 100) {
+                        clearInterval(arcInterval);
+                    }
+                }, 10)
+            }
+
+            intervalArc () {
+                //this is to control clockwise/counterclockwise
+                //START WITH THIS IF YOU WANNA THINK ABT ARC DIRECTION
+                let posOrNeg = this.arc.letterCenter === "UU" || this.arc.letterCenter === "UR" || this.arc.letterCenter === "RR" || this.arc.letterCenter === "BR" ? -1 : 1
+
+                if ( this.arcPath ) {
+                    this.arcPath.remove();
+                }
+                this.arcThrough = this.arcFromPoint.clone().rotate( ( posOrNeg * 180 * (this.arcInt100Counter / 100) / 4 ), this.arcCenterPoint);
+                this.arcTo = this.arcFromPoint.clone().rotate( ( posOrNeg * 180 * (this.arcInt100Counter / 100 / 2) ), this.arcCenterPoint);
+                this.arcPath = new Path.Arc( this.arcFromPoint, this.arcThrough, this.arcTo );
+                this.arcPath.strokeColor = lineColor;
+                this.arcPath.strokeWidth = 2
+                this.arcInt100Counter++
+            }
+
+        }
+
+        let initialArray = []
+        
+        //make the initial array
+        for (let i = 0; i < arcs.length; i++) {
+            for (let j = 0; j < lines.length; j++) {
+                for (let k = 0; k < lineTypes.length; k++) {
+                    let square = new Square(lines[j], lineTypes[k], arcs[i], initialArray.length)
+                    initialArray.push(square)
+                }
+            }
+        }
+        
+        
+        //shuffle the initial array
+        //borrowed this function
+        const shuffle = (array) => { 
+          for (let i = array.length - 1; i > 0; i--) { 
+            const j = Math.floor(Math.random() * (i + 1)); 
+            [array[i], array[j]] = [array[j], array[i]]; 
+          } 
+          return array; 
+        }; 
+        
+        const newArr = shuffle(initialArray)
+        newArr.forEach((el, i) => el.setOrder(i))
+        
+        function findArcConnectionPoints (upperLeftCorner, arcCenter) {
+            if (arcCenter == "UL" || arcCenter == "BR") return [[upperLeftCorner[0] + inchInPx, upperLeftCorner[1]], [upperLeftCorner[0], upperLeftCorner[1]+inchInPx]]
+            else if (arcCenter ==  "UR" || arcCenter == "BL") return [[upperLeftCorner[0], upperLeftCorner[1]], [upperLeftCorner[0] + inchInPx, upperLeftCorner[1] + inchInPx]]
+            else if (arcCenter == "UU" || arcCenter == "BB") return [[upperLeftCorner[0], upperLeftCorner[1] + (inchInPx/2)], [upperLeftCorner[0] + inchInPx, upperLeftCorner[1] + (inchInPx/2)]]
+            else if (arcCenter == "LL" || arcCenter == "RR") return [[upperLeftCorner[0] + (inchInPx/2), upperLeftCorner[1]], [upperLeftCorner[0] + (inchInPx/2), upperLeftCorner[1] + inchInPx]]
+        }
+        
+        function findArcCenter (upperLeftCorner, arcCenter) {
+            if (arcCenter === "UL") return upperLeftCorner
+            if (arcCenter === "UU") return [upperLeftCorner[0] + (inchInPx / 2), upperLeftCorner[1]]
+            if (arcCenter === "UR") return [upperLeftCorner[0] + (inchInPx), upperLeftCorner[1]]
+            if (arcCenter === "RR") return [upperLeftCorner[0] + (inchInPx), upperLeftCorner[1] + (inchInPx / 2)]
+            if (arcCenter === "BR") return [upperLeftCorner[0] + (inchInPx), upperLeftCorner[1] + (inchInPx)]
+            if (arcCenter === "BB") return [upperLeftCorner[0] + (inchInPx / 2), upperLeftCorner[1] + (inchInPx)]
+            if (arcCenter === "BL") return [upperLeftCorner[0], upperLeftCorner[1] + (inchInPx)]
+            if (arcCenter === "LL") return [upperLeftCorner[0], upperLeftCorner[1] + (inchInPx / 2)]
+        }
+
+        function findLineConnectionPoints (upperLeftCorner, direction) {
+            if (direction == "vertical") return [[upperLeftCorner[0] + (inchInPx/2), upperLeftCorner[1]], [upperLeftCorner[0] + (inchInPx/2), upperLeftCorner[1] + inchInPx]]
+            else if (direction == "horizontal") return [[upperLeftCorner[0], upperLeftCorner[1] + (inchInPx/2)], [upperLeftCorner[0] + inchInPx, upperLeftCorner[1] + (inchInPx/2)]]
+            else if (direction == "upDiag") return [[upperLeftCorner[0] + inchInPx, upperLeftCorner[1]], [upperLeftCorner[0], upperLeftCorner[1]+inchInPx]]
+            else if (direction == "downDiag") return [[upperLeftCorner[0], upperLeftCorner[1]], [upperLeftCorner[0] + inchInPx, upperLeftCorner[1] + inchInPx]]
+        }
+        
+
+
+        let arrIndex = 0
+
+        for (let i = 0; i < dimensions.y; i++) {
+            for (let j = 0; j < dimensions.x; j++) {
+                newArr[arrIndex].setUpperLeftCorner(j * inchInPx, i * inchInPx)
+                newArr[arrIndex].setConnectionPoints()
+                arrIndex++
+            }
+        }  
+
+
+        function getRandomInt(max) {
+          return Math.floor(Math.random() * max) + 1;
+        }
+        
+        
+        
+        function drawMovingLine(startingXY, endingXY, color, time, broken = false) {
+            var path = new Path.Line({
+                from: [startingXY[0], startingXY[1]],
+                to: [startingXY[0], startingXY[1]],
+                strokeColor: color,
+                strokeWidth : 2
+            });
+            if (broken) path.dashArray = [10, 4]
+            
+            path.tween({
+                'segments[1].point': {x: endingXY[0], y: endingXY[1] },
+            }, time);
+        }
+
+        
+        //shuffle again
+        const shuffledTwiceArr = shuffle(newArr)
+
+
+        //I thinnk what I can do is
+        // make a setInterval that increments a value
+        // that value is the number in the array
+        // we go through the array
+        // each square has a method that will updateViewFrame
+  
+        //this works
+        let testNum = 0
+        let interval = setInterval(() => {
+            shuffledTwiceArr[testNum].drawSquare()
+            testNum++
+            if (testNum >= dimensions.x * dimensions.y) {
+                clearInterval(interval);
+            }
+        }, 50)
+        
+        let simpleObjArr = []
+        shuffledTwiceArr.forEach(el => {
+            let newObj = {
+                id : null,
+                lineConnectionPoints : null,
+                arcConnectionPoints : null
+            }
+            newObj.id = el.id
+            newObj.lineConnectionPoints = el.lineConnectionPoints
+            newObj.arcConnectionPoints = el.arcConnectionPoints
+            simpleObjArr.push(newObj)
+        })
+
+      }
+
+      //I thinnk what I can do is
+      // make a setInterval that increments a value
+      // that value is the number in the array
+      // we go through the array
+      // each square has a method that will updateViewFrame
+
+      // This will fire when Paper.js is ready
+      init();
+
+    </script>
+
+
+  </body>
+</html>
