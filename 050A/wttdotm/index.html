@@ -48,7 +48,7 @@
         // Paper.js will call this handler automatically on resize.
 
         //this plus the removeChildren() at the start of init is very hacky but works
-        //init()
+        init()
       }
 
 
@@ -160,7 +160,7 @@
             let returnArr = []
             for (let i = 0; i <= view.size.height*2; i+= lineSpacing) {
                 let newLine = new Path() 
-                newLine.strokeColor = 'green';
+                newLine.strokeColor = color;
                 newLine.strokeWidth = strokeWidth;
                 newLine.add(new Point(0, view.size.height-i));
                 newLine.add(new Point(i * ratioOfWidthToHeight, view.size.height));

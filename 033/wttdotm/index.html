@@ -59,10 +59,11 @@
         init()
       }
 
-
+      allTimeouts = []
       function init() {
         //this is a very
         project.activeLayer.removeChildren()
+        if (allTimeouts.length) allTimeouts.forEach(to => {clearTimeout(to)})
                 
         // A one-inch (2.5cm) grid covering a square. 
         // Within each of the one-inch (2.5cm) squares: 
@@ -135,35 +136,33 @@
             path.strokeWidth = 2
             
             return path
-            // return {time, square : path}
+
         }
         
         function drawLines(square) {
-                console.log("making new lines")
+
                 let time = 1000
                 let lineMade = false
+                let totalLines = 0
                 while (!lineMade) {
-                    console.log("start fo while")
+
                     if (getRandomInt(4) === 1) {
                         drawVerticalBlackLine(square, time)
                         lineMade = true
-                        console.log("line made")
                     }
                     if (getRandomInt(4) === 2) {
                         drawHorizontalYellowLine(square, time)
                         lineMade = true
-                        console.log("line made")
                     }
                     if (getRandomInt(4) === 3) {
                         drawDiagonalRightRedLine(square, time)
                         lineMade = true
-                        console.log("line made")
                     }
                     if (getRandomInt(4) === 4) {
                         drawDiagonalLeftBlueLine(square, time)
                         lineMade = true
-                        console.log("line made")
                     }
+                    if (lineMade) break
                 }
             }
         
@@ -172,7 +171,7 @@
         let smallerDimension = Math.min(view.size.width, view.size.height)
         let numHorizontalFit = Math.floor(view.size.width / inchInPx)
         let numVerticalFit = Math.floor(view.size.height / inchInPx)
-        console.log(numVerticalFit, numHorizontalFit)
+
         let horizontalPadding = 0
         let verticalPadding = 0
         if (numVerticalFit < numHorizontalFit) {
@@ -189,10 +188,12 @@
         let delay = 0;
         for (let j = 0; j + inchInPx < smallerDimension; j += inchInPx) {
           for (let i = 0; i + inchInPx < smallerDimension; i+= inchInPx) {
-                setTimeout(function() {
+                //for some reason this function runs twice and I have no idea why
+                let newTimeout = setTimeout(function () {
                   let newSquare = drawSquare([i + horizontalPadding,j + verticalPadding], [i + inchInPx + horizontalPadding, j+inchInPx + verticalPadding], "black");
                   drawLines(newSquare);
               }, delay);
+              allTimeouts.push(newTimeout)
               delay += 123;
             }
         }

@@ -1,3 +1,9 @@
-# Wall Drawing #50A (1970)
+# Wall Drawing #33 (1970)
 
-A wall divided into four parts by lines drawn corner to corner. Each section with three different colors made of parallel lines superimposed. Color pencil.
+A one-inch (2.5cm) grid covering a square. 
+Within each of the one-inch (2.5cm) squares: 
+1: Vertical black lines; 
+2: Horizontal yellow lines; 
+3: Diagonal right red lines; 
+or 4: Diagonal left blue lines. 
+As many lines as desired, but at least one line in each square.

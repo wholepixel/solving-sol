@@ -16,7 +16,7 @@
           overflow: hidden;
           padding: 0;
           margin: 0;
-          background-color: black;
+          background-color: floralwhite;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -25,7 +25,7 @@
         canvas[resize] {
             width: 90%;
             height: 90%;
-            background-color: black;
+            background-color: floralwhite;
         }
 
       </style>
@@ -64,14 +64,12 @@
       function init() {
         //this is a very
         project.activeLayer.removeChildren()
-        console.log(view)
        
 
         // Wall Drawing #146
         // All two-part combinations of blue arcs from corners and sides, 
         // and blue straight, not straight, and broken lines.
 
-        console.log("abvove")
         // lets define our basic size and dimensions
         let isHorizontal = view.size.width > view.size.height ? true : false
 
@@ -95,18 +93,19 @@
             console.log(`sS: ${squareSide} yH: ${y * squareSide}`)
             if (squareSide * y < view.size.height) {
                 console.log("new xy:", x, y)
+                console.log("horiz? ", isHorizontal)
                 inchInPx = squareSide
-                dimensions = {x, y}
+                dimensions = { x, y}
                 yOffset = ( view.size.height - (inchInPx * y)) / 2
                 break
             }
         }
 
 
-
+        console.log(dimensions)
 
         let time = 0
-        let lineColor = "lightskyblue"
+        let lineColor = "blue"
         
         
         let arcs = ["UL", "UU", "UR", "RR", "BR", "BB", "BL", "LL"]
