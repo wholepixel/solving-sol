@@ -44,6 +44,13 @@
         "entry" : "index.html"
       }
     ],
+  "033" :
+    [
+      {
+        "author" : "wttdotm",
+        "entry" : "index.html"
+      }
+    ],
   "045" :
     [
       {
@@ -67,6 +74,13 @@
       },
       {
         "author" : "kubamarkiewicz",
+        "entry" : "index.html"
+      }
+    ],
+  "050A" :
+    [
+      {
+        "author" : "wttdotm",
         "entry" : "index.html"
       }
     ],
@@ -180,6 +194,10 @@
     ],
   "146" :
     [
+      {
+        "author" : "wttdotm",
+        "entry" : "index.html"
+      },
       {
         "author" : "OgAstorga",
         "entry" : "index.html"
