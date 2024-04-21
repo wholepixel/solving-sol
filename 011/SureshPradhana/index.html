@@ -1,0 +1,129 @@
+<html>
+<title>Sol LeWitt Wall Drawing #11</title>
+
+<head>
+    <style type="text/css">
+        body {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            margin: 0px;
+            padding: 15px;
+            outline: 1px solid #ccc;
+            color: #777;
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="info">
+        <details id="wallLabel">
+            <summary>
+                <strong>Sol LeWitt</strong><br />
+                <em>Wall Drawing #11</em>, 1969
+            </summary>
+            <p style="font-size: 150%">
+                "A wall divided horizontally and vertically into four equal parts.
+                Within each part, three of the four kinds of lines are superimposed."
+            </p>
+            <p>
+                <em>Implemented by</em> <strong>Suresh Pradhana</strong>, 2024<br />
+                <em style="font-size: 80%">HTML, CSS and JavaScript with canvas-sketch</em>
+            </p>
+        </details>
+    </div>
+    <!-- Attaches canvasSketch to window global -->
+    <script src="https://unpkg.com/canvas-sketch@latest/dist/canvas-sketch.umd.js"></script>
+    <!-- Now you can use the library like normal -->
+    <script>
+
+        const settings = {
+            dimensions: [1024, 1024],
+        };
+
+        const sketch = () => {
+            const center = settings.dimensions.map(d => d / 2);
+
+
+            return ({ context, width, height }) => {
+                context.fillStyle = 'white';
+                context.fillRect(0, 0, width, height);
+                context.strokeStyle = 'brown'; // Change this to the color you want for the lines
+                context.lineWidth = 1; // Change this to the width you want for the lines
+                context.beginPath();
+                context.moveTo(center[0], center[1]);
+                context.lineTo(width / 2, 0);
+                context.moveTo(center[0], center[1]);
+                context.lineTo(width, height / 2);
+                context.moveTo(center[0], center[1]);
+                context.lineTo(0, height / 2);
+                context.moveTo(center[0], center[1]);
+                context.lineTo(width / 2, height);
+                context.stroke();
+
+                const quadrants = [
+                    { start: [0, 0], end: [width / 2, height / 2] }, // Top-left quadrant
+                    { start: [Math.round(width / 2), 0], end: [width, height / 2] }, // Top-right quadrant
+                    { start: [0, height / 2], end: [width / 2, height] }, // Bottom-left quadrant
+                    { start: [width / 2, height / 2], end: [width, height] } // Bottom-right quadrant
+                ];
+                quadrants.forEach(quadrant => {
+                    const [startX, startY] = quadrant.start;
+                    const [endX, endY] = quadrant.end;
+                    const width = endX - startX;
+                    const height = endY - startY;
+                    const count = 30;
+
+
+                    for (let i = 0; i <= count + 1; i++) {
+                        const x = startX + (width / (count + 1) * i);
+                        const y = startY + (height / (count + 1) * i);
+                        context.strokeStyle = 'black';
+                        context.lineWidth = 0.5;
+                        // if (i % 2 === 0) {
+                        //     context.setLineDash([2, 6]); // Dashed line
+                        // } else if (i % 3 === 0) {
+                        //     context.setLineDash([1, 0]); // Solid line
+                        // } else {
+                        //     context.setLineDash([1, 2]); // Dotted line
+                        // }
+                        context.beginPath();
+                        context.moveTo(startX, y);
+                        context.lineTo(endX, y);
+                        context.stroke();
+                        context.beginPath();
+                        context.moveTo(x, startY);
+                        context.lineTo(x, endY);
+                        context.stroke();
+                        context.beginPath();
+                        context.moveTo(startX, y);
+                        context.lineTo(x, startY);
+                        context.stroke();
+                        context.beginPath();
+                        context.moveTo(x, startY + height);
+                        context.lineTo(endX, y);
+                        context.stroke();
+                    }
+
+                });
+
+
+            };
+        };
+
+        canvasSketch(sketch, settings);
+    </script>
+</body>
+
+</html>
