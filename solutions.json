@@ -109,6 +109,10 @@
         "author" : "Soreine",
         "entry" : "index.html"
       }
+      {
+      "author" : "Chervinsky",
+       "entry" : "index.html"
+      }
     ],
   "065" :
     [
@@ -338,4 +342,9 @@
         "entry" : "index.html"
       }
     ]
+"Color Bands":
+[{
+      "author" : "Chervinsky",
+       "entry" : "index.html"
+      }]
 }
